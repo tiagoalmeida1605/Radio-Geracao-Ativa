@@ -19,6 +19,13 @@ header {
   border-bottom: 1px solid #e0d5bf;
 }
 
+header h1 {
+    text-align: center;
+    font-size: 35px;
+    font-weight: 400;
+    margin-bottom: 35px;
+}
+
 .sidebar {
   display: flex;
   align-items: center;
@@ -33,8 +40,8 @@ header {
 }
 
 .sidebar h2 {
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-size: 27px;
+  font-weight: 900;
 }
 
 .sidebar nav {
@@ -75,87 +82,184 @@ header {
 }
 
 main {
-  flex: 1;
+    flex: 1;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 
-  padding: 40px;
+    padding: 40px 20px;
 }
 
-main h1 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+/* CARD */
+
+.admin-card {
+    width: 100%;
+    max-width: 1000px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 30px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }
 
-main .description {
-  font-size: 1.2rem;
-  line-height: 1.8;
-  max-width: 900px;
+/* INPUTS */
+
+label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-weight: 600;
 }
 
-.more {
-  background-color: #332e22;
-  color: white;
-  text-decoration: none;
-  display: inline-block;
-  margin-top: 30px;
-  padding: 10px;
-  border-radius: 5px;
+select,
+input {
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    font-size: 1rem;
+
+    margin-bottom: 20px;
 }
 
-.more:hover {
-  background-color: #444;
+/* MODALIDADE */
+
+#modalidade {
+    text-align: center;
+
+    margin: 25px 0;
+
+    font-size: 1.8rem;
 }
+
+/* PLACAR */
+
+.placar {
+    display: flex;
+
+    gap: 25px;
+
+    justify-content: center;
+
+    margin: 30px 0;
+}
+
+.time {
+    flex: 1;
+
+    background: #f8f4eb;
+
+    border-radius: 12px;
+
+    padding: 25px;
+
+    text-align: center;
+}
+
+.time span {
+    display: block;
+
+    font-size: 1.2rem;
+    font-weight: 700;
+
+    margin-bottom: 15px;
+}
+
+.pontos {
+    font-size: 4rem;
+
+    font-weight: 800;
+
+    margin-bottom: 20px;
+}
+
+/* BOTÕES */
+
+.botoes {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+}
+
+.botoes button {
+    border: none;
+
+    background: #332e22;
+
+    color: white;
+
+    padding: 12px 18px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 1rem;
+
+    transition: .2s;
+}
+
+.botoes button:hover {
+    background: #554b35;
+}
+
+/* SALVAR */
+
+.salvar {
+    width: 100%;
+
+    margin-top: 15px;
+
+    border: none;
+
+    background: #332e22;
+
+    color: white;
+
+    padding: 15px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 1rem;
+
+    font-weight: 700;
+
+    transition: .2s;
+}
+
+.salvar:hover {
+    background: #554b35;
+}
+
+/* FOOTER */
 
 footer {
-  background: #111;
-  color: #888;
+    background: #111;
 
-  text-align: center;
+    color: #888;
 
-  padding: 20px;
+    text-align: center;
+
+    padding: 20px;
 }
 
-.another {
-  margin-top: 55px;
-  width: 100%;
-  font-size: 19px;
-  font-weight: 500;
-  display: flex;
-  justify-content: center;
-}
-
-.social-media {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 10px;
-
-    a {
-      color: #554b35;
-      font-size: 1.5rem;
-      transition: 0.2s;
-      text-decoration: none;
-    }
-
-    li {
-      list-style: none;
-    }
-
-    .fa-instagram {
-    color: #db6cad;
-  }
-
-    .fa-youtube {
-    color: #FF0000;
-  }
-}
+/* MOBILE */
 
 @media (max-width: 768px) {
 
-  .sidebar {
+    .sidebar {
     flex-wrap: wrap;
   }
 
@@ -182,36 +286,36 @@ footer {
     gap: 15px;
   }
 
-  main {
-    padding: 30px 20px;
-    text-align: center;
-  }
+    .placar {
+        flex-direction: column;
+    }
 
-  main h1 {
-    font-size: 2rem;
-  }
+    .pontos {
+        font-size: 3rem;
+    }
 
-  main .description {
-    font-size: 1rem;
-    max-width: 100%;
-  }
 }
 
 @media (max-width: 430px) {
 
-  .sidebar img {
-    width: 70px;
-  }
+    header h1 {
+        font-size: 1.5rem;
+    }
 
-  .sidebar h2 {
-    font-size: 1.1rem;
-  }
+    .admin-card {
+        padding: 20px;
+    }
 
-  main h1 {
-    font-size: 1.6rem;
-  }
+    .pontos {
+        font-size: 2.5rem;
+    }
 
-  main .description {
-    font-size: 0.95rem;
-  }
+    .botoes {
+        flex-direction: column;
+    }
+
+    .botoes button {
+        width: 100%;
+    }
+
 }

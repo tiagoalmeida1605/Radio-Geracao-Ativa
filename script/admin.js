@@ -1,13 +1,6 @@
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-
-import {
-    getDatabase,
-    ref,
-    get,
-    update
-}
-from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyB2Wl8jI-0u69DpH-vsjfsAtyNhd7Nzbcg",
@@ -18,10 +11,11 @@ const firebaseConfig = {
     messagingSenderId: "844479391049",
     appId: "1:844479391049:web:a99846198d047c5c162698",
     measurementId: "G-PYNXJ4MVXE"
-  };
+};
 
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getDatabase(app);
 
 let jogoAtual = null;
 
