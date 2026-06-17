@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" href="../assets/icon.png">
     <link rel="stylesheet" href="../style/admin.css">
     <meta name="google-site-verification" content="622T97HgxzHpqRCJmKPhof7Y08l7A_3FmkVEic_pnTw" />
-    <title>Home</title>
+    <title>Admin</title>
 </head>
 <body>
     <header>
@@ -21,7 +21,7 @@
                 <ul>
                     <li><a href="../index.html">Home</a></li>
                     <li><a href="../pages/sobre.html">Sobre</a></li>
-                    <li><a href="../pages/desenvolvimento.html">Em desenvolvimento</a></li>
+                    <li><a href="../pages/placar.html">Placar</a></li>
                     <li><a href="./admin.html" class="active">Admin</a></li>
                 </ul>
             </nav>
@@ -29,87 +29,65 @@
         <h1>Painel Admin</h1>
     </header>
     <main>
-
-        <div class="admin-card">
-            <label for="jogoSelect">
-                Selecione um jogo
-            </label>
-            <select id="jogoSelect">
-            </select>
-            <hr>
-            <h2 id="modalidade">
-                Carregando...
-            </h2>
-            <div class="placar">
-                <div class="time">
-                    <span id="timeA">
-                        Time A
-                    </span>
-                    <div class="pontos" id="placarA">
-                        0
-                    </div>
-                    <div class="botoes">
-                        <button id="maisA">
-                            +1
-                        </button>
-
-                        <button id="menosA">
-                            -1
-                        </button>
-                    </div>
-                </div>
-                <div class="time">
-                    <span id="timeB">
-                        Time B
-                    </span>
-                    <div class="pontos" id="placarB">
-                        0
-                    </div>
-                    <div class="botoes">
-                        <button id="maisB">
-                            +1
-                        </button>
-
-                        <button id="menosB">
-                            -1
-                        </button>
-                    </div>
-                </div>
+<div id="bloqueio-tela">
+            <div class="card-senha">
+                <h2>Acesso Restrito</h2>
+                <form id="form-bloqueio-rga">
+                    <input type="text" name="username" autocomplete="username" value="admin_rga" style="display: none;">
+                    
+                    <input type="password" id="senha-admin" placeholder="Digite a senha" autocomplete="current-password" required>
+                    <button type="submit" id="btn-entrar">Entrar</button>
+                </form>
             </div>
-            <hr>
-            <label for="status">
-                Status
-            </label>
-            <select id="status">
-                <option value="Ao Vivo">
-                    Ao Vivo
-                </option>
-                <option value="Intervalo">
-                    Intervalo
-                </option>
-                <option value="Finalizado">
-                    Finalizado
-                </option>
-                <option value="WO">
-                    WO
-                </option>
-            </select>
-            <label for="periodo">
-                Período
-            </label>
-            <input
-                type="text"
-                id="periodo"
-                placeholder="Ex: 1º Tempo"
-            >
-            <button class="salvar" id="salvar">
-                Salvar Alterações
-            </button>
+        </div>
+
+        <div id="admin-painel" style="display: none;">
+            <div class="admin-card">
+                <label for="jogoSelect">Selecione um jogo</label>
+                <select id="jogoSelect"></select>
+                <hr>
+                
+                <h2 id="modalidade">Carregando...</h2>
+                
+                <div class="placar">
+                    <div class="time">
+                        <span id="timeA">Time A</span>
+                        <div class="pontos" id="placarA">0</div>
+                        <div class="botoes">
+                            <button type="button" id="maisA">+1</button>
+                            <button type="button" id="menosA">-1</button>
+                        </div>
+                    </div>
+                    <div class="time">
+                        <span id="timeB">Time B</span>
+                        <div class="pontos" id="placarB">0</div>
+                        <div class="botoes">
+                            <button type="button" id="maisB">+1</button>
+                            <button type="button" id="menosB">-1</button>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                
+                <label for="status">Status</label>
+                <select id="status">
+                    <option value="Ao Vivo">Ao Vivo</option>
+                    <option value="Intervalo">Intervalo</option>
+                    <option value="Finalizado">Finalizado</option>
+                    <option value="WO">WO</option>
+                </select>
+                
+                <label for="periodo">Período</label>
+                <input type="text" id="periodo" placeholder="Ex: 1º Tempo">
+                
+                <button type="button" class="salvar" id="salvar">Salvar Alterações</button>
+            </div>
         </div>
     </main>
     <footer>
         <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
     </footer>
+    </div>
     <script src="../script/menu.js"></script>
     <script type="module" src="../script/admin.js"></script>
     <script type="module" src="../script/firebase-init.js"></script>

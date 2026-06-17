@@ -319,3 +319,51 @@ footer {
     }
 
 }
+
+#bloqueio-tela {
+    width: 100%;
+    max-width: 400px;
+    margin: 60px auto;
+}
+
+.card-senha {
+    background: white;
+    padding: 35px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.card-senha h2 {
+    margin-bottom: 20px;
+    color: #332e22;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+#form-bloqueio-rga input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+#form-bloqueio-rga button {
+    width: 100%;
+    padding: 12px;
+    background: #332e22;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+#form-bloqueio-rga button:hover {
+    background: #554b35;
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../assets/icon.png">
+    <link rel="stylesheet" href="../style/placar.css">
+    <title>Placar</title>
+</head>
+<body>
+    <header>
+        <div class="sidebar">
+            <img src="../assets/logo.png" alt="Descrição da imagem">
+            <h2>Rádio Geração Ativa</h2>
+            <button class="menu-btn" id="menuBtn">☰</button>
+            <nav id="nav-Menu">
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="./sobre.html">Sobre</a></li>
+                    <li><a href="./placar.html" class="active">Placar</a></li>
+                    <li><a href="../admin/admin.html">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+<div class="admin-card">
+            <label for="jogoSelect">Escolha o Jogo para Acompanhar</label>
+            <select id="jogoSelect">
+                <option value="">Carregando jogos...</option>
+            </select>
+            <hr>
+            
+            <h2 id="modalidade">Selecione um jogo acima</h2>
+            
+            <div class="placar">
+                <div class="time">
+                    <span id="timeA">---</span>
+                    <div class="pontos" id="placarA">0</div>
+                </div>
+                <div class="time">
+                    <span id="timeB">---</span>
+                    <div class="pontos" id="placarB">0</div>
+                </div>
+            </div>
+            <hr>
+            
+            <div style="text-align: center; font-size: 1.2rem; margin-top: 10px;">
+                <p><strong>Status:</strong> <span id="status-view" style="color: #e74c3c; font-weight: bold;">---</span></p>
+                <p style="margin-top: 10px;"><strong>Período:</strong> <span id="periodo-view">---</span></p>
+                <p style="font-size: 0.9rem; color: #888; margin-top: 15px;">Última atualização: <span id="atualizacao-view">---</span></p>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
+    </footer>
+    <script src="../script/menu.js"></script>
+    <script type="module" src="../script/placar.js"></script>
+</body>
+</html>
