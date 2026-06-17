@@ -18,27 +18,23 @@ const analytics = getAnalytics(app);
 const db = getDatabase(app);
 
 let juegoAtual = null;
-let valorPontosA = 0;
-let valorPontosB = 0;
+let pontosInternosA = 0;
+let pontosInternosB = 0;
 
 const select = document.getElementById("jogoSelect");
 
 // ==========================================
-// ESCUTADOR DO FORMULÁRIO DE SENHA (SUBMIT)
+// SISTEMA DE CADEADO - VALIDAÇÃO DA SENHA
 // ==========================================
 document.getElementById('form-bloqueio-rga').addEventListener('submit', (e) => {
-    e.preventDefault(); // Evita que a página dê F5 ao enviar o formulário
+    e.preventDefault();
     
     const senhaDigitada = document.getElementById('senha-admin').value;
-    const senhaCorreta = "rga2026"; // SUA SENHA AQUI
+    const senhaCorreta = "rga2026"; 
 
     if (senhaDigitada === senhaCorreta) {
-        // Some com a tela de bloqueio
         document.getElementById('bloqueio-tela').style.display = 'none';
-        // Libera e exibe o painel administrativo original
         document.getElementById('admin-painel').style.display = 'block';
-        
-        // Ativa o Firebase e os botões do placar
         liberarConfiguracoesDoPainel();
     } else {
         alert("Senha incorreta! Acesso negado.");
@@ -47,54 +43,68 @@ document.getElementById('form-bloqueio-rga').addEventListener('submit', (e) => {
 });
 
 // ==========================================
-// FUNÇÕES DO PLACAR (SÓ RODAM SE ACERTAR A SENHA)
+// ATIVAÇÃO DO PAINEL ADMIN (SÓ PÓS-SENHA)
 // ==========================================
 function liberarConfiguracoesDoPainel() {
     carregarJogos();
 
+    // Eventos de clique dos botões de +1 e -1 do Admin
     document.getElementById("maisA").addEventListener("click", () => {
-        valorPontosA++;
-        atualizarTela();
+        pontosInternosA++;
+        atualizarTelaAdmin();
     });
 
     document.getElementById("menosA").addEventListener("click", () => {
-        if (valorPontosA > 0) {
-            valorPontosA--;
-            atualizarTela();
+        if (pontosInternosA > 0) {
+            pontosInternosA--;
+            atualizarTelaAdmin();
         }
     });
 
     document.getElementById("maisB").addEventListener("click", () => {
-        valorPontosB++;
-        atualizarTela();
+        pontosInternosB++;
+        atualizarTelaAdmin();
     });
 
     document.getElementById("menosB").addEventListener("click", () => {
-        if (valorPontosB > 0) {
-            valorPontosB--;
-            atualizarTela();
+        if (pontosInternosB > 0) {
+            pontosInternosB--;
+            atualizarTelaAdmin();
         }
     });
 
+    // BOTÃO SALVAR - ENVIANDO DE FATO PARA O FIREBASE
     document.getElementById("salvar").addEventListener("click", async () => {
-        await update(
-            ref(db, `jogos/${juegoAtual}`),
-            {
-                placarA: valorPontosA,
-                placarB: valorPontosB,
+        if (!juegoAtual) {
+            alert("Selecione um jogo válido antes de salvar!");
+            return;
+        }
+
+        try {
+            const jogoRef = ref(db, `jogos/${juegoAtual}`);
+            
+            // Dados exatos que o placar.js espera receber
+            const dadosParaAtualizar = {
+                placarA: Number(pontosInternosA),
+                placarB: Number(pontosInternosB),
                 status: document.getElementById("status").value,
                 periodo: document.getElementById("periodo").value,
                 ultimaAtualizacao: new Date().toLocaleTimeString("pt-BR")
-            }
-        );
-        alert("Placar atualizado com sucesso!");
+            };
+
+            await update(jogoRef, dadosParaAtualizar);
+            alert("Alterações salvas com sucesso no Firebase!");
+        } catch (erro) {
+            console.error("Erro ao salvar no Firebase:", erro);
+            alert("Erro crítico ao salvar as alterações.");
+        }
     });
 
     select.addEventListener("change", carregarJogo);
 }
 
 // ==========================================
-// FIREBASE INTEGRAÇÃO
+// FUNÇÕES DE COMUNICAÇÃO COM O BANCO (ADMIN)
 // ==========================================
 async function carregarJogos() {
     const snapshot = await get(ref(db, "jogos"));
@@ -112,23 +122,29 @@ async function carregarJogos() {
 
 async function carregarJogo() {
     juegoAtual = select.value;
+    if (!juegoAtual) return;
+
     const snapshot = await get(ref(db, `jogos/${juegoAtual}`));
     const jogo = snapshot.val();
 
-    document.getElementById("modalidade").textContent = jogo.modalidade;
-    document.getElementById("timeA").textContent = jogo.timeA;
-    document.getElementById("timeB").textContent = jogo.timeB;
-    
-    valorPontosA = jogo.placarA;
-    valorPontosB = jogo.placarB;
+    if (jogo) {
+        document.getElementById("modalidade").textContent = jogo.modalidade || "Sem modalidade";
+        document.getElementById("timeA").textContent = jogo.timeA || "Time A";
+        document.getElementById("timeB").textContent = jogo.timeB || "Time B";
+        
+        // Sincroniza as variáveis numéricas com o que já está salvo no banco
+        pontosInternosA = jogo.placarA !== undefined ? jogo.placarA : 0;
+        pontosInternosB = jogo.placarB !== undefined ? jogo.placarB : 0;
 
-    atualizarTela();
+        atualizarTelaAdmin();
 
-    document.getElementById("status").value = jogo.status;
-    document.getElementById("periodo").value = jogo.periodo;
+        document.getElementById("status").value = jogo.status || "Ao Vivo";
+        document.getElementById("periodo").value = jogo.periodo || "";
+    }
 }
 
-function atualizarTela() {
-    document.getElementById("placarA").textContent = valorPontosA;
-    document.getElementById("placarB").textContent = valorPontosB;
+// Atualiza o número dentro das divs do HTML do Admin
+function atualizarTelaAdmin() {
+    document.getElementById("placarA").textContent = pontosInternosA;
+    document.getElementById("placarB").textContent = pontosInternosB;
 }

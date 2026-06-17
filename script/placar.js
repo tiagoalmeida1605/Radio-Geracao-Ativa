@@ -12,77 +12,77 @@ const firebaseConfig = {
     measurementId: "G-PYNXJ4MVXE"
 };
 
-// Inicializa o Firebase
+// Inicialização estável do banco de dados
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 const select = document.getElementById("jogoSelect");
-let desativarEscutadorAnterior = null; // Guarda a função para limpar o canal anterior
+let removerEscutadorAnterior = null; 
 
-// 1. CARREGA A LISTA DE JOGOS NO SELECT
-async function carregarListaJogos() {
+// 1. CARREGA A LISTAGEM INICIAL DE JOGOS NO SELECT DO HTML
+async function carregarListaDeJogos() {
     try {
         const snapshot = await get(ref(db, "jogos"));
-        const jogos = snapshot.val();
+        const listaJogos = snapshot.val();
         
-        if (!jogos) {
-            select.innerHTML = "<option>Nenhum jogo encontrado</option>";
+        if (!listaJogos) {
+            select.innerHTML = "<option>Nenhum jogo ativo no momento</option>";
             return;
         }
 
-        select.innerHTML = ""; // Limpa o "Carregando..."
+        select.innerHTML = ""; // Apaga o texto temporário de carregamento
 
-        for (const id in jogos) {
+        for (const idDoJogo in listaJogos) {
             const option = document.createElement("option");
-            option.value = id;
-            option.textContent = `${jogos[id].modalidade} - ${jogos[id].timeA} x ${jogos[id].timeB}`;
+            option.value = idDoJogo;
+            option.textContent = `${listaJogos[idDoJogo].modalidade} - ${listaJogos[idDoJogo].timeA} x ${listaJogos[idDoJogo].timeB}`;
             select.appendChild(option);
         }
 
-        // Liga o monitoramento em tempo real para o primeiro jogo da lista encontrado
-        monitorarJogoTempoReal();
-    } catch (error) {
-        console.error("Erro ao buscar lista de jogos:", error);
+        // Liga o monitorador em tempo real apontando para o primeiro jogo da lista
+        monitorarJogoEmTempoReal();
+    } catch (erro) {
+        console.error("Erro ao processar lista de jogos do Firebase:", erro);
     }
 }
 
-// 2. FUNÇÃO QUE ESCUTA O BANCO EM TEMPO REAL (SEM DAR F5)
-function monitorarJogoTempoReal() {
-    const jogoSelecionado = select.value;
-    if (!jogoSelecionado) return;
+// 2. CONECTA COM A NUVEM E ATUALIZA A TELA DO VISITANTE SEM F5
+function monitorarJogoEmTempoReal() {
+    const jogoSelecionadoId = select.value;
+    if (!jogoSelecionadoId) return;
 
-    // Se o usuário trocar de jogo no select, desliga o monitoramento do jogo anterior
-    if (typeof desativarEscutadorAnterior === "function") {
-        desativarEscutadorAnterior();
+    // Se o usuário mudar o select, remove a escuta do jogo anterior para liberar memória
+    if (typeof removerEscutadorAnterior === "function") {
+        removerEscutadorAnterior();
     }
 
-    const jogoRef = ref(db, `jogos/${jogoSelecionado}`);
+    const jogoReferencia = ref(db, `jogos/${jogoSelecionadoId}`);
     
-    // O 'onValue' fica escutando a nuvem 24/7. Mudou lá, muda aqui na hora!
-    desativarEscutadorAnterior = onValue(jogoRef, (snapshot) => {
-        const jogo = snapshot.val();
-        if (!jogo) return;
+    // Liga o canal de escuta aberta 'onValue'
+    removerEscutadorAnterior = onValue(jogoReferencia, (snapshot) => {
+        const dadosDoJogo = snapshot.val();
+        if (!dadosDoJogo) return;
 
-        // Atualiza os textos e placares na tela do visitante na hora
-        document.getElementById("modalidade").textContent = jogo.modalidade || "Sem modalidade";
-        document.getElementById("timeA").textContent = jogo.timeA || "Time A";
-        document.getElementById("timeB").textContent = jogo.timeB || "Time B";
+        // Renderiza as strings de texto na tela do visitante
+        document.getElementById("modalidade").textContent = dadosDoJogo.modalidade || "Modalidade";
+        document.getElementById("timeA").textContent = dadosDoJogo.timeA || "Time A";
+        document.getElementById("timeB").textContent = dadosDoJogo.timeB || "Time B";
         
-        // Garante que se o placar vier vazio ou indefinido, ele mostre 0
-        document.getElementById("placarA").textContent = juego.placarA !== undefined ? jogo.placarA : 0;
-        document.getElementById("placarB").textContent = juego.placarB !== undefined ? jogo.placarB : 0;
+        // Garante a exibição correta dos valores numéricos dos placares
+        document.getElementById("placarA").textContent = dadosDoJogo.placarA !== undefined ? dadosDoJogo.placarA : 0;
+        document.getElementById("placarB").textContent = dadosDoJogo.placarB !== undefined ? dadosDoJogo.placarB : 0;
         
-        // Atualiza as informações de rodapé do card
-        document.getElementById("status-view").textContent = jogo.status || "---";
-        document.getElementById("periodo-view").textContent = jogo.periodo || "---";
-        document.getElementById("atualizacao-view").textContent = jogo.ultimaAtualizacao || "---";
-    }, (error) => {
-        console.error("Erro no escutador em tempo real:", error);
+        // Renderiza os dados informativos do rodapé do card
+        document.getElementById("status-view").textContent = dadosDoJogo.status || "---";
+        document.getElementById("periodo-view").textContent = dadosDoJogo.periodo || "---";
+        document.getElementById("atualizacao-view").textContent = dadosDoJogo.ultimaAtualizacao || "---";
+    }, (erroConexao) => {
+        console.error("Erro crítico na conexão em tempo real:", erroConexao);
     });
 }
 
-// Escuta a mudança de jogo no Select Box do HTML
-select.addEventListener("change", monitorarJogoTempoReal);
+// Escuta as alterações feitas na caixa de seleção pelo visitante
+select.addEventListener("change", monitorarJogoEmTempoReal);
 
-// Dispara a função inicial ao carregar a página
-carregarListaJogos();
+// Dispara o carregamento do script
+carregarListaDeJogos();
