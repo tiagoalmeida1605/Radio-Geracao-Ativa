@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="./assets/icon.png">
+    <link rel="stylesheet" href="../style/admin.css">
+    <meta name="google-site-verification" content="622T97HgxzHpqRCJmKPhof7Y08l7A_3FmkVEic_pnTw" />
+    <title>Home</title>
+</head>
+<body>
+    <header>
+        <div class="sidebar">
+            <img src="../assets/logo.png" alt="Descrição da imagem">
+            <h2>Rádio Geração Ativa</h2>
+            <button class="menu-btn" id="menuBtn">☰</button>
+            <nav id="nav-Menu">
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../pages/sobre.html">Sobre</a></li>
+                    <li><a href="../pages/desenvolvimento.html">Em desenvolvimento</a></li>
+                    <li><a href="./admin.html" class="active">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <h1>Painel Admin</h1>
+        <div class="admin-card">
+            <label for="jogoSelect">
+                Selecione um jogo
+            </label>
+            <select id="jogoSelect">
+            </select>
+            <hr>
+            <h2 id="modalidade">
+                Carregando...
+            </h2>
+            <div class="placar">
+                <div class="time">
+                    <span id="timeA">
+                        Time A
+                    </span>
+                    <div class="pontos" id="placarA">
+                        0
+                    </div>
+                    <div class="botoes">
+                        <button id="maisA">
+                            +1
+                        </button>
+
+                        <button id="menosA">
+                            -1
+                        </button>
+                    </div>
+                </div>
+                <div class="time">
+                    <span id="timeB">
+                        Time B
+                    </span>
+                    <div class="pontos" id="placarB">
+                        0
+                    </div>
+                    <div class="botoes">
+                        <button id="maisB">
+                            +1
+                        </button>
+
+                        <button id="menosB">
+                            -1
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <label for="status">
+                Status
+            </label>
+            <select id="status">
+                <option value="Ao Vivo">
+                    Ao Vivo
+                </option>
+                <option value="Intervalo">
+                    Intervalo
+                </option>
+                <option value="Finalizado">
+                    Finalizado
+                </option>
+                <option value="WO">
+                    WO
+                </option>
+            </select>
+            <label for="periodo">
+                Período
+            </label>
+            <input
+                type="text"
+                id="periodo"
+                placeholder="Ex: 1º Tempo"
+            >
+            <button class="salvar" id="salvar">
+                Salvar Alterações
+            </button>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
+    </footer>
+    <script src="../script/menu.js"></script>
+    <script src="../script/admin.js"></script>
+</body>
+</html>
