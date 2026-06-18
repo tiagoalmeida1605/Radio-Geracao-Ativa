@@ -29,7 +29,7 @@
         <h1>Painel Admin</h1>
     </header>
     <main>
-<div id="bloqueio-tela">
+        <div id="bloqueio-tela">
             <div class="card-senha">
                 <h2>Acesso Restrito</h2>
                 <form id="form-bloqueio-rga">
@@ -42,15 +42,17 @@
 
         <div id="admin-painel" style="display: none;">
             <div class="admin-card">
-                <label for="jogoSelect">Selecione um jogo</label>
-                <select id="jogoSelect"></select>
+                <label for="jogoSelect">Selecione a Modalidade</label>
+                <select id="jogoSelect">
+                    <option value="">Carregando modalidades...</option>
+                </select>
                 <hr>
                 
-                <h2 id="modalidade">Carregando...</h2>
+                <h2 id="modalidade">Selecione uma modalidade acima</h2>
                 
                 <div class="placar">
                     <div class="time">
-                        <input type="text" id="nomeTimeA" class="input-nome-time" placeholder="Nome do Time A">
+                        <input type="text" id="nomeTimeA" class="input-nome-time" placeholder="Time A">
                         <div class="pontos" id="placarA">0</div>
                         <div class="botoes">
                             <button type="button" id="maisA">+1</button>
@@ -58,7 +60,7 @@
                         </div>
                     </div>
                     <div class="time">
-                        <input type="text" id="nomeTimeB" class="input-nome-time" placeholder="Nome do Time B">
+                        <input type="text" id="nomeTimeB" class="input-nome-time" placeholder="Time B">
                         <div class="pontos" id="placarB">0</div>
                         <div class="botoes">
                             <button type="button" id="maisB">+1</button>
@@ -79,7 +81,9 @@
                 <label for="periodo">Período</label>
                 <input type="text" id="periodo" placeholder="Ex: 1º Tempo">
                 
-                <button type="button" class="salvar" id="salvar">Salvar Alterações</button>
+                <p style="font-size: 0.85rem; color: #888; text-align: center; margin-top: 15px;">
+                    ✨ Tudo que você altera é salvo automaticamente instantaneamente!
+                </p>
             </div>
         </div>
     </main>
