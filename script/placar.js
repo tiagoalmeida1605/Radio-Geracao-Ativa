@@ -18,25 +18,32 @@ const db = getDatabase(app);
 const select = document.getElementById("jogoSelect");
 let escutadorAtivo = null;
 
+// Carrega as modalidades diretamente no select ao abrir a página
 async function carregarModalidadesNoSelectVisitor() {
     try {
         const snapshot = await get(ref(db, "jogos"));
         const jogos = snapshot.val();
+        
         select.innerHTML = '<option value="">Escolha a Modalidade...</option>';
 
-        if (!jogos) return;
+        if (!jogos) {
+            select.innerHTML = '<option value="">Nenhuma modalidade ativa</option>';
+            return;
+        }
 
         for (const id in jogos) {
             const option = document.createElement("option");
             option.value = id;
-            option.textContent = jogos[id].modalidade || "Modalidade Sem Nome";
+            option.textContent = jogos[id].modalidade || "Sem Nome";
             select.appendChild(option);
         }
     } catch (erro) {
-        console.error("Erro ao carregar modalidades do visitante:", erro);
+        console.error("Erro ao buscar modalidades:", erro);
+        select.innerHTML = '<option value="">Erro ao carregar</option>';
     }
 }
 
+// Fica a ouvir as atualizações automáticas do Admin em tempo real
 function monitorarPartidaEmTempoReal() {
     const jogoSelecionadoId = select.value;
 
@@ -45,16 +52,18 @@ function monitorarPartidaEmTempoReal() {
         return;
     }
 
+    // Desliga a escuta anterior para economizar dados
     if (escutadorAtivo) {
         escutadorAtivo(); 
     }
 
     const jogoReferencia = ref(db, `jogos/${jogoSelecionadoId}`);
 
-    escutadorAtivo = onValue(jogoReferencia, (snapshot) => {
+    escutadorAtive = onValue(jogoReferencia, (snapshot) => {
         const dadosDoJogo = snapshot.val();
         if (!dadosDoJogo) return;
 
+        // Atualiza a interface em tempo real usando as IDs oficiais
         document.getElementById("modalidade").textContent = dadosDoJogo.modalidade || "Modalidade";
         document.getElementById("timeA").textContent = dadosDoJogo.timeA || "Time A";
         document.getElementById("timeB").textContent = dadosDoJogo.timeB || "Time B";

@@ -28,20 +28,30 @@
     </header>
     <main>
     <div class="admin-card">
-            <h2 id="modalidade-view">Carregando...</h2>
+            <label for="jogoSelect">Escolha a Modalidade para Acompanhar</label>
+            <select id="jogoSelect">
+                <option value="">A carregar modalidades...</option>
+            </select>
+            <hr>
+            
+            <h2 id="modalidade">Selecione uma modalidade acima</h2>
+            
             <div class="placar">
                 <div class="time">
-                    <span id="nomeTimeA-view">Time A</span>
+                    <span id="timeA">---</span>
                     <div class="pontos" id="placarA">0</div>
                 </div>
                 <div class="time">
-                    <span id="nomeTimeB-view">Time B</span>
+                    <span id="timeB">---</span>
                     <div class="pontos" id="placarB">0</div>
                 </div>
             </div>
+            <hr>
+            
             <div class="info-container">
-                <p>Status: <span id="status-view">---</span></p>
-                <p>Período: <span id="periodo-view">---</span></p>
+                <p><strong>Status:</strong> <span id="status-view">---</span></p>
+                <p><strong>Período:</strong> <span id="periodo-view">---</span></p>
+                <p class="txt-atualizacao">Última atualização: <span id="atualizacao-view">---</span></p>
             </div>
         </div>
     </main>
