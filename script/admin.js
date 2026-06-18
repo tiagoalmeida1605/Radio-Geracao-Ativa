@@ -24,7 +24,7 @@ const select = document.getElementById("jogoSelect");
 // Login por Senha Seguro contra Alunos
 document.getElementById('form-bloqueio-rga').addEventListener('submit', (e) => {
     e.preventDefault();
-    if (document.getElementById('senha-admin').value === "rga2026") {
+    if (document.getElementById('senha-admin').value === "rga26") {
         document.getElementById('bloqueio-tela').style.display = 'none';
         document.getElementById('admin-painel').style.display = 'block';
         liberarConfiguracoesDoPainel();
