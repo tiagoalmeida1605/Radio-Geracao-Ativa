@@ -367,3 +367,25 @@ footer {
 #form-bloqueio-rga button:hover {
     background: #554b35;
 }
+
+.input-nome-time {
+    width: 100%;
+    max-width: 160px;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #4a4231;
+    text-align: center;
+    background-color: #fcf8f0;
+    transition: 0.2s;
+    font-family: inherit;
+}
+
+.input-nome-time:focus {
+    border-color: #332e22;
+    background-color: #fff;
+    outline: none;
+}

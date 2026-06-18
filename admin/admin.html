@@ -29,12 +29,11 @@
         <h1>Painel Admin</h1>
     </header>
     <main>
-        <div id="bloqueio-tela">
+<div id="bloqueio-tela">
             <div class="card-senha">
                 <h2>Acesso Restrito</h2>
                 <form id="form-bloqueio-rga">
                     <input type="text" name="username" autocomplete="username" value="admin_rga" style="display: none;">
-                    
                     <input type="password" id="senha-admin" placeholder="Digite a senha" autocomplete="current-password" required>
                     <button type="submit" id="btn-entrar">Entrar</button>
                 </form>
@@ -51,7 +50,7 @@
                 
                 <div class="placar">
                     <div class="time">
-                        <span id="timeA">Time A</span>
+                        <input type="text" id="nomeTimeA" class="input-nome-time" placeholder="Nome do Time A">
                         <div class="pontos" id="placarA">0</div>
                         <div class="botoes">
                             <button type="button" id="maisA">+1</button>
@@ -59,7 +58,7 @@
                         </div>
                     </div>
                     <div class="time">
-                        <span id="timeB">Time B</span>
+                        <input type="text" id="nomeTimeB" class="input-nome-time" placeholder="Nome do Time B">
                         <div class="pontos" id="placarB">0</div>
                         <div class="botoes">
                             <button type="button" id="maisB">+1</button>
