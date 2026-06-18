@@ -16,104 +16,80 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 let juegoAtual = null;
-let pontosInternosA = 0;
-let pontosInternosB = 0;
+let pontosA = 0;
+let pontosB = 0;
 
 const select = document.getElementById("jogoSelect");
 
+// Lógica de Autenticação
 document.getElementById('form-bloqueio-rga').addEventListener('submit', (e) => {
     e.preventDefault();
-    const senhaDigitada = document.getElementById('senha-admin').value;
-    const senhaCorreta = "rga2026"; 
-
-    if (senhaDigitada === senhaCorreta) {
+    if (document.getElementById('senha-admin').value === "rga2026") {
         document.getElementById('bloqueio-tela').style.display = 'none';
         document.getElementById('admin-painel').style.display = 'block';
-        liberarConfiguracoesDoPainel();
+        carregarJogos();
     } else {
-        alert("Senha incorreta! Acesso negado.");
-        document.getElementById('senha-admin').value = "";
+        alert("Senha incorreta!");
     }
 });
 
-function liberarConfiguracoesDoPainel() {
-    carregarJogos();
+// Função de salvamento no Firebase (O "coração" do autosave)
+async function salvarNoFirebase() {
+    if (!juegoAtual) return;
+    try {
+        const dados = {
+            timeA: document.getElementById("nomeTimeA").value,
+            timeB: document.getElementById("nomeTimeB").value,
+            placarA: pontosA,
+            placarB: pontosB,
+            status: document.getElementById("status").value,
+            periodo: document.getElementById("periodo").value,
+            ultimaAtualizacao: new Date().toLocaleTimeString("pt-BR")
+        };
+        await update(ref(db, `jogos/${juegoAtual}`), dados);
+    } catch (e) {
+        console.error("Erro ao salvar:", e);
+    }
+}
 
-    document.getElementById("maisA").addEventListener("click", () => { pontosInternosA++; atualizarTelaAdmin(); });
-    document.getElementById("menosA").addEventListener("click", () => { if (pontosInternosA > 0) pontosInternosA--; atualizarTelaAdmin(); });
-    document.getElementById("maisB").addEventListener("click", () => { pontosInternosB++; atualizarTelaAdmin(); });
-    document.getElementById("menosB").addEventListener("click", () => { if (pontosInternosB > 0) pontosInternosB--; atualizarTelaAdmin(); });
+// Configurar Botões
+document.getElementById("maisA").addEventListener("click", () => { pontosA++; atualizarUI(); salvarNoFirebase(); });
+document.getElementById("menosA").addEventListener("click", () => { if(pontosA > 0) pontosA--; atualizarUI(); salvarNoFirebase(); });
+document.getElementById("maisB").addEventListener("click", () => { pontosB++; atualizarUI(); salvarNoFirebase(); });
+document.getElementById("menosB").addEventListener("click", () => { if(pontosB > 0) pontosB--; atualizarUI(); salvarNoFirebase(); });
 
-    document.getElementById("salvar").addEventListener("click", async () => {
-        if (!juegoAtual) {
-            alert("Selecione um jogo antes de salvar!");
-            return;
-        }
+// Eventos de salvamento para campos de texto (ao sair da caixa)
+document.getElementById("nomeTimeA").addEventListener("blur", salvarNoFirebase);
+document.getElementById("nomeTimeB").addEventListener("blur", salvarNoFirebase);
+document.getElementById("status").addEventListener("change", salvarNoFirebase);
+document.getElementById("periodo").addEventListener("blur", salvarNoFirebase);
 
-        try {
-            const jogoRef = ref(db, `jogos/${juegoAtual}`);
-            
-            // AGORA SALVAMOS TAMBÉM O NOME DOS TIMES QUE VOCÊ DIGITOU!
-            const dadosParaAtualizar = {
-                timeA: document.getElementById("nomeTimeA").value,
-                timeB: document.getElementById("nomeTimeB").value,
-                placarA: Number(pontosInternosA),
-                placarB: Number(pontosInternosB),
-                status: document.getElementById("status").value,
-                periodo: document.getElementById("periodo").value,
-                ultimaAtualizacao: new Date().toLocaleTimeString("pt-BR")
-            };
-
-            await update(jogoRef, dadosParaAtualizar);
-            alert("Sucesso! Placar e nomes salvos.");
-        } catch (erro) {
-            console.error("ERRO COMPLETO:", erro);
-            alert("Erro ao salvar: " + erro.message);
-        }
-    });
-
-    select.addEventListener("change", carregarJogo);
+function atualizarUI() {
+    document.getElementById("placarA").textContent = pontosA;
+    document.getElementById("placarB").textContent = pontosB;
 }
 
 async function carregarJogos() {
     const snapshot = await get(ref(db, "jogos"));
     const jogos = snapshot.val();
-    select.innerHTML = ""; 
-
+    select.innerHTML = "";
     for (const id in jogos) {
-        const option = document.createElement("option");
-        option.value = id;
-        option.textContent = jogos[id].modalidade + " - " + jogos[id].timeA + " x " + jogos[id].timeB;
-        select.appendChild(option);
+        const opt = document.createElement("option");
+        opt.value = id;
+        opt.textContent = `${jogos[id].modalidade} - ${jogos[id].timeA} vs ${jogos[id].timeB}`;
+        select.appendChild(opt);
     }
-    carregarJogo();
 }
 
-async function carregarJogo() {
+select.addEventListener("change", async () => {
     juegoAtual = select.value;
-    if (!juegoAtual) return;
-
-    const snapshot = await get(ref(db, `jogos/${juegoAtual}`));
-    const jogo = snapshot.val();
-
-    if (jogo) {
-        document.getElementById("modalidade").textContent = jogo.modalidade || "Sem modalidade";
-        
-        // Puxa o nome dos times lá da nuvem e joga na caixa de texto
-        document.getElementById("nomeTimeA").value = jogo.timeA || "Time A";
-        document.getElementById("nomeTimeB").value = jogo.timeB || "Time B";
-        
-        pontosInternosA = jogo.placarA !== undefined ? jogo.placarA : 0;
-        pontosInternosB = jogo.placarB !== undefined ? jogo.placarB : 0;
-
-        atualizarTelaAdmin();
-
-        document.getElementById("status").value = jogo.status || "Ao Vivo";
-        document.getElementById("periodo").value = jogo.periodo || "";
-    }
-}
-
-function atualizarTelaAdmin() {
-    document.getElementById("placarA").textContent = pontosInternosA;
-    document.getElementById("placarB").textContent = pontosInternosB;
-}
+    const snap = await get(ref(db, `jogos/${juegoAtual}`));
+    const j = snap.val();
+    pontosA = j.placarA || 0;
+    pontosB = j.placarB || 0;
+    document.getElementById("nomeTimeA").value = j.timeA || "";
+    document.getElementById("nomeTimeB").value = j.timeB || "";
+    document.getElementById("status").value = j.status || "Ao Vivo";
+    document.getElementById("periodo").value = j.periodo || "";
+    atualizarUI();
+});
