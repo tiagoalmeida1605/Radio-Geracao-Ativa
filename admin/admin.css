@@ -1,0 +1,691 @@
+/* ==========================================================================
+   1. VARIÁVEIS DE DESIGN ORIGINAIS (DO INDEX.CSS)
+   ========================================================================== */
+:root {
+    --bg-creme: #fdfaf4;
+    --azul-marinho: #122232;
+    --amarelo-mostarda: #EFA634;
+    --verde-agua: #359497;
+    --laranja-coral: #DC5C3E;
+    --borda-clara: rgba(18, 34, 50, 0.08);
+    --sombra-leve: 0 4px 15px rgba(18, 34, 50, 0.03);
+    --sombra-hover: 0 10px 25px rgba(18, 34, 50, 0.08);
+    --cor-destaque: var(--amarelo-mostarda);
+}
+
+/* ==========================================================================
+   2. RESETS E CONFIGURAÇÕES GLOBAIS
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', 'Roboto', sans-serif;
+    background-color: var(--bg-creme);
+    color: var(--azul-marinho);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   3. CABEÇALHO ELEGANTE (IDÊNTICO AO INDEX.CSS)
+   ========================================================================== */
+header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.sidebar img {
+    height: 60px;
+    width: auto;
+}
+
+.sidebar h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--azul-marinho);
+    margin-right: auto;
+    margin-left: 15px;
+    letter-spacing: -0.5px;
+}
+
+.sidebar ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 8px 18px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.sidebar a:hover {
+    color: var(--verde-agua);
+    background-color: rgba(53, 148, 151, 0.05);
+}
+
+.sidebar a.active {
+    background-color: var(--laranja-coral);
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--azul-marinho);
+}
+
+/* ==========================================================================
+   4. ESTRUTURA DO CONTEÚDO PRINCIPAL (MAIN)
+   ========================================================================== */
+main {
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 50px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: var(--borda-clara);
+    margin: 30px 0;
+    width: 100%;
+}
+
+/* ==========================================================================
+   5. COMPONENTE DE SEGURANÇA: TELA DE BLOQUEIO
+   ========================================================================== */
+#bloqueio-tela {
+    width: 100%;
+    max-width: 450px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.card-senha {
+    background: #ffffff;
+    border: 1px solid var(--borda-clara);
+    border-top: 4px solid var(--laranja-coral);
+    border-radius: 16px;
+    padding: 35px;
+    box-shadow: var(--sombra-leve);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.card-senha:hover {
+    box-shadow: var(--sombra-hover);
+}
+
+.card-senha h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--azul-marinho);
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.card-senha p.txt-subtitulo {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #555;
+    margin-bottom: 25px;
+}
+
+/* ==========================================================================
+   6. COMPONENTE DO GERENCIADOR: CARD DO PAINEL ADMIN
+   ========================================================================== */
+#conteudo-painel {
+    width: 100%;
+    max-width: 800px;
+}
+
+.barra-conta {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    background: #ffffff;
+    border: 1px solid var(--borda-clara);
+    border-radius: 12px;
+    padding: 14px 22px;
+    margin-bottom: 20px;
+    box-shadow: var(--sombra-leve);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #555;
+}
+
+.btn-sair {
+    flex: none;
+    padding: 8px 20px;
+    font-size: 0.85rem;
+}
+
+.admin-card + .admin-card {
+    margin-top: 25px;
+}
+
+.admin-card {
+    background: #ffffff;
+    border: 1px solid var(--borda-clara);
+    border-top: 4px solid var(--verde-agua);
+    border-radius: 16px;
+    padding: 35px;
+    box-shadow: var(--sombra-leve);
+    transition: all 0.3s ease;
+}
+
+.admin-card:hover {
+    box-shadow: var(--sombra-hover);
+}
+
+.admin-card h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--azul-marinho);
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+}
+
+.admin-card h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--azul-marinho);
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+/* ==========================================================================
+   7. FORMULÁRIOS E ENTRADAS DE DADOS (INPUTS & LABELS)
+   ========================================================================== */
+label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    color: var(--azul-marinho);
+}
+
+/* O select foi incluído aqui para ficar igual aos inputs */
+input[type="text"],
+input[type="password"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--azul-marinho);
+    background-color: var(--bg-creme);
+    border: 1px solid var(--borda-clara);
+    border-radius: 10px;
+    outline: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    appearance: auto; /* Permite que o celular abra o menu nativo de rolagem */
+}
+
+textarea {
+    resize: vertical;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--verde-agua);
+    background-color: #ffffff;
+    box-shadow: var(--sombra-leve);
+}
+
+#form-bloqueio-rga input[type="text"] {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+#form-bloqueio-rga input[type="password"] {
+    text-align: center;
+    letter-spacing: 4px;
+    font-size: 1.2rem;
+    padding-right: 50px;
+    margin-bottom: 8px;
+}
+
+/* ==========================================================================
+   5.1 CAMPO DE SENHA COM BOTÃO "MOSTRAR/OCULTAR"
+   ========================================================================== */
+.campo-senha {
+    position: relative;
+}
+
+.btn-toggle-senha {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.15rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-toggle-senha:hover {
+    background-color: rgba(18, 34, 50, 0.06);
+}
+
+/* ==========================================================================
+   5.2 MENSAGEM DE ERRO DO LOGIN
+   ========================================================================== */
+.erro-login {
+    display: none;
+    color: var(--laranja-coral);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 18px;
+}
+
+.erro-login.mostrar {
+    display: block;
+}
+
+/* ==========================================================================
+   5.3 ANIMAÇÕES DE FEEDBACK DA TELA DE LOGIN
+   ========================================================================== */
+@keyframes fade-in-up-login {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-senha {
+    animation: fade-in-up-login 0.4s ease;
+}
+
+@keyframes shake-card-senha {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+}
+
+.card-senha.erro {
+    animation: shake-card-senha 0.5s ease;
+    border-top-color: var(--laranja-coral);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card-senha,
+    .card-senha.erro {
+        animation: none;
+    }
+}
+
+/* ==========================================================================
+   8. BOTÕES DO PAINEL (BASEADOS NO ESTILO DO .MORE DO INDEX)
+   ========================================================================== */
+.botoes-playlist {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-primary {
+    flex: 2;
+    background-color: var(--amarelo-mostarda);
+    color: var(--azul-marinho);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 30px;
+    font-weight: 800;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    box-shadow: var(--sombra-leve);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--azul-marinho);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-hover);
+}
+
+.btn-secondary {
+    flex: 1;
+    background-color: #ffffff;
+    color: #555;
+    border: 1px solid var(--borda-clara);
+    padding: 14px 20px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    box-shadow: var(--sombra-leve);
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--laranja-coral);
+    color: #ffffff;
+    border-color: var(--laranja-coral);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-hover);
+}
+
+/* ==========================================================================
+   9. GRID DE PLAYLISTS EXIBIDAS (ESTILO EQUIPE/PROGRAMAS DO INDEX)
+   ========================================================================== */
+.playlists-admin-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 15px;
+}
+
+.item-playlist-admin {
+    background: #ffffff;
+    border: 1px solid var(--borda-clara);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    box-shadow: var(--sombra-leve);
+    transition: all 0.3s ease;
+}
+
+.item-playlist-admin:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-hover);
+}
+
+.item-playlist-admin strong {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--azul-marinho);
+}
+
+.item-playlist-admin p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
+.item-playlist-admin small {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 6px;
+    font-family: monospace;
+}
+
+/* ==========================================================================
+   10. BOTÕES DE AÇÃO (EDITAR / REMOVER)
+   ========================================================================== */
+.botoes-acoes {
+    display: flex;
+    gap: 10px;
+}
+
+.botoes-acoes button {
+    background: #ffffff;
+    border: 1px solid var(--borda-clara);
+    padding: 10px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.85rem;
+    font-family: 'Montserrat', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #555;
+    box-shadow: var(--sombra-leve);
+    transition: all 0.2s ease;
+}
+
+.botoes-acoes .btn-edit:hover {
+    color: var(--verde-agua);
+    background-color: rgba(53, 148, 151, 0.05);
+    border-color: var(--verde-agua);
+}
+
+.botoes-acoes .btn-delete:hover {
+    color: var(--laranja-coral);
+    background-color: rgba(220, 92, 62, 0.05);
+    border-color: var(--laranja-coral);
+}
+
+.txt-ajuda {
+    font-size: 0.95rem;
+    color: #777;
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* ==========================================================================
+   11. RODAPÉ (IDÊNTICO AO INDEX.CSS)
+   ========================================================================== */
+footer {
+    background: var(--azul-marinho);
+    color: #CCC;
+    text-align: center;
+    padding: 25px;
+    margin-top: auto;
+    font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   12. REGRAS DE MEDIA QUERIES (RESPONSIVIDADE DO INDEX.CSS)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .sidebar h2 {
+        display: none;
+    }
+
+    .menu-btn {
+        display: block;
+    }
+
+    #nav-Menu {
+        display: none;
+        width: 100%;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--borda-clara);
+    }
+
+    #nav-Menu.active {
+        display: block;
+    }
+
+    .sidebar ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .sidebar a {
+        display: block;
+        text-align: center;
+    }
+
+    main {
+        padding: 30px 15px;
+    }
+
+    .botoes-playlist {
+        flex-direction: column;
+    }
+
+    .item-playlist-admin {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .botoes-acoes {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 10px;
+    }
+
+    .barra-conta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .btn-sair {
+        width: 100%;
+    }
+}
+
+.sidebar a.active {
+    background-color: var(--cor-destaque);
+    color: #ffffff !important;
+}
+.btn-primary { background-color: var(--cor-destaque); }
+.admin-card { border-top-color: var(--cor-destaque); }
+input:focus, select:focus { border-color: var(--cor-destaque); outline: none; }
+
+/* ==========================================================================
+   SCROLL SUAVE + SCROLLBAR PERSONALIZADA
+   ========================================================================== */
+html { scroll-behavior: smooth; }
+html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--cor-destaque) var(--bg-creme);
+}
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track {
+    background: var(--bg-creme);
+    border-radius: 20px;
+}
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--cor-destaque), var(--azul-marinho));
+    border-radius: 20px;
+    border: 2px solid var(--bg-creme);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--azul-marinho), var(--cor-destaque));
+    box-shadow: 0 0 6px rgba(18, 34, 50, 0.3);
+}
+
+/* ==========================================================================
+   MENU MOBILE — SLIDE-OUT DRAWER + OVERLAY
+   ========================================================================== */
+body.menu-aberto { overflow: hidden; }
+.menu-overlay { display: none; }
+
+@media (max-width: 768px) {
+    .sidebar h2 { display: none; }
+    .menu-btn {
+        display: block !important;
+        z-index: 1002;
+        position: relative;
+        background: transparent;
+        border: none;
+        font-size: 1.8rem;
+        color: var(--azul-marinho);
+    }
+    #nav-Menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: min(78vw, 320px);
+        background-color: #ffffff;
+        box-shadow: -8px 0 30px rgba(18, 34, 50, 0.15);
+        z-index: 1001;
+        transform: translateX(100%);
+        transition: transform 0.35s ease;
+        display: flex !important;
+        align-items: flex-start;
+        padding: 0;
+        margin: 0;
+        border-top: none;
+    }
+    #nav-Menu.active { transform: translateX(0); }
+    .sidebar ul {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+        padding: 90px 20px 30px;
+    }
+    .sidebar a {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 16px 20px;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        text-decoration: none;
+        color: var(--azul-marinho);
+    }
+    .sidebar a:active {
+        background-color: var(--cor-destaque);
+        color: #ffffff !important;
+        transform: scale(0.97);
+    }
+    .menu-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(18, 34, 50, 0.4);
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.35s ease;
+    }
+    .menu-overlay.active { opacity: 1; pointer-events: auto; }
+}

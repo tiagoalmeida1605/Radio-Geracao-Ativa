@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../assets/icon.png">
+    <link rel="stylesheet" href="../style/playlist.css">
+    <title>Playlists - Rádio Geração Ativa</title>
+</head>
+<body>
+    <header>
+        <div class="sidebar">
+            <img src="../assets/logo.png" alt="Logo Rádio Geração Ativa">
+            <h2>Rádio Geração Ativa</h2>
+            <button class="menu-btn" id="menuBtn">☰</button>
+            <nav id="nav-Menu">
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="./sobre.html">Sobre</a></li>
+                    <li><a href="./playlist.html" class="active">Playlists</a></li>
+                    <li><a href="./publi.html">Publicações</a></li>
+                </ul>
+            </nav>
+            <div class="menu-overlay" id="menuOverlay"></div>
+        </div>
+    </header>
+<main>
+    <section class="playlists-intro">
+        <h1>Playlists</h1>
+        <p class="description">Nesta página você encontra todos os programas, notícias, entrevistas e coberturas produzidos pela Rádio Geração Ativa. As playlists são atualizadas automaticamente conforme novos vídeos são publicados.</p>
+    </section>
+
+    <section class="playlists-grid" id="grid-dinamica">
+        <p style="text-align: center; width: 100%; color: #888;">Carregando as playlists da rádio...</p>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
+</footer>
+    <script src="../script/menu.js"></script>
+    <script type="module" src="../script/playlist.js"></script>
+</body>
+</html>

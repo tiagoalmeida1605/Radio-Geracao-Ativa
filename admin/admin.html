@@ -5,94 +5,151 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="../assets/icon.png">
-    <link rel="stylesheet" href="../style/admin.css">
-    <meta name="google-site-verification" content="622T97HgxzHpqRCJmKPhof7Y08l7A_3FmkVEic_pnTw" />
-    <title>Admin</title>
+    <link rel="stylesheet" href="./admin.css">
+    <title>Admin - Rádio Geração Ativa</title>
 </head>
 <body>
-    <header>
-        <div class="sidebar">
-            <img src="../assets/logo.png" alt="Descrição da imagem">
-            <h2>Rádio Geração Ativa</h2>
-            <button class="menu-btn" id="menuBtn">☰</button>
-            <nav id="nav-Menu">
-                <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../pages/sobre.html">Sobre</a></li>
-                    <li><a href="../pages/placar.html">Placar</a></li>
-                    <li><a href="./admin.html" class="active">Admin</a></li>
-                </ul>
-            </nav>
+<header>
+    <div class="sidebar">
+        <img src="../assets/logo.png" alt="Logo Rádio Geração Ativa">
+        <h2>Rádio Geração Ativa</h2>
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <nav id="nav-Menu">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../pages/sobre.html">Sobre</a></li>
+                <li><a href="../pages/playlist.html">Playlists</a></li>
+                <li><a href="../pages/publi.html">Publicações</a></li>
+                <li><a href="./admin.html" class="active">Admin</a></li>
+            </ul>
+        </nav>
+        <div class="menu-overlay" id="menuOverlay"></div>
+    </div>
+</header>
+
+<main>
+    <div id="bloqueio-tela">
+        <div class="card-senha" id="cardSenha">
+            <h2>🔒 Painel Restrito</h2>
+            <p class="txt-subtitulo">Insira as credenciais da rádio para gerenciar as playlists expostas no site.</p>
+            <form id="form-bloqueio-rga">
+                <input type="text" id="input-usuario-rga" placeholder="Usuário" required autocomplete="username">
+
+                <div class="campo-senha">
+                    <input type="password" id="input-senha-rga" placeholder="Senha do Administrador" required autocomplete="current-password">
+                    <button type="button" class="btn-toggle-senha" id="btnToggleSenha" aria-label="Mostrar senha">👁️</button>
+                </div>
+
+                <p class="erro-login" id="erroLogin">❌ Usuário ou senha incorretos.</p>
+
+                <button type="submit" class="btn-primary">Desbloquear Painel</button>
+            </form>
         </div>
-        <h1>Painel Admin</h1>
-    </header>
-    <main>
-        <div id="bloqueio-tela">
-            <div class="card-senha">
-                <h2>Acesso Restrito</h2>
-                <form id="form-bloqueio-rga">
-                    <input type="text" name="username" autocomplete="username" value="admin_rga" style="display: none;">
-                    <input type="password" id="senha-admin" placeholder="Digite a senha" autocomplete="current-password" required>
-                    <button type="submit" id="btn-entrar">Entrar</button>
-                </form>
+    </div>
+
+    <div id="conteudo-painel" style="display: none;">
+        <div class="barra-conta" id="barraConta">
+            <span id="textoContaLogada">Logado como: —</span>
+            <button type="button" id="btnSair" class="btn-secondary btn-sair">Sair</button>
+        </div>
+
+        <div class="admin-card" id="secao-playlists" data-papel="admin,playlist">
+            <h2>📹 Gerenciar Playlists</h2>
+            <p class="txt-subtitulo" style="margin-bottom: 20px;">Adicione, modifique ou exclua os cartões de transmissão de vídeos do YouTube.</p>
+            <hr class="divider">
+
+            <form id="form-playlist">
+                <input type="hidden" id="playlist-id">
+
+                <label for="playlist-icone">Ícone de Exibição</label>
+                <select id="playlist-icone" required>
+                    <option value="📹">📹 Câmera de Vídeo</option>
+                    <option value="📻">📻 Rádio Clássico</option>
+                    <option value="🎙️">🎙️ Microfone Podcast</option>
+                    <option value="🎧">🎧 Fones de Ouvido</option>
+                    <option value="🎤">🎤 Microfone Palco</option>
+                    <option value="🎬">🎬 Claquete de Cinema</option>
+                    <option value="📰">📰 Jornal / Notícias</option>
+                    <option value="⚽">⚽ Futebol / Esportes</option>
+                    <option value="🏆">🏆 Troféu / Campeonatos</option>
+                    <option value="🎮">🎮 Videogame / E-sports</option>
+                    <option value="🎶">🎶 Música / Cultura</option>
+                    <option value="🧠">🧠 Conhecimento / Aulas</option>
+                    <option value="🔥">🔥 Em Alta / Destaques</option>
+                    <option value="😂">😂 Humor / Entretenimento</option>
+                    <option value="🔔">🔔 Avisos / Importante</option>
+                </select>
+
+                <label for="playlist-titulo">Título da Playlist</label>
+                <input type="text" id="playlist-titulo" placeholder="Ex: Programas e Podcasts" required>
+
+                <label for="playlist-desc">Descrição Breve</label>
+                <input type="text" id="playlist-desc" placeholder="Ex: Quadros gravados pelos alunos no estúdio..." required>
+
+                <label for="playlist-url">Link ou ID da Playlist do YouTube</label>
+                <input type="text" id="playlist-url" placeholder="Ex: PLWKjhJtqVAbm04DK8TSUCRheRjW..." required>
+
+                <div class="botoes-playlist">
+                    <button type="submit" id="btn-salvar-playlist" class="btn-primary">Salvar Playlist</button>
+                    <button type="button" id="btn-limpar-form" class="btn-secondary">Limpar Form</button>
+                </div>
+            </form>
+
+            <hr class="divider">
+            <h3>Playlists Ativas</h3>
+            <div id="lista-playlists-admin" class="playlists-admin-grid">
             </div>
         </div>
 
-        <div id="admin-painel" style="display: none;">
-            <div class="admin-card">
-                <label for="jogoSelect">Selecione a Modalidade</label>
-                <select id="jogoSelect">
-                    <option value="">Carregando modalidades...</option>
-                </select>
-                <hr>
-                
-                <h2 id="modalidade">Selecione uma modalidade acima</h2>
-                
-                <div class="placar">
-                    <div class="time">
-                        <input type="text" id="nomeTimeA" class="input-nome-time" placeholder="Time A">
-                        <div class="pontos" id="placarA">0</div>
-                        <div class="botoes">
-                            <button type="button" id="maisA">+1</button>
-                            <button type="button" id="menosA">-1</button>
-                        </div>
-                    </div>
-                    <div class="time">
-                        <input type="text" id="nomeTimeB" class="input-nome-time" placeholder="Time B">
-                        <div class="pontos" id="placarB">0</div>
-                        <div class="botoes">
-                            <button type="button" id="maisB">+1</button>
-                            <button type="button" id="menosB">-1</button>
-                        </div>
-                    </div>
+        <div class="admin-card" id="secao-noticias" data-papel="admin,publicador">
+            <h2>📰 Gerenciar Notícias</h2>
+            <p class="txt-subtitulo" style="margin-bottom: 20px;">Publique, edite ou remova as notícias exibidas no site.</p>
+            <hr class="divider">
+
+            <form id="form-noticia">
+                <input type="hidden" id="noticia-id">
+
+                <label for="noticia-titulo">Título da Notícia</label>
+                <input type="text" id="noticia-titulo" placeholder="Ex: Rádio Geração Ativa estreia novo programa" required>
+
+                <label for="noticia-resumo">Resumo Breve</label>
+                <input type="text" id="noticia-resumo" placeholder="Ex: Confira as novidades da nossa grade de programação..." required>
+
+                <label for="noticia-conteudo">Conteúdo Completo</label>
+                <textarea id="noticia-conteudo" rows="6" placeholder="Texto completo da notícia..." required></textarea>
+
+                <label for="noticia-imagem">Imagem da Notícia (Upload de arquivo)</label>
+                <input type="file" id="noticia-imagem" accept="image/*">
+
+                <div id="preview-imagem-admin" style="margin-top: 12px; display: none; background: #f5f5f5; padding: 10px; border-radius: 8px;">
+                    <span style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 5px;">Imagem atual salva na nuvem:</span>
+                    <img id="img-preview-noticia" src="" alt="Preview da imagem" style="max-width: 160px; height: auto; border-radius: 6px; display: block;">
                 </div>
-                <hr>
-                
-                <label for="status">Status</label>
-                <select id="status">
-                    <option value="Ao Vivo">Ao Vivo</option>
-                    <option value="Intervalo">Intervalo</option>
-                    <option value="Finalizado">Finalizado</option>
-                    <option value="WO">WO</option>
-                </select>
-                
-                <label for="periodo">Período</label>
-                <input type="text" id="periodo" placeholder="Ex: 1º Tempo">
-                
-                <p style="font-size: 0.85rem; color: #888; text-align: center; margin-top: 15px;">
-                    Tudo que você altera é salvo automaticamente instantaneamente!
-                </p>
+
+                <label for="noticia-data" style="margin-top: 15px; display: block;">Data</label>
+                <input type="date" id="noticia-data" required>
+
+                <div class="botoes-playlist">
+                    <button type="submit" id="btn-salvar-noticia" class="btn-primary">Publicar Notícia</button>
+                    <button type="button" id="btn-limpar-form-noticia" class="btn-secondary">Limpar Form</button>
+                </div>
+            </form>
+
+            <hr class="divider">
+            <h3>Notícias Publicadas</h3>
+            <div id="lista-noticias-admin" class="playlists-admin-grid">
             </div>
         </div>
-    </main>
-    <footer>
-        <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
-    </footer>
     </div>
-    <script src="../script/menu.js"></script>
-    <script type="module" src="../script/admin.js"></script>
-    <script type="module" src="../script/firebase-init.js"></script>
+</main>
+
+<footer>
+    <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
+</footer>
+
+<script src="../script/menu.js"></script>
+<script type="module" src="./admin.js"></script>
 </body>
 </html>
