@@ -58,7 +58,7 @@ body.maintenance-active .site-shell {
   text-align: center;
   outline: none;
   animation: maintenance-card-in 0.35s ease both;
-  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .maintenance-icon {
@@ -72,7 +72,6 @@ body.maintenance-active .site-shell {
   box-shadow: 0 14px 28px rgba(220, 92, 62, 0.24);
   font-size: 2rem;
   line-height: 1;
-  flex-shrink: 0;
   animation: maintenance-icon-pulse 2.4s ease-in-out infinite;
 }
 
@@ -179,7 +178,6 @@ body.maintenance-active .site-shell {
     max-height: calc(100dvh - 32px);
     padding: 28px 18px;
     border-radius: 14px;
-    width: min(100%, calc(100% - 16px));
   }
 
   .maintenance-icon {
