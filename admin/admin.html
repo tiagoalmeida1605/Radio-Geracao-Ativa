@@ -55,6 +55,35 @@
             <button type="button" id="btnSair" class="btn-secondary btn-sair">Sair</button>
         </div>
 
+        <div class="admin-card maintenance-admin-card" id="secao-manutencao" data-papel="admin">
+            <h2>🛠️ Modo de manutenção</h2>
+            <p class="txt-subtitulo" style="margin-bottom: 20px;">Quando ativado, visitantes verão a tela de manutenção. Administradores autenticados continuarão tendo acesso ao site.</p>
+            <hr class="divider">
+
+            <form id="form-manutencao">
+                <div class="maintenance-admin-control">
+                    <div>
+                        <span class="maintenance-admin-label">Status atual</span>
+                        <strong id="status-manutencao" class="maintenance-admin-status">Carregando...</strong>
+                    </div>
+
+                    <label class="switch-manutencao" for="toggle-manutencao">
+                        <input type="checkbox" id="toggle-manutencao">
+                        <span aria-hidden="true"></span>
+                        <span class="sr-only">Ativar modo de manutenção</span>
+                    </label>
+                </div>
+
+                <p class="maintenance-admin-help">Use esta opção apenas durante ajustes temporários no site público da Rádio Geração Ativa.</p>
+
+                <div class="botoes-playlist">
+                    <button type="submit" id="btn-salvar-manutencao" class="btn-primary">Salvar configuração</button>
+                </div>
+
+                <p class="maintenance-admin-feedback" id="feedback-manutencao" aria-live="polite"></p>
+            </form>
+        </div>
+
         <div class="admin-card" id="secao-playlists" data-papel="admin,playlist">
             <h2>📹 Gerenciar Playlists</h2>
             <p class="txt-subtitulo" style="margin-bottom: 20px;">Adicione, modifique ou exclua os cartões de transmissão de vídeos do YouTube.</p>

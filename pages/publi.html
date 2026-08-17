@@ -9,53 +9,57 @@
     <link rel="icon" type="image/png" href="../assets/icon.png">
 
     <link rel="stylesheet" href="../style/publi.css">
+    <link rel="stylesheet" href="../style/maintenance.css">
 
     <title>Publicações - Rádio Geração Ativa</title>
 </head>
 <body>
-<header>
-    <div class="sidebar">
-        <img src="../assets/logo.png" alt="Logo Rádio Geração Ativa">
-        <h2>Rádio Geração Ativa</h2>
-        <button class="menu-btn" id="menuBtn">☰</button>
-        <nav id="nav-Menu">
-            <ul>
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="./sobre.html">Sobre</a></li>
-                <li><a href="./playlist.html">Playlists</a></li>
-                <li><a href="./publi.html" class="active">Publicações</a></li>
-            </ul>
-        </nav>
-        <div class="menu-overlay" id="menuOverlay"></div>
+<div class="site-shell" id="siteShell">
+    <header>
+        <div class="sidebar">
+            <img src="../assets/logo.png" alt="Logo Rádio Geração Ativa">
+            <h2>Rádio Geração Ativa</h2>
+            <button class="menu-btn" id="menuBtn">☰</button>
+            <nav id="nav-Menu">
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="./sobre.html">Sobre</a></li>
+                    <li><a href="./playlist.html">Playlists</a></li>
+                    <li><a href="./publi.html" class="active">Publicações</a></li>
+                </ul>
+            </nav>
+            <div class="menu-overlay" id="menuOverlay"></div>
+        </div>
+    </header>
+
+    <main>
+        <section class="noticias-intro">
+            <h1>Últimas Notícias</h1>
+            <p class="description">Fique por dentro de todos os avisos, bastidores e novidades do UNASP trazidas pela equipe da Rádio Geração Ativa.</p>
+        </section>
+
+        <section class="noticias-grid" id="grid-noticias">
+            <p style="text-align: center; width: 100%; color: #888;">Carregando as publicações...</p>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="noticiaModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModal">&times;</button>
+            <img id="modalImg" src="" alt="Imagem da notícia" style="display: none;">
+            <span class="modal-data" id="modalData"></span>
+            <h2 id="modalTitulo"></h2>
+            <div class="modal-texto" id="modalTexto"></div>
+        </div>
     </div>
-</header>
 
-<main>
-    <section class="noticias-intro">
-        <h1>Últimas Notícias</h1>
-        <p class="description">Fique por dentro de todos os avisos, bastidores e novidades do UNASP trazidas pela equipe da Rádio Geração Ativa.</p>
-    </section>
-
-    <section class="noticias-grid" id="grid-noticias">
-        <p style="text-align: center; width: 100%; color: #888;">Carregando as publicações...</p>
-    </section>
-</main>
-
-<div class="modal-overlay" id="noticiaModal">
-    <div class="modal-content">
-        <button class="close-btn" id="closeModal">&times;</button>
-        <img id="modalImg" src="" alt="Imagem da notícia" style="display: none;">
-        <span class="modal-data" id="modalData"></span>
-        <h2 id="modalTitulo"></h2>
-        <div class="modal-texto" id="modalTexto"></div>
-    </div>
+    <footer>
+        <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
+    </footer>
 </div>
-
-<footer>
-    <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
-</footer>
 
 <script src="../script/menu.js"></script>
 <script type="module" src="../script/publi.js"></script>
+<script type="module" src="../script/maintenance.js"></script>
 </body>
 </html>

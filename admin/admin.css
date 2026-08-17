@@ -231,6 +231,139 @@ main {
 }
 
 /* ==========================================================================
+   6.1 CONFIGURAÇÃO DO MODO DE MANUTENÇÃO
+   ========================================================================== */
+.maintenance-admin-card {
+    border-top-color: var(--laranja-coral);
+}
+
+.maintenance-admin-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+    background: var(--bg-creme);
+    border: 1px solid var(--borda-clara);
+    border-radius: 14px;
+}
+
+.maintenance-admin-label {
+    display: block;
+    color: #666;
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.maintenance-admin-status {
+    display: inline-flex;
+    align-items: center;
+    color: var(--azul-marinho);
+    font-size: 1.35rem;
+    letter-spacing: 0;
+}
+
+.maintenance-admin-status::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background: var(--verde-agua);
+}
+
+.maintenance-admin-status.ativo::before {
+    background: var(--laranja-coral);
+}
+
+.switch-manutencao {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.switch-manutencao input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+.switch-manutencao span[aria-hidden="true"] {
+    width: 68px;
+    height: 36px;
+    position: relative;
+    display: inline-block;
+    border-radius: 999px;
+    background: #d9dedf;
+    box-shadow: inset 0 0 0 1px rgba(18, 34, 50, 0.08);
+    transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.switch-manutencao span[aria-hidden="true"]::after {
+    content: "";
+    width: 28px;
+    height: 28px;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(18, 34, 50, 0.18);
+    transition: transform 0.25s ease;
+}
+
+.switch-manutencao input:checked + span[aria-hidden="true"] {
+    background: var(--laranja-coral);
+    box-shadow: inset 0 0 0 1px rgba(220, 92, 62, 0.18);
+}
+
+.switch-manutencao input:checked + span[aria-hidden="true"]::after {
+    transform: translateX(32px);
+}
+
+.switch-manutencao input:focus-visible + span[aria-hidden="true"] {
+    outline: 3px solid var(--verde-agua);
+    outline-offset: 3px;
+}
+
+.sr-only {
+    width: 1px;
+    height: 1px;
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+.maintenance-admin-help {
+    margin-top: 16px;
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.maintenance-admin-feedback {
+    min-height: 1.4em;
+    margin-top: 14px;
+    color: var(--verde-agua);
+    font-size: 0.92rem;
+    font-weight: 800;
+}
+
+.btn-primary:disabled {
+    cursor: wait;
+    opacity: 0.65;
+    transform: none;
+}
+
+/* ==========================================================================
    7. FORMULÁRIOS E ENTRADAS DE DADOS (INPUTS & LABELS)
    ========================================================================== */
 label {
@@ -587,6 +720,11 @@ footer {
     .btn-sair {
         width: 100%;
     }
+
+    .maintenance-admin-control {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 .sidebar a.active {
@@ -595,6 +733,7 @@ footer {
 }
 .btn-primary { background-color: var(--cor-destaque); }
 .admin-card { border-top-color: var(--cor-destaque); }
+.maintenance-admin-card { border-top-color: var(--laranja-coral); }
 input:focus, select:focus { border-color: var(--cor-destaque); outline: none; }
 
 /* ==========================================================================

@@ -1,5 +1,13 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 import { getDatabase, ref, onValue, set, push, remove, get } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+import {
+    CONTAS,
+    NOMES_PAPEL,
+    criptografarSenha,
+    encerrarContaAutenticada,
+    obterContaAutenticada,
+    salvarContaAutenticada
+} from "../script/admin-auth.js";
 
 // 1. CONFIGURAÇÃO DO FIREBASE (Configurado Corretamente)
 const firebaseConfig = {
@@ -17,26 +25,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-// 🔑 CONTAS DO PAINEL
-const CONTAS = [
-    { papel: "admin",      hash: "f374d04f033f52346e2153151af9cfe761fab6959bbd92e54f0a37738d8963aa" },
-    { papel: "publicador", hash: "df396909399def576a471a3402484be047541c590ea72c6eced89aa6a65b3f6c" },
-    { papel: "playlist",   hash: "4f1a2dc11ff8f84b5e936f345665580ba9317a96eb3e414e8fdf058d0151308d" }
-];
-
-const NOMES_PAPEL = {
-    admin: "Administrador",
-    publicador: "Publicador de Notícias",
-    playlist: "Gerente de Playlists"
-};
-
-async function criptografarSenha(texto) {
-    const msgBuffer = new TextEncoder().encode(texto);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
 const telaBloqueio = document.getElementById("bloqueio-tela");
 const conteudoPainel = document.getElementById("conteudo-painel");
 const formBloqueio = document.getElementById("form-bloqueio-rga");
@@ -48,9 +36,7 @@ const btnToggleSenha = document.getElementById("btnToggleSenha");
 const textoContaLogada = document.getElementById("textoContaLogada");
 const btnSair = document.getElementById("btnSair");
 
-const hashSalvo = sessionStorage.getItem("rga_autenticado");
-const papelSalvo = sessionStorage.getItem("rga_papel");
-const contaSalva = CONTAS.find(c => c.hash === hashSalvo && c.papel === papelSalvo);
+const contaSalva = obterContaAutenticada();
 if (contaSalva) {
     liberarPainel(contaSalva.papel);
 }
@@ -73,8 +59,7 @@ formBloqueio.addEventListener("submit", async (e) => {
     const contaEncontrada = CONTAS.find(c => c.hash === hashDigitado);
 
     if (contaEncontrada) {
-        sessionStorage.setItem("rga_autenticado", contaEncontrada.hash);
-        sessionStorage.setItem("rga_papel", contaEncontrada.papel);
+        salvarContaAutenticada(contaEncontrada);
         erroLogin.classList.remove("mostrar");
         liberarPainel(contaEncontrada.papel);
     } else {
@@ -83,8 +68,7 @@ formBloqueio.addEventListener("submit", async (e) => {
 });
 
 btnSair.addEventListener("click", () => {
-    sessionStorage.removeItem("rga_autenticado");
-    sessionStorage.removeItem("rga_papel");
+    encerrarContaAutenticada();
     location.reload();
 });
 
@@ -112,12 +96,66 @@ function liberarPainel(papel) {
     aplicarPermissoes(papel);
     textoContaLogada.textContent = `Logado como: ${NOMES_PAPEL[papel] || papel}`;
 
+    if (papel === "admin") {
+        inicializarGerenciadorManutencao();
+    }
     if (papel === "admin" || papel === "playlist") {
         inicializarGerenciadorPlaylists();
     }
     if (papel === "admin" || papel === "publicador") {
         inicializarGerenciadorNoticias();
     }
+}
+
+/* ==========================================================================
+   CONFIGURAÇÃO DO MODO DE MANUTENÇÃO
+   ========================================================================== */
+function inicializarGerenciadorManutencao() {
+    const toggleManutencao = document.getElementById("toggle-manutencao");
+    const statusManutencao = document.getElementById("status-manutencao");
+    const formManutencao = document.getElementById("form-manutencao");
+    const feedbackManutencao = document.getElementById("feedback-manutencao");
+    const btnSalvar = document.getElementById("btn-salvar-manutencao");
+
+    if (!toggleManutencao || !statusManutencao || !formManutencao || !feedbackManutencao || !btnSalvar) {
+        return;
+    }
+
+    const manutencaoRef = ref(database, "configuracoes/manutencao");
+
+    onValue(manutencaoRef, (snapshot) => {
+        const configuracao = snapshot.val();
+        const manutencaoAtiva = Boolean(configuracao?.ativo);
+
+        toggleManutencao.checked = manutencaoAtiva;
+        statusManutencao.textContent = manutencaoAtiva ? "ATIVADO" : "DESATIVADO";
+        statusManutencao.classList.toggle("ativo", manutencaoAtiva);
+    });
+
+    formManutencao.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        btnSalvar.disabled = true;
+        feedbackManutencao.textContent = "Salvando configuração...";
+
+        const novoEstado = {
+            ativo: toggleManutencao.checked,
+            atualizadoEm: new Date().toISOString()
+        };
+
+        set(manutencaoRef, novoEstado)
+            .then(() => {
+                feedbackManutencao.textContent = toggleManutencao.checked
+                    ? "Modo de manutenção ativado para visitantes."
+                    : "Modo de manutenção desativado.";
+            })
+            .catch(err => {
+                feedbackManutencao.textContent = "Erro ao salvar: " + err.message;
+            })
+            .finally(() => {
+                btnSalvar.disabled = false;
+            });
+    });
 }
 
 /* ==========================================================================

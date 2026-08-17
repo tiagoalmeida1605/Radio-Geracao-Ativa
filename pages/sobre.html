@@ -9,26 +9,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/png" href="../assets/icon.png">
     <link rel="stylesheet" href="../style/index.css">
+    <link rel="stylesheet" href="../style/maintenance.css">
     <title>Sobre</title>
 </head>
 <body class="pagina-sobre">
-    <header>
-        <div class="sidebar">
-            <img src="../assets/logo.png" alt="Descrição da imagem">
-            <h2>Rádio Geração Ativa</h2>
-            <button class="menu-btn" id="menuBtn">☰</button>
-            <nav id="nav-Menu">
-                <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="./sobre.html" class="active">Sobre</a></li>
-                    <li><a href="./playlist.html">Playlists</a></li>
-                    <li><a href="./publi.html">Publicações</a></li>
-                </ul>
-            </nav>
-            <div class="menu-overlay" id="menuOverlay"></div>
-        </div>
-    </header>
-    <main class="sobre-container">
+    <div class="site-shell" id="siteShell">
+        <header>
+            <div class="sidebar">
+                <img src="../assets/logo.png" alt="Descrição da imagem">
+                <h2>Rádio Geração Ativa</h2>
+                <button class="menu-btn" id="menuBtn">☰</button>
+                <nav id="nav-Menu">
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="./sobre.html" class="active">Sobre</a></li>
+                        <li><a href="./playlist.html">Playlists</a></li>
+                        <li><a href="./publi.html">Publicações</a></li>
+                    </ul>
+                </nav>
+                <div class="menu-overlay" id="menuOverlay"></div>
+            </div>
+        </header>
+        <main class="sobre-container">
         <section class="intro-section">
             <h1>Sobre a Rádio</h1>
             <p class="subtitle">Comunicação, Protagonismo e Valores</p>
@@ -167,10 +169,12 @@
                     <i class="fa-brands fa-youtube"></i> YouTube</a></li>
             </ul>
         </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
-    </footer>
+        </main>
+        <footer>
+            <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
+        </footer>
+    </div>
     <script src="../script/menu.js"></script>
+    <script type="module" src="../script/maintenance.js"></script>
 </body>
 </html>
