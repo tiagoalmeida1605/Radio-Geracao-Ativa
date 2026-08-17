@@ -22,7 +22,7 @@ body.maintenance-active .site-shell {
   z-index: 2147483647;
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: clamp(12px, 3vw, 20px);
   background: rgba(18, 34, 50, 0.78);
   overflow-y: auto;
   overflow-x: hidden;
@@ -43,9 +43,7 @@ body.maintenance-active .site-shell {
 
 .maintenance-card {
   width: min(100%, 540px);
-  max-height: calc(100dvh - 40px);
-  min-height: auto;
-  overflow-y: auto;
+  height: auto;
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(253, 250, 244, 0.96)),
     #ffffff;
@@ -54,7 +52,7 @@ body.maintenance-active .site-shell {
   border-radius: 18px;
   box-shadow: 0 28px 70px rgba(0, 0, 0, 0.32);
   color: var(--azul-marinho, #122232);
-  padding: 40px 32px;
+  padding: clamp(24px, 5vw, 40px) clamp(18px, 5vw, 32px);
   text-align: center;
   outline: none;
   animation: maintenance-card-in 0.35s ease both;
@@ -62,15 +60,15 @@ body.maintenance-active .site-shell {
 }
 
 .maintenance-icon {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 20px;
+  width: clamp(56px, 12vw, 72px);
+  height: clamp(56px, 12vw, 72px);
+  margin: 0 auto clamp(12px, 3vw, 20px);
   display: grid;
   place-items: center;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--amarelo-mostarda, #EFA634), var(--laranja-coral, #DC5C3E));
   box-shadow: 0 14px 28px rgba(220, 92, 62, 0.24);
-  font-size: 2rem;
+  font-size: clamp(1.4rem, 5vw, 2rem);
   line-height: 1;
   animation: maintenance-icon-pulse 2.4s ease-in-out infinite;
 }
@@ -170,145 +168,37 @@ body.maintenance-active .site-shell {
 
 /* Mobile: very small screens (320px - 479px) */
 @media (max-width: 479px) {
-  .maintenance-overlay {
-    padding: 16px;
-  }
-
-  .maintenance-card {
-    max-height: calc(100dvh - 32px);
-    padding: 28px 18px;
-    border-radius: 14px;
-  }
-
-  .maintenance-icon {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 16px;
-    font-size: 1.6rem;
-  }
-
   .maintenance-brand {
-    font-size: 0.85rem;
-    margin-bottom: 6px;
+    font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+    margin-bottom: 4px;
   }
 
   .maintenance-card h1 {
     font-size: clamp(1.4rem, 6vw, 1.8rem);
-    margin-bottom: 12px;
-    line-height: 1.2;
-  }
-
-  .maintenance-card p {
-    font-size: clamp(0.9rem, 4vw, 0.98rem);
-    line-height: 1.5;
     margin-bottom: 8px;
   }
 
+  .maintenance-card p {
+    font-size: clamp(0.85rem, 3.5vw, 1.05rem);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+
   .maintenance-thanks {
-    margin-top: 8px;
-    font-size: clamp(0.9rem, 4vw, 0.98rem);
+    margin-top: 6px;
+    font-size: clamp(0.85rem, 3.5vw, 1.05rem);
   }
 
   .maintenance-status {
-    margin: 18px auto 0;
-    padding: 8px 12px;
-    font-size: 0.8rem;
-    gap: 8px;
+    margin: 14px auto 0;
+    padding: clamp(6px, 2vw, 10px) clamp(10px, 3vw, 16px);
+    font-size: clamp(0.75rem, 2.5vw, 0.92rem);
+    gap: 6px;
   }
 
   .maintenance-status span {
-    width: 8px;
-    height: 8px;
-  }
-}
-
-/* Mobile: small screens (480px - 599px) */
-@media (min-width: 480px) and (max-width: 599px) {
-  .maintenance-overlay {
-    padding: 18px;
-  }
-
-  .maintenance-card {
-    max-height: calc(100dvh - 36px);
-    padding: 32px 20px;
-    border-radius: 14px;
-  }
-
-  .maintenance-icon {
-    width: 64px;
-    height: 64px;
-    font-size: 1.8rem;
-    margin-bottom: 18px;
-  }
-
-  .maintenance-brand {
-    font-size: 0.9rem;
-    margin-bottom: 8px;
-  }
-
-  .maintenance-card h1 {
-    font-size: clamp(1.5rem, 5vw, 1.8rem);
-    margin-bottom: 12px;
-  }
-
-  .maintenance-card p {
-    font-size: clamp(0.95rem, 3.5vw, 1rem);
-    line-height: 1.55;
-  }
-
-  .maintenance-thanks {
-    margin-top: 10px;
-  }
-
-  .maintenance-status {
-    margin: 20px auto 0;
-    padding: 9px 14px;
-    font-size: 0.85rem;
-  }
-}
-
-/* Tablet: medium screens (600px - 767px) */
-@media (min-width: 600px) and (max-width: 767px) {
-  .maintenance-overlay {
-    padding: 20px;
-  }
-
-  .maintenance-card {
-    max-height: calc(100dvh - 40px);
-    padding: 36px 28px;
-    border-radius: 16px;
-  }
-
-  .maintenance-icon {
-    width: 68px;
-    height: 68px;
-    font-size: 1.9rem;
-    margin-bottom: 20px;
-  }
-
-  .maintenance-brand {
-    font-size: 0.95rem;
-    margin-bottom: 10px;
-  }
-
-  .maintenance-card h1 {
-    font-size: clamp(1.7rem, 4vw, 1.9rem);
-    margin-bottom: 14px;
-  }
-
-  .maintenance-card p {
-    font-size: 1rem;
-    line-height: 1.6;
-  }
-
-  .maintenance-thanks {
-    margin-top: 12px;
-  }
-
-  .maintenance-status {
-    margin: 24px auto 0;
-    padding: 10px 16px;
-    font-size: 0.9rem;
+    width: 6px;
+    height: 6px;
   }
 }
 
