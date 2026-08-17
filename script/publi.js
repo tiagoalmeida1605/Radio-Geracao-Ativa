@@ -27,15 +27,56 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalData = document.getElementById("modalData");
     const modalTexto = document.getElementById("modalTexto");
 
-    // LÓGICA DE FECHAR O MODAL
-    closeModalBtn.addEventListener("click", () => {
+    function formatarDataExibicao(dataISO) {
+        if (!dataISO) return "";
+        if (dataISO.includes("-")) {
+            const partes = dataISO.split("-");
+            if (partes.length === 3) {
+                const [ano, mes, dia] = partes;
+                return `${dia}/${mes}/${ano}`;
+            }
+        }
+        return dataISO;
+    }
+
+    function abrirModal(noticia) {
+        modalTitulo.textContent = noticia.titulo || '';
+        const dataFormatada = formatarDataExibicao(noticia.data);
+        modalData.textContent = dataFormatada ? "Publicado em " + dataFormatada : 'Data indefinida';
+        modalTexto.textContent = noticia.conteudo || '';
+
+        if (noticia.imagem) {
+            modalImg.src = noticia.imagem;
+            modalImg.style.display = "block";
+        } else {
+            modalImg.src = "";
+            modalImg.style.display = "none";
+        }
+
+        modal.classList.add("active");
+        document.body.classList.add("modal-aberto");
+        closeModalBtn.focus();
+    }
+
+    function fecharModal() {
         modal.classList.remove("active");
-    });
+        document.body.classList.remove("modal-aberto");
+    }
+
+    // LÓGICA DE FECHAR O MODAL
+    closeModalBtn.addEventListener("click", fecharModal);
 
     // Se o usuário clicar fora da caixinha (no fundo escuro), fecha também
     modal.addEventListener("click", (e) => {
         if (e.target === modal) {
-            modal.classList.remove("active");
+            fecharModal();
+        }
+    });
+
+    // Fechar ao pressionar a tecla ESC
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal.classList.contains("active")) {
+            fecharModal();
         }
     });
 
@@ -61,16 +102,21 @@ document.addEventListener("DOMContentLoaded", () => {
             const noticia = dadosFirebase[key];
             const card = document.createElement("article");
             card.className = "noticia-card";
+            card.setAttribute("tabindex", "0");
+            card.setAttribute("role", "button");
+            card.setAttribute("aria-label", `Ler notícia: ${noticia.titulo || 'Sem título'}`);
+
+            const dataFormatada = formatarDataExibicao(noticia.data);
 
             // Cria o visual da PRÉVIA
             const imagemHTML = noticia.imagem
-                ? `<img src="${noticia.imagem}" alt="Prévia" class="noticia-img-preview">`
+                ? `<img src="${noticia.imagem}" alt="Prévia da notícia" class="noticia-img-preview" loading="lazy">`
                 : '';
 
             card.innerHTML = `
                 ${imagemHTML}
                 <div class="noticia-content-preview">
-                    <span class="noticia-data">📅 ${noticia.data || ''}</span>
+                    <span class="noticia-data">📅 ${dataFormatada}</span>
                     <h3>${noticia.titulo || ''}</h3>
                     <p>${noticia.resumo || ''}</p>
                     <span class="leia-mais">Ler publicação completa ➔</span>
@@ -78,20 +124,14 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
 
             // EVENTO DE CLIQUE: Quando clicar no card, joga os dados para o Modal e abre
-            card.addEventListener("click", () => {
-                modalTitulo.textContent = noticia.titulo || '';
-                modalData.textContent = "Publicado em " + (noticia.data || 'data indefinida');
-                modalTexto.textContent = noticia.conteudo || ''; // Corrigido aqui também!
+            card.addEventListener("click", () => abrirModal(noticia));
 
-                if(noticia.imagem) {
-                    modalImg.src = noticia.imagem;
-                    modalImg.style.display = "block";
-                } else {
-                    modalImg.style.display = "none";
+            // Suporte para navegação via teclado (Enter ou Espaço)
+            card.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    abrirModal(noticia);
                 }
-
-                // Exibe o modal na tela
-                modal.classList.add("active");
             });
 
             gridNoticias.appendChild(card);
