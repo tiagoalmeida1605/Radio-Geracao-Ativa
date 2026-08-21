@@ -15,7 +15,7 @@ const firebaseConfig = {
 
 const CAMINHO_CONFIGURACAO = "configuracoes/manutencao";
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig, "rga-maintenance");
 const database = getDatabase(app);
 
 let overlayManutencao = null;
