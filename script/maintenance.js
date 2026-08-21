@@ -15,13 +15,13 @@ const firebaseConfig = {
 
 const CAMINHO_CONFIGURACAO = "configuracoes/manutencao";
 
-const app = initializeApp(firebaseConfig, "rga-maintenance");
+const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 let overlayManutencao = null;
 
 function criarOverlayManutencao() {
-    if (overlayManutencao) {
+    if (overlayManutencao && document.body.contains(overlayManutencao)) {
         return overlayManutencao;
     }
 
@@ -99,10 +99,10 @@ function ocultarManutencao() {
     document.body.classList.remove("maintenance-active");
     definirFundoInativo(false);
 
-    if (overlayManutencao) {
+    if (overlayManutencao && document.body.contains(overlayManutencao)) {
         overlayManutencao.remove();
-        overlayManutencao = null;
     }
+    overlayManutencao = null;
 }
 
 function aplicarEstadoManutencao(ativo) {
@@ -115,10 +115,18 @@ function aplicarEstadoManutencao(ativo) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Evita rodar no painel administrativo por segurança
+    if (window.location.pathname.includes("/admin")) {
+        return;
+    }
+
     const manutencaoRef = ref(database, CAMINHO_CONFIGURACAO);
 
     onValue(manutencaoRef, (snapshot) => {
         const configuracao = snapshot.val();
         aplicarEstadoManutencao(Boolean(configuracao?.ativo));
+    }, (error) => {
+        console.warn("Erro ao ler status de manutenção:", error);
+        aplicarEstadoManutencao(false); // Default seguro: não bloqueia em caso de erro
     });
 });
