@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico - Modo Manutenção</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: monospace; background: #0d1117; color: #c9d1d9; padding: 32px; line-height: 1.8; }
+        h1 { color: #58a6ff; margin-bottom: 24px; }
+        .log { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+        .log-item { padding: 6px 0; border-bottom: 1px solid #21262d; }
+        .ok { color: #3fb950; }
+        .fail { color: #f85149; }
+        .warn { color: #d29922; }
+        .info { color: #58a6ff; }
+        #resultado { margin-top: 24px; padding: 20px; border-radius: 8px; font-size: 1.2em; font-weight: bold; }
+        .resultado-ok { background: #0d1f0d; border: 2px solid #3fb950; color: #3fb950; }
+        .resultado-fail { background: #1f0d0d; border: 2px solid #f85149; color: #f85149; }
+    </style>
+</head>
+<body>
+    <h1>🔬 Diagnóstico do Modo Manutenção</h1>
+    <div class="log" id="log"></div>
+    <div id="resultado"></div>
+
+    <script type="module">
+        const logEl = document.getElementById('log');
+        const resultadoEl = document.getElementById('resultado');
+
+        function log(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `log-item ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logEl.appendChild(div);
+        }
+
+        function resultado(ok, msg) {
+            resultadoEl.textContent = msg;
+            resultadoEl.className = ok ? 'resultado-ok' : 'resultado-fail';
+        }
+
+        // Passo 1: Importar Firebase
+        log('1. Importando Firebase SDK...', 'info');
+        try {
+            const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js");
+            const { getDatabase, onValue, ref } = await import("https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js");
+            log('   ✅ Firebase SDK carregado com sucesso', 'ok');
+
+            // Passo 2: Inicializar
+            log('2. Inicializando Firebase (instância "rga-diagnostico")...', 'info');
+            const firebaseConfig = {
+                apiKey: "AIzaSyBNCSo_-gKlWZnxRY06hEH8YumECD4Yj54",
+                authDomain: "radiogeracaoativa-playlist.firebaseapp.com",
+                projectId: "radiogeracaoativa-playlist",
+                storageBucket: "radiogeracaoativa-playlist.firebasestorage.app",
+                messagingSenderId: "437305061004",
+                appId: "1:437305061004:web:ee41f4d58d11d20af615a9",
+                measurementId: "G-SFVF2382KW",
+                databaseURL: "https://radiogeracaoativa-playlist-default-rtdb.firebaseio.com/"
+            };
+            const app = initializeApp(firebaseConfig, "rga-diagnostico");
+            const database = getDatabase(app);
+            log('   ✅ Firebase inicializado', 'ok');
+
+            // Passo 3: Ler configuracoes/manutencao
+            log('3. Lendo caminho: configuracoes/manutencao ...', 'info');
+            const manutencaoRef = ref(database, "configuracoes/manutencao");
+
+            onValue(manutencaoRef, (snapshot) => {
+                const valor = snapshot.val();
+                log(`   ✅ Leitura bem-sucedida!`, 'ok');
+                log(`   📦 Valor retornado: ${JSON.stringify(valor)}`, 'info');
+                log(`   📦 Tipo: ${typeof valor}`, 'info');
+
+                if (valor === null) {
+                    log('   ⚠️ O caminho configuracoes/manutencao NÃO EXISTE no Firebase!', 'warn');
+                    log('   💡 Isso significa que o modo manutenção nunca foi salvo.', 'warn');
+                    log('   💡 Vá ao admin, ative a manutenção e salve.', 'warn');
+                    resultado(false, '⚠️ O caminho não existe no Firebase. O modo manutenção nunca foi ativado/salvo pelo admin.');
+                } else if (typeof valor === 'object') {
+                    log(`   📦 valor.ativo = ${valor.ativo} (tipo: ${typeof valor.ativo})`, 'info');
+                    log(`   📦 Boolean(valor?.ativo) = ${Boolean(valor?.ativo)}`, 'info');
+                    if (valor.ativo === true) {
+                        resultado(true, '✅ Manutenção está ATIVA no Firebase. O overlay deveria aparecer para visitantes.');
+                    } else {
+                        resultado(true, '✅ Conexão OK. Manutenção está DESATIVADA (ativo = ' + valor.ativo + ')');
+                    }
+                } else {
+                    log(`   ⚠️ Valor inesperado (não é objeto): ${valor}`, 'warn');
+                    resultado(false, '⚠️ O valor no Firebase não é um objeto {ativo: true/false}. Valor: ' + JSON.stringify(valor));
+                }
+
+                // Passo 4: Testar admin-auth
+                log('4. Testando import de admin-auth.js...', 'info');
+                import("./script/admin-auth.js").then(mod => {
+                    log('   ✅ admin-auth.js importado com sucesso', 'ok');
+                    const conta = mod.obterContaAutenticada();
+                    log(`   👤 obterContaAutenticada() = ${JSON.stringify(conta)}`, 'info');
+                    if (conta) {
+                        log(`   🔑 Você ESTÁ autenticado como: ${conta.papel}`, 'warn');
+                        log(`   💡 Com sessão de admin ativa, o overlay NÃO aparece (comportamento correto).`, 'warn');
+                    } else {
+                        log(`   👤 Você NÃO está autenticado (visitante). Overlay DEVERIA aparecer se manutenção ativa.`, 'ok');
+                    }
+                }).catch(err => {
+                    log(`   ❌ Erro ao importar admin-auth.js: ${err.message}`, 'fail');
+                });
+
+            }, (error) => {
+                log(`   ❌ ERRO de leitura Firebase: ${error.message}`, 'fail');
+                log(`   ❌ Código do erro: ${error.code || 'desconhecido'}`, 'fail');
+                log('   💡 Isso é o "permission_denied". As regras do Firebase estão bloqueando a leitura.', 'fail');
+                log('   💡 Vá no console do Firebase → Realtime Database → Rules', 'fail');
+                log('   💡 E configure: "configuracoes": { "manutencao": { ".read": true, ".write": true } }', 'fail');
+                resultado(false, '❌ PERMISSION DENIED! As regras do Firebase estão bloqueando a leitura de configuracoes/manutencao.');
+            });
+
+        } catch (err) {
+            log(`❌ Erro fatal: ${err.message}`, 'fail');
+            resultado(false, '❌ Erro fatal ao carregar Firebase: ' + err.message);
+        }
+    </script>
+</body>
+</html>

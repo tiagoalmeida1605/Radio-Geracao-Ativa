@@ -18,33 +18,7 @@ const CAMINHO_CONFIGURACAO = "configuracoes/manutencao";
 const app = initializeApp(firebaseConfig, "rga-maintenance");
 const database = getDatabase(app);
 
-let overlayManutencao = null;
 
-function criarOverlayManutencao() {
-    if (overlayManutencao && document.body.contains(overlayManutencao)) {
-        return overlayManutencao;
-    }
-
-    overlayManutencao = document.createElement("div");
-    overlayManutencao.className = "maintenance-overlay";
-    overlayManutencao.setAttribute("role", "presentation");
-    overlayManutencao.innerHTML = `
-        <section class="maintenance-card" role="dialog" aria-modal="true" aria-labelledby="maintenance-title" aria-describedby="maintenance-description" tabindex="-1">
-            <div class="maintenance-icon" aria-hidden="true">🛠️</div>
-            <p class="maintenance-brand">Rádio Geração Ativa</p>
-            <h1 id="maintenance-title">Estamos em manutenção</h1>
-            <p id="maintenance-description">Estamos preparando algumas novidades para a Rádio Geração Ativa. Em breve estaremos de volta.</p>
-            <p class="maintenance-thanks">Obrigado pela compreensão.</p>
-            <div class="maintenance-status" aria-label="Sistema em manutenção">
-                <span aria-hidden="true"></span>
-                Sistema em manutenção
-            </div>
-        </section>
-    `;
-
-    document.body.appendChild(overlayManutencao);
-    return overlayManutencao;
-}
 
 function obterSiteShell() {
     return document.getElementById("siteShell");
@@ -87,22 +61,26 @@ function definirFundoInativo(inativo) {
 
 function mostrarManutencao() {
     fecharMenuMobile();
-    criarOverlayManutencao();
+    
+    const overlay = document.getElementById("maintenanceOverlay");
+    if (overlay) {
+        overlay.style.display = "flex";
+        const card = overlay.querySelector(".maintenance-card");
+        card?.focus({ preventScroll: true });
+    }
+
     document.body.classList.add("maintenance-active");
     definirFundoInativo(true);
-
-    const card = overlayManutencao.querySelector(".maintenance-card");
-    card?.focus({ preventScroll: true });
 }
 
 function ocultarManutencao() {
     document.body.classList.remove("maintenance-active");
     definirFundoInativo(false);
 
-    if (overlayManutencao && document.body.contains(overlayManutencao)) {
-        overlayManutencao.remove();
+    const overlay = document.getElementById("maintenanceOverlay");
+    if (overlay) {
+        overlay.style.display = "none";
     }
-    overlayManutencao = null;
 }
 
 function aplicarEstadoManutencao(ativo) {
