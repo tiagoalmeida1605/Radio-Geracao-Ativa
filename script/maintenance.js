@@ -18,82 +18,40 @@ const CAMINHO_CONFIGURACAO = "configuracoes/manutencao";
 const app = initializeApp(firebaseConfig, "rga-maintenance");
 const database = getDatabase(app);
 
-
-
-function obterSiteShell() {
-    return document.getElementById("siteShell");
+function estaNaPaginaManutencao() {
+    return window.location.pathname.endsWith("manutencao.html");
 }
 
-function fecharMenuMobile() {
-    const menu = document.getElementById("nav-Menu");
-    const menuOverlay = document.getElementById("menuOverlay");
-    const menuBtn = document.getElementById("menuBtn");
+function obterUrlManutencao() {
+    const pathname = window.location.pathname;
 
-    menu?.classList.remove("active");
-    menuOverlay?.classList.remove("active");
-    document.body.classList.remove("menu-aberto");
-
-    if (menuBtn) {
-        menuBtn.textContent = "☰";
+    if (pathname.includes("/pages/")) {
+        return new URL("manutencao.html", window.location.href).href;
     }
+
+    return new URL("pages/manutencao.html", window.location.href).href;
 }
 
-function definirFundoInativo(inativo) {
-    const siteShell = obterSiteShell();
-
-    if (!siteShell) {
+function redirecionarParaManutencao() {
+    if (estaNaPaginaManutencao()) {
         return;
     }
 
-    if (inativo) {
-        siteShell.setAttribute("aria-hidden", "true");
-        if ("inert" in siteShell) {
-            siteShell.inert = true;
-        }
-        return;
-    }
-
-    siteShell.removeAttribute("aria-hidden");
-    if ("inert" in siteShell) {
-        siteShell.inert = false;
-    }
-}
-
-function mostrarManutencao() {
-    fecharMenuMobile();
-    
-    const overlay = document.getElementById("maintenanceOverlay");
-    if (overlay) {
-        overlay.style.display = "flex";
-        const card = overlay.querySelector(".maintenance-card");
-        card?.focus({ preventScroll: true });
-    }
-
-    document.body.classList.add("maintenance-active");
-    definirFundoInativo(true);
-}
-
-function ocultarManutencao() {
-    document.body.classList.remove("maintenance-active");
-    definirFundoInativo(false);
-
-    const overlay = document.getElementById("maintenanceOverlay");
-    if (overlay) {
-        overlay.style.display = "none";
-    }
+    window.location.replace(obterUrlManutencao());
 }
 
 function aplicarEstadoManutencao(ativo) {
-    if (ativo && !obterContaAutenticada()) {
-        mostrarManutencao();
+    if (window.location.pathname.includes("/admin")) {
         return;
     }
 
-    ocultarManutencao();
+    if (ativo && !obterContaAutenticada()) {
+        redirecionarParaManutencao();
+        return;
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Evita rodar no painel administrativo por segurança
     if (window.location.pathname.includes("/admin")) {
         return;
     }
@@ -105,6 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
         aplicarEstadoManutencao(Boolean(configuracao?.ativo));
     }, (error) => {
         console.warn("Erro ao ler status de manutenção:", error);
-        aplicarEstadoManutencao(false); // Default seguro: não bloqueia em caso de erro
+        aplicarEstadoManutencao(false);
     });
 });

@@ -1,0 +1,38 @@
+/* Estilos exclusivos da página dedicada de manutenção — não altera CSS global */
+
+.pagina-manutencao {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: var(--bg-creme);
+}
+
+.pagina-manutencao .manutencao-page-shell {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.pagina-manutencao .maintenance-card {
+  outline: none;
+}
+
+.pagina-manutencao .maintenance-actions {
+  margin-top: 28px;
+}
+
+.pagina-manutencao .maintenance-actions .more {
+  margin-top: 0;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+@media (max-width: 479px) {
+  .pagina-manutencao {
+    padding: 16px;
+  }
+}

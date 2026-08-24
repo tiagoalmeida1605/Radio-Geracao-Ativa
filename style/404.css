@@ -1,0 +1,53 @@
+/* CSS mínimo exclusivo da página 404 */
+
+.codigo-404 {
+  font-size: clamp(2.5rem, 8vw, 3.5rem);
+  font-weight: 800;
+  color: var(--azul-marinho);
+  margin-bottom: 10px;
+  letter-spacing: -1px;
+}
+
+.acoes-404 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.acoes-404 .more {
+  margin-top: 0;
+}
+
+.btn-secundario {
+  background: #ffffff;
+  color: var(--azul-marinho);
+  border: 1px solid var(--borda-clara);
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--sombra-leve);
+}
+
+.btn-secundario:hover {
+  color: var(--cor-destaque);
+  background-color: color-mix(in srgb, var(--cor-destaque) 8%, transparent);
+}
+
+@media (max-width: 768px) {
+  .acoes-404 {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 320px;
+  }
+
+  .acoes-404 .more,
+  .btn-secundario {
+    text-align: center;
+  }
+}

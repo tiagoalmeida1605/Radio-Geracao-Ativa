@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="./assets/icon.png">
+    <link rel="stylesheet" href="./style/index.css">
+    <link rel="stylesheet" href="./style/404.css">
+    <title>404 - Página Não Encontrada | Rádio Geração Ativa</title>
+    <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+    <div class="site-shell" id="siteShell">
+        <header>
+            <div class="sidebar">
+                <img src="./assets/logo.png" alt="Logotipo da Rádio Geração Ativa">
+                <h2>Rádio Geração Ativa</h2>
+                <button class="menu-btn" id="menuBtn">☰</button>
+                <nav id="nav-Menu">
+                    <ul>
+                        <li><a href="./index.html">Home</a></li>
+                        <li><a href="./pages/sobre.html">Sobre</a></li>
+                        <li><a href="./pages/playlist.html">Playlists</a></li>
+                        <li><a href="./pages/publi.html">Notícias</a></li>
+                    </ul>
+                </nav>
+                <div class="menu-overlay" id="menuOverlay"></div>
+            </div>
+        </header>
+        <main>
+            <p class="codigo-404">404</p>
+            <h1>PÁGINA NÃO ENCONTRADA</h1>
+            <p class="description">O endereço solicitado não existe ou não está disponível.</p>
+            <div class="acoes-404">
+                <a href="./index.html" class="more">Voltar ao início</a>
+                <button type="button" class="btn-secundario" id="btnVoltar">Voltar página anterior</button>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+    <script src="./script/menu.js"></script>
+    <script>
+        document.getElementById("btnVoltar")?.addEventListener("click", function () {
+            if (window.history.length > 1) {
+                window.history.back();
+                return;
+            }
+            window.location.href = "./index.html";
+        });
+    </script>
+</body>
+</html>
