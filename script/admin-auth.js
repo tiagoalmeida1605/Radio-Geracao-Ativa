@@ -18,9 +18,9 @@ const firebaseConfig = {
     measurementId: "G-SFVF2382KW"
 };
 
-const app = initializeApp(firebaseConfig, "rga-auth");
-export const auth = getAuth(app);
-const database = getDatabase(app);
+export const firebaseApp = initializeApp(firebaseConfig, "rga-auth");
+export const auth = getAuth(firebaseApp);
+export const database = getDatabase(firebaseApp);
 
 export const PAPEIS_VALIDOS = new Set(["admin", "playlist", "publicador"]);
 

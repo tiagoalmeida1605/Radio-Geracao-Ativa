@@ -1,29 +1,15 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, push, remove, get } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+import { ref, onValue, set, push, remove, get } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 import {
+    auth,
+    database,
+    firebaseApp,
     NOMES_PAPEL,
     PAPEIS_VALIDOS,
     autenticarUsuario,
     encerrarSessao,
     observarAutenticacao,
     obterPerfil
-} from "../script/admin-auth.js?v=3";
-
-// 1. CONFIGURAÇÃO DO FIREBASE (Configurado Corretamente)
-const firebaseConfig = {
-    apiKey: "AIzaSyBNCSo_-gKlWZnxRY06hEH8YumECD4Yj54",
-    authDomain: "radiogeracaoativa-playlist.firebaseapp.com",
-    projectId: "radiogeracaoativa-playlist",
-    storageBucket: "radiogeracaoativa-playlist.firebasestorage.app",
-    messagingSenderId: "437305061004",
-    appId: "1:437305061004:web:ee41f4d58d11d20af615a9",
-    measurementId: "G-SFVF2382KW",
-    databaseURL: "https://radiogeracaoativa-playlist-default-rtdb.firebaseio.com/"
-};
-
-// Inicializa o Firebase no formato modular
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+} from "../script/admin-auth.js?v=4";
 
 const telaBloqueio = document.getElementById("bloqueio-tela");
 const conteudoPainel = document.getElementById("conteudo-painel");
@@ -59,6 +45,15 @@ function mensagemFirebase(error, acao) {
     }
 
     return `Não foi possível ${acao}. Tente novamente.`;
+}
+
+function diagnosticarOperacao(caminho) {
+    console.debug("Operação Firebase", {
+        caminho,
+        uid: auth.currentUser?.uid || null,
+        projeto: firebaseApp.options.projectId,
+        autenticado: Boolean(auth.currentUser)
+    });
 }
 
 observarAutenticacao(async (usuario) => {
@@ -214,6 +209,8 @@ function inicializarGerenciadorManutencao() {
             atualizadoEm: new Date().toISOString()
         };
 
+        diagnosticarOperacao("configuracoes/manutencao");
+
         set(manutencaoRef, novoEstado)
             .then(() => {
                 feedbackManutencao.textContent = toggleManutencao.checked
@@ -314,9 +311,11 @@ function inicializarGerenciadorPlaylists() {
 
         try {
             if (idAtual) {
+                diagnosticarOperacao(`playlists/${idAtual}`);
                 await set(ref(database, "playlists/" + idAtual), itemPlaylist);
                 alert("🔄 Alterações guardadas na nuvem!");
             } else {
+                diagnosticarOperacao("playlists");
                 await push(ref(database, "playlists"), itemPlaylist);
                 alert("✨ Nova playlist inserida na nuvem!");
             }
@@ -344,6 +343,7 @@ function inicializarGerenciadorPlaylists() {
 
     function apagarPlaylist(id) {
         if (confirm("Tens a certeza que desejas remover esta playlist permanentemente da nuvem?")) {
+            diagnosticarOperacao(`playlists/${id}`);
             remove(ref(database, "playlists/" + id))
                 .then(() => alert("🗑️ Playlist removida com sucesso!"))
                 .catch(err => alert(mensagemFirebase(err, "remover o vídeo")));
@@ -473,9 +473,11 @@ function inicializarGerenciadorNoticias() {
 
         try {
             if (idAtual) {
+                diagnosticarOperacao(`noticias/${idAtual}`);
                 await set(ref(database, "noticias/" + idAtual), itemNoticia);
                 alert("🔄 Notícia atualizada na nuvem!");
             } else {
+                diagnosticarOperacao("noticias");
                 await push(ref(database, "noticias"), itemNoticia);
                 alert("✨ Notícia publicada na nuvem!");
             }
@@ -515,6 +517,7 @@ function inicializarGerenciadorNoticias() {
 
     function apagarNoticia(id) {
         if (confirm("Tens a certeza que desejas remover esta notícia permanentemente da nuvem?")) {
+            diagnosticarOperacao(`noticias/${id}`);
             remove(ref(database, "noticias/" + id))
                 .then(() => alert("🗑️ Notícia removida com sucesso!"))
                 .catch(err => alert(mensagemFirebase(err, "remover a notícia")));
