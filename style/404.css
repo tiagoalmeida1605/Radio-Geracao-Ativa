@@ -30,6 +30,29 @@
     --glass-button: rgba(255, 255, 255, 0.06);
     --glass-focus: #72d1ca;
   }
+
+  body:has(.painel-404) .sidebar img {
+    display: none;
+  }
+
+  body:has(.painel-404) .sidebar::before {
+    content: "";
+    display: block;
+    flex: 0 0 clamp(42px, 5vw, 56px);
+    width: clamp(42px, 5vw, 56px);
+    aspect-ratio: 1;
+    border: 1px solid rgba(114, 209, 202, 0.48);
+    border-radius: 35% 65% 58% 42%;
+    background:
+      radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.72) 0 5%, transparent 6%),
+      radial-gradient(circle at 50% 50%, rgba(114, 209, 202, 0.58) 0 17%, transparent 18%),
+      radial-gradient(circle, rgba(53, 148, 151, 0.26), transparent 64%);
+    box-shadow:
+      0 0 0 5px rgba(114, 209, 202, 0.06),
+      0 0 24px rgba(114, 209, 202, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.32);
+    transform: rotate(-12deg);
+  }
 }
 
 body:has(.painel-404) {
