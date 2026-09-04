@@ -35,13 +35,25 @@ const erroLogin = document.getElementById("erroLogin");
 const btnToggleSenha = document.getElementById("btnToggleSenha");
 const textoContaLogada = document.getElementById("textoContaLogada");
 const btnSair = document.getElementById("btnSair");
+const gerenciadoresInicializados = new Set();
+const PAPEIS_VALIDOS = new Set(["admin", "playlist", "publicador"]);
+
+function escaparHtml(valor) {
+    return String(valor ?? "").replace(/[&<>'"]/g, (caractere) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;"
+    })[caractere]);
+}
 
 const contaSalva = obterContaAutenticada();
 if (contaSalva) {
     liberarPainel(contaSalva.papel);
 }
 
-btnToggleSenha.addEventListener("click", () => {
+btnToggleSenha?.addEventListener("click", () => {
     const estaOculta = inputSenha.type === "password";
     inputSenha.type = estaOculta ? "text" : "password";
     btnToggleSenha.textContent = estaOculta ? "🙈" : "👁️";
@@ -49,7 +61,7 @@ btnToggleSenha.addEventListener("click", () => {
     inputSenha.focus();
 });
 
-formBloqueio.addEventListener("submit", async (e) => {
+formBloqueio?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const usuarioDigitado = inputUsuario.value.trim().toLowerCase();
@@ -67,7 +79,7 @@ formBloqueio.addEventListener("submit", async (e) => {
     }
 });
 
-btnSair.addEventListener("click", () => {
+btnSair?.addEventListener("click", () => {
     encerrarContaAutenticada();
     location.reload();
 });
@@ -84,12 +96,19 @@ function mostrarErroLogin() {
 
 function aplicarPermissoes(papel) {
     document.querySelectorAll("[data-papel]").forEach((secao) => {
-        const papeisPermitidos = secao.dataset.papel.split(",");
+        const papeisPermitidos = secao.dataset.papel
+            .split(",")
+            .map((valor) => valor.trim());
         secao.style.display = papeisPermitidos.includes(papel) ? "" : "none";
     });
 }
 
 function liberarPainel(papel) {
+    if (!PAPEIS_VALIDOS.has(papel)) {
+        encerrarContaAutenticada();
+        return;
+    }
+
     telaBloqueio.style.display = "none";
     conteudoPainel.style.display = "block";
 
@@ -111,6 +130,10 @@ function liberarPainel(papel) {
    CONFIGURAÇÃO DO MODO DE MANUTENÇÃO
    ========================================================================== */
 function inicializarGerenciadorManutencao() {
+    if (gerenciadoresInicializados.has("manutencao")) {
+        return;
+    }
+
     const toggleManutencao = document.getElementById("toggle-manutencao");
     const statusManutencao = document.getElementById("status-manutencao");
     const formManutencao = document.getElementById("form-manutencao");
@@ -121,6 +144,8 @@ function inicializarGerenciadorManutencao() {
         return;
     }
 
+    gerenciadoresInicializados.add("manutencao");
+
     const manutencaoRef = ref(database, "configuracoes/manutencao");
 
     onValue(manutencaoRef, (snapshot) => {
@@ -130,6 +155,9 @@ function inicializarGerenciadorManutencao() {
         toggleManutencao.checked = manutencaoAtiva;
         statusManutencao.textContent = manutencaoAtiva ? "ATIVADO" : "DESATIVADO";
         statusManutencao.classList.toggle("ativo", manutencaoAtiva);
+    }, (error) => {
+        statusManutencao.textContent = "INDISPONÍVEL";
+        feedbackManutencao.textContent = "Não foi possível ler o status: " + error.message;
     });
 
     formManutencao.addEventListener("submit", (e) => {
@@ -162,6 +190,10 @@ function inicializarGerenciadorManutencao() {
    SISTEMA DE PLAYLISTS
    ========================================================================== */
 function inicializarGerenciadorPlaylists() {
+    if (gerenciadoresInicializados.has("playlists")) {
+        return;
+    }
+
     const formPlaylist = document.getElementById("form-playlist");
     const inputId = document.getElementById("playlist-id");
     const inputIcone = document.getElementById("playlist-icone");
@@ -170,6 +202,12 @@ function inicializarGerenciadorPlaylists() {
     const inputUrl = document.getElementById("playlist-url");
     const btnLimpar = document.getElementById("btn-limpar-form");
     const listaContainer = document.getElementById("lista-playlists-admin");
+
+    if (!formPlaylist || !inputId || !inputIcone || !inputTitulo || !inputDesc || !inputUrl || !btnLimpar || !listaContainer) {
+        return;
+    }
+
+    gerenciadoresInicializados.add("playlists");
 
     function filtrarIdPlaylist(valor) {
         let urlInserida = valor.trim();
@@ -197,9 +235,9 @@ function inicializarGerenciadorPlaylists() {
             item.className = "item-playlist-admin";
             item.innerHTML = `
                 <div>
-                    <strong>${iconeDisplay} ${dados.titulo}</strong>
-                    <p>${dados.descricao}</p>
-                    <small>ID YouTube: ${dados.playlistId}</small>
+                    <strong>${escaparHtml(iconeDisplay)} ${escaparHtml(dados.titulo)}</strong>
+                    <p>${escaparHtml(dados.descricao)}</p>
+                    <small>ID YouTube: ${escaparHtml(dados.playlistId)}</small>
                 </div>
                 <div class="botoes-acoes">
                     <button class="btn-edit btn-edit-playlist" data-id="${key}">✏️ Editar</button>
@@ -216,9 +254,11 @@ function inicializarGerenciadorPlaylists() {
         document.querySelectorAll(".btn-delete-playlist").forEach(btn => {
             btn.addEventListener("click", () => apagarPlaylist(btn.getAttribute("data-id")));
         });
+    }, (error) => {
+        listaContainer.innerHTML = `<p class="txt-ajuda">Não foi possível carregar as playlists: ${error.message}</p>`;
     });
 
-    formPlaylist.addEventListener("submit", (e) => {
+    formPlaylist.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         const idAtual = inputId.value;
@@ -229,17 +269,19 @@ function inicializarGerenciadorPlaylists() {
             playlistId: filtrarIdPlaylist(inputUrl.value)
         };
 
-        if (idAtual) {
-            set(ref(database, "playlists/" + idAtual), itemPlaylist)
-                .then(() => alert("🔄 Alterações guardadas na nuvem!"))
-                .catch(err => alert("Erro ao atualizar: " + err.message));
-        } else {
-            push(ref(database, "playlists"), itemPlaylist)
-                .then(() => alert("✨ Nova playlist inserida na nuvem!"))
-                .catch(err => alert("Erro ao salvar: " + err.message));
-        }
+        try {
+            if (idAtual) {
+                await set(ref(database, "playlists/" + idAtual), itemPlaylist);
+                alert("🔄 Alterações guardadas na nuvem!");
+            } else {
+                await push(ref(database, "playlists"), itemPlaylist);
+                alert("✨ Nova playlist inserida na nuvem!");
+            }
 
-        limparFormulario();
+            limparFormulario();
+        } catch (error) {
+            alert("Erro ao salvar playlist: " + error.message);
+        }
     });
 
     function carregarFormParaEdicao(id) {
@@ -278,6 +320,10 @@ function inicializarGerenciadorPlaylists() {
    GERENCIADOR DE NOTÍCIAS (CORRIGIDO E SUPORTANDO UPLOAD LOCAL DE IMAGEM)
    ========================================================================== */
 function inicializarGerenciadorNoticias() {
+    if (gerenciadoresInicializados.has("noticias")) {
+        return;
+    }
+
     const formNoticia = document.getElementById("form-noticia");
     const inputId = document.getElementById("noticia-id");
     const inputTitulo = document.getElementById("noticia-titulo");
@@ -291,6 +337,12 @@ function inicializarGerenciadorNoticias() {
     // Novas referências visuais de preview para a imagem
     const previewContainer = document.getElementById("preview-imagem-admin");
     const imgPreview = document.getElementById("img-preview-noticia");
+
+    if (!formNoticia || !inputId || !inputTitulo || !inputResumo || !inputConteudo || !inputImagem || !inputData || !btnLimpar || !listaContainer) {
+        return;
+    }
+
+    gerenciadoresInicializados.add("noticias");
 
     // Função Auxiliar: Converte arquivo de imagem para string Base64 texto
     function arquivoParaBase64(file) {
@@ -325,9 +377,9 @@ function inicializarGerenciadorNoticias() {
             item.className = "item-playlist-admin";
             item.innerHTML = `
                 <div>
-                    <strong>📰 ${dados.titulo || ''}</strong>
-                    <p>${dados.resumo || ''}</p>
-                    <small>Publicado em: ${formatarDataExibicao(dados.data)}</small>
+                    <strong>📰 ${escaparHtml(dados.titulo)}</strong>
+                    <p>${escaparHtml(dados.resumo)}</p>
+                    <small>Publicado em: ${escaparHtml(formatarDataExibicao(dados.data))}</small>
                 </div>
                 <div class="botoes-acoes">
                     <button class="btn-edit btn-edit-noticia" data-id="${key}">✏️ Editar</button>
@@ -344,6 +396,8 @@ function inicializarGerenciadorNoticias() {
         document.querySelectorAll(".btn-delete-noticia").forEach(btn => {
             btn.addEventListener("click", () => apagarNoticia(btn.getAttribute("data-id")));
         });
+    }, (error) => {
+        listaContainer.innerHTML = `<p class="txt-ajuda">Não foi possível carregar as notícias: ${error.message}</p>`;
     });
 
     // Evento transformado em ASYNC para poder esperar o carregamento do arquivo
@@ -374,17 +428,19 @@ function inicializarGerenciadorNoticias() {
             data: inputData.value
         };
 
-        if (idAtual) {
-            set(ref(database, "noticias/" + idAtual), itemNoticia)
-                .then(() => alert("🔄 Notícia atualizada na nuvem!"))
-                .catch(err => alert("Erro ao atualizar: " + err.message));
-        } else {
-            push(ref(database, "noticias"), itemNoticia)
-                .then(() => alert("✨ Notícia publicada na nuvem!"))
-                .catch(err => alert("Erro ao publicar: " + err.message));
-        }
+        try {
+            if (idAtual) {
+                await set(ref(database, "noticias/" + idAtual), itemNoticia);
+                alert("🔄 Notícia atualizada na nuvem!");
+            } else {
+                await push(ref(database, "noticias"), itemNoticia);
+                alert("✨ Notícia publicada na nuvem!");
+            }
 
-        limparFormularioNoticia();
+            limparFormularioNoticia();
+        } catch (error) {
+            alert("Erro ao salvar notícia: " + error.message);
+        }
     });
 
     function carregarNoticiaParaEdicao(id) {
