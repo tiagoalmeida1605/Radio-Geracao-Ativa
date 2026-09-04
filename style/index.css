@@ -8,6 +8,22 @@
   --sombra-leve: 0 4px 15px rgba(18, 34, 50, 0.03);
   --sombra-hover: 0 10px 25px rgba(18, 34, 50, 0.08);
   --cor-destaque: var(--azul-marinho);
+  --tema-bg: var(--bg-creme);
+  --tema-surface: #ffffff;
+  --tema-text: var(--azul-marinho);
+  --tema-muted: #555;
+  --tema-border: var(--borda-clara);
+}
+
+html[data-theme="dark"] {
+  --bg-creme: #0b1724;
+  --azul-marinho: #e8f0f2;
+  --borda-clara: rgba(255,255,255,.14);
+  --tema-bg: #0b1724;
+  --tema-surface: rgba(14,25,37,.78);
+  --tema-text: #e8f0f2;
+  --tema-muted: rgba(232,240,242,.72);
+  --tema-border: rgba(255,255,255,.14);
 }
 
 * {
@@ -24,6 +40,24 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+html[data-theme="dark"] body { background-color: var(--tema-bg); color: var(--tema-text); }
+html[data-theme="dark"] header { background-color: var(--tema-surface); }
+html[data-theme="dark"] .sidebar a { color: var(--tema-muted); }
+html[data-theme="dark"] .mvv-card,
+html[data-theme="dark"] .programa-item,
+html[data-theme="dark"] .equipe-bloco,
+html[data-theme="dark"] .tag,
+html[data-theme="dark"] .social-media a { background: var(--tema-surface); color: var(--tema-text); border-color: var(--tema-border); }
+
+.theme-toggle {
+  width: 42px; height: 42px; flex: none; display: inline-grid; place-items: center;
+  border: 1px solid var(--tema-border, var(--borda-clara)); border-radius: 50%;
+  background: var(--tema-surface, #fff); color: var(--tema-text, var(--azul-marinho));
+  cursor: pointer; font-size: 1.15rem; line-height: 1;
+}
+
+.theme-toggle:focus-visible { outline: 3px solid var(--verde-agua); outline-offset: 3px; }
 
 /* CABEÇALHO ELEGANTE E PROPORCIONAL */
 header {

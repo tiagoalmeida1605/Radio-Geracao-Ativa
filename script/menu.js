@@ -1,6 +1,32 @@
 const menuBtn = document.getElementById("menuBtn");
 const navMenu = document.getElementById("nav-Menu");
 const menuOverlay = document.getElementById("menuOverlay");
+const themeToggle = document.getElementById("themeToggle");
+
+function aplicarTema(tema) {
+  const temaAtual = tema === "dark" ? "dark" : "light";
+  document.documentElement.dataset.theme = temaAtual;
+
+  if (themeToggle) {
+    const modoEscuro = temaAtual === "dark";
+    themeToggle.setAttribute(
+      "aria-label",
+      modoEscuro ? "Ativar modo claro" : "Ativar modo escuro"
+    );
+    themeToggle.title = modoEscuro ? "Ativar modo claro" : "Ativar modo escuro";
+    themeToggle.querySelector("span").textContent = modoEscuro ? "☀" : "◐";
+  }
+}
+
+aplicarTema(document.documentElement.dataset.theme || "light");
+
+themeToggle?.addEventListener("click", () => {
+  const proximoTema = document.documentElement.dataset.theme === "dark"
+    ? "light"
+    : "dark";
+  localStorage.setItem("rga-theme", proximoTema);
+  aplicarTema(proximoTema);
+});
 
 if (!menuBtn || !navMenu) {
 } else {
