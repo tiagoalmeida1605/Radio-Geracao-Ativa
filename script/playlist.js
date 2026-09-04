@@ -3,14 +3,24 @@
  * Playlists / Vídeos
  *
  * Fonte de dados:
- * Cloudflare Worker → Firestore
- *
- * API:
- * https://rga-api.rga-api.workers.dev/api/playlists
+ * Firebase Realtime Database → playlists
  */
 
-const API_URL =
-    "https://rga-api.rga-api.workers.dev/api/playlists";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import { getDatabase, onValue, ref } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBNCSo_-gKlWZnxRY06hEH8YumECD4Yj54",
+    authDomain: "radiogeracaoativa-playlist.firebaseapp.com",
+    databaseURL: "https://radiogeracaoativa-playlist-default-rtdb.firebaseio.com",
+    projectId: "radiogeracaoativa-playlist",
+    storageBucket: "radiogeracaoativa-playlist.firebasestorage.app",
+    messagingSenderId: "437305061004",
+    appId: "1:437305061004:web:ee41f4d58d11d20af615a9",
+    measurementId: "G-SFVF2382KW"
+};
+
+const database = getDatabase(initializeApp(firebaseConfig, "rga-public-playlists"));
 
 function escaparHtml(valor) {
     return String(valor ?? "").replace(/[&<>'"]/g, (caractere) => ({
@@ -220,43 +230,17 @@ document.addEventListener(
         }
 
 
-        async function carregarPlaylists() {
-            try {
-                const response = await fetch(API_URL, {
-                    method: "GET",
-                    headers: {
-                        Accept: "application/json"
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API respondeu com HTTP ${response.status}.`);
-                }
-
-                const resultado = await response.json();
-
-                if (!resultado.ok) {
-                    throw new Error(
-                        resultado.error ||
-                        "A API não conseguiu carregar as playlists."
-                    );
-                }
-
-                renderizarPlaylists(
-                    Array.isArray(resultado.items)
-                        ? resultado.items
-                        : []
-                );
-            } catch (error) {
-                console.error("Erro ao carregar playlists:", error);
-                gridDinamica.innerHTML = `
-                    <p class="playlist-feedback">
-                        Não foi possível carregar as playlists. Tente novamente mais tarde.
-                    </p>
-                `;
-            }
-        }
-
-        await carregarPlaylists();
+        const playlistsRef = ref(database, "playlists");
+        onValue(playlistsRef, (snapshot) => {
+            const dados = snapshot.val() || {};
+            renderizarPlaylists(Object.values(dados));
+        }, (error) => {
+            console.error("Erro ao carregar playlists:", error);
+            gridDinamica.innerHTML = `
+                <p class="playlist-feedback">
+                    Não foi possível carregar as playlists. Tente novamente mais tarde.
+                </p>
+            `;
+        });
     }
 );
