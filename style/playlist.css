@@ -8,6 +8,8 @@
     --sombra-leve: 0 4px 15px rgba(18, 34, 50, 0.03);
     --sombra-hover: 0 10px 25px rgba(18, 34, 50, 0.08);
     --cor-destaque: var(--verde-agua);
+    --rga-gap: clamp(16px, 2.4vw, 28px);
+    --rga-radius: clamp(12px, 1.5vw, 18px);
 }
 
 * {
@@ -111,7 +113,7 @@ main {
     max-width: 1200px;
     width: 100%;
     margin: 0 auto;
-    padding: 50px 30px;
+    padding: clamp(32px, 6vw, 64px) clamp(16px, 3vw, 30px);
 }
 
 /* ==========================================================================
@@ -143,8 +145,8 @@ main {
    ========================================================================== */
 .playlists-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: var(--rga-gap);
 }
 
 .playlist-card {
@@ -153,8 +155,8 @@ main {
     background: #ffffff;
     border: 1px solid var(--borda-clara);
     border-top: 4px solid var(--laranja-coral);
-    border-radius: 16px;
-    padding: 25px;
+    border-radius: var(--rga-radius);
+    padding: clamp(18px, 2.5vw, 25px);
     box-shadow: var(--sombra-leve);
     transition: all 0.3s ease;
 }
@@ -200,7 +202,7 @@ main {
 .playlist-video {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: var(--video-ratio, 16 / 9);
     border-radius: 12px;
     overflow: hidden;
     background-color: var(--azul-marinho);

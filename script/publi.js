@@ -1,140 +1,473 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+/**
+ * Rádio Geração Ativa
+ * Notícias
+ *
+ * Fonte de dados:
+ * Cloudflare Worker → Firestore
+ *
+ * API:
+ * https://rga-api.rga-api.workers.dev/api/noticias
+ */
 
-// Conectando no SEU projeto do Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyBNCSo_-gKlWZnxRY06hEH8YumECD4Yj54",
-    authDomain: "radiogeracaoativa-playlist.firebaseapp.com",
-    projectId: "radiogeracaoativa-playlist",
-    storageBucket: "radiogeracaoativa-playlist.firebasestorage.app",
-    messagingSenderId: "437305061004",
-    appId: "1:437305061004:web:ee41f4d58d11d20af615a9",
-    databaseURL: "https://radiogeracaoativa-playlist-default-rtdb.firebaseio.com/"
-};
+const API_URL =
+    "https://rga-api.rga-api.workers.dev/api/noticias";
 
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
 
-document.addEventListener("DOMContentLoaded", () => {
-    // Referências do HTML
-    const gridNoticias = document.getElementById("grid-noticias");
-    const modal = document.getElementById("noticiaModal");
-    const closeModalBtn = document.getElementById("closeModal");
+document.addEventListener("DOMContentLoaded", async () => {
+    // ==========================================================
+    // REFERÊNCIAS DO HTML
+    // ==========================================================
+
+    const gridNoticias =
+        document.getElementById("grid-noticias");
+
+    const modal =
+        document.getElementById("noticiaModal");
+
+    const closeModalBtn =
+        document.getElementById("closeModal");
 
     // Referências dos campos dentro do Modal
-    const modalImg = document.getElementById("modalImg");
-    const modalTitulo = document.getElementById("modalTitulo");
-    const modalData = document.getElementById("modalData");
-    const modalTexto = document.getElementById("modalTexto");
+    const modalImg =
+        document.getElementById("modalImg");
 
-    function formatarDataExibicao(dataISO) {
-        if (!dataISO) return "";
-        if (dataISO.includes("-")) {
-            const partes = dataISO.split("-");
-            if (partes.length === 3) {
-                const [ano, mes, dia] = partes;
+    const modalTitulo =
+        document.getElementById("modalTitulo");
+
+    const modalData =
+        document.getElementById("modalData");
+
+    const modalTexto =
+        document.getElementById("modalTexto");
+
+
+    // ==========================================================
+    // VALIDAÇÕES INICIAIS
+    // ==========================================================
+
+    if (!gridNoticias) {
+        console.error(
+            "Elemento #grid-noticias não encontrado."
+        );
+
+        return;
+    }
+
+
+    if (
+        !modal ||
+        !closeModalBtn ||
+        !modalImg ||
+        !modalTitulo ||
+        !modalData ||
+        !modalTexto
+    ) {
+        console.error(
+            "Elementos do modal de notícia não foram encontrados."
+        );
+
+        return;
+    }
+
+
+    // ==========================================================
+    // FORMATAÇÃO DE DATA
+    // ==========================================================
+
+    function formatarDataExibicao(
+        dataISO
+    ) {
+        if (!dataISO) {
+            return "";
+        }
+
+        if (
+            dataISO.includes("-")
+        ) {
+            const partes =
+                dataISO.split("-");
+
+            if (
+                partes.length === 3
+            ) {
+                const [
+                    ano,
+                    mes,
+                    dia
+                ] = partes;
+
                 return `${dia}/${mes}/${ano}`;
             }
         }
+
         return dataISO;
     }
 
-    function abrirModal(noticia) {
-        modalTitulo.textContent = noticia.titulo || '';
-        const dataFormatada = formatarDataExibicao(noticia.data);
-        modalData.textContent = dataFormatada ? "Publicado em " + dataFormatada : 'Data indefinida';
-        modalTexto.textContent = noticia.conteudo || '';
+
+    // ==========================================================
+    // ABRIR MODAL
+    // ==========================================================
+
+    function abrirModal(
+        noticia
+    ) {
+        modalTitulo.textContent =
+            noticia.titulo || "";
+
+
+        const dataFormatada =
+            formatarDataExibicao(
+                noticia.data
+            );
+
+
+        modalData.textContent =
+            dataFormatada
+                ? "Publicado em " +
+                  dataFormatada
+                : "Data indefinida";
+
+
+        modalTexto.textContent =
+            noticia.conteudo || "";
+
 
         if (noticia.imagem) {
-            modalImg.src = noticia.imagem;
-            modalImg.style.display = "block";
+            modalImg.src =
+                noticia.imagem;
+
+            modalImg.style.display =
+                "block";
+
         } else {
             modalImg.src = "";
-            modalImg.style.display = "none";
+
+            modalImg.style.display =
+                "none";
         }
 
-        modal.classList.add("active");
-        document.body.classList.add("modal-aberto");
+
+        modal.classList.add(
+            "active"
+        );
+
+        document.body.classList.add(
+            "modal-aberto"
+        );
+
+
         closeModalBtn.focus();
     }
 
+
+    // ==========================================================
+    // FECHAR MODAL
+    // ==========================================================
+
     function fecharModal() {
-        modal.classList.remove("active");
-        document.body.classList.remove("modal-aberto");
+        modal.classList.remove(
+            "active"
+        );
+
+        document.body.classList.remove(
+            "modal-aberto"
+        );
     }
 
-    // LÓGICA DE FECHAR O MODAL
-    closeModalBtn.addEventListener("click", fecharModal);
 
-    // Se o usuário clicar fora da caixinha (no fundo escuro), fecha também
-    modal.addEventListener("click", (e) => {
-        if (e.target === modal) {
-            fecharModal();
+    // ==========================================================
+    // EVENTOS DO MODAL
+    // ==========================================================
+
+    closeModalBtn.addEventListener(
+        "click",
+        fecharModal
+    );
+
+
+    // Fecha clicando no fundo escuro
+    modal.addEventListener(
+        "click",
+        (event) => {
+            if (
+                event.target === modal
+            ) {
+                fecharModal();
+            }
         }
-    });
+    );
 
-    // Fechar ao pressionar a tecla ESC
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && modal.classList.contains("active")) {
-            fecharModal();
+
+    // Fecha com ESC
+    document.addEventListener(
+        "keydown",
+        (event) => {
+            if (
+                event.key === "Escape" &&
+                modal.classList.contains(
+                    "active"
+                )
+            ) {
+                fecharModal();
+            }
         }
-    });
+    );
 
-    // BUSCA AS NOTÍCIAS NO BANCO DE DADOS
-    const noticiasRef = ref(database, "noticias");
 
-    onValue(noticiasRef, (snapshot) => {
-        gridNoticias.innerHTML = "";
-        const dadosFirebase = snapshot.val();
+    // ==========================================================
+    // CARREGAR NOTÍCIAS PELA API
+    // ==========================================================
 
-        if (!dadosFirebase) {
+    async function carregarNoticias() {
+        try {
             gridNoticias.innerHTML = `
-                <p style="text-align: center; width: 100%; color: #666; font-weight: 600;">
-                    Nenhuma publicação encontrada. Volte mais tarde!
-                </p>`;
-            return;
-        }
-
-        // Pega as notícias e inverte a ordem (para a mais recente aparecer primeiro)
-        const chavesNoticias = Object.keys(dadosFirebase).reverse();
-
-        chavesNoticias.forEach((key) => {
-            const noticia = dadosFirebase[key];
-            const card = document.createElement("article");
-            card.className = "noticia-card";
-            card.setAttribute("tabindex", "0");
-            card.setAttribute("role", "button");
-            card.setAttribute("aria-label", `Ler notícia: ${noticia.titulo || 'Sem título'}`);
-
-            const dataFormatada = formatarDataExibicao(noticia.data);
-
-            // Cria o visual da PRÉVIA
-            const imagemHTML = noticia.imagem
-                ? `<img src="${noticia.imagem}" alt="Prévia da notícia" class="noticia-img-preview" loading="lazy">`
-                : '';
-
-            card.innerHTML = `
-                ${imagemHTML}
-                <div class="noticia-content-preview">
-                    <span class="noticia-data">📅 ${dataFormatada}</span>
-                    <h3>${noticia.titulo || ''}</h3>
-                    <p>${noticia.resumo || ''}</p>
-                    <span class="leia-mais">Ler publicação completa ➔</span>
-                </div>
+                <p
+                    style="
+                        text-align: center;
+                        width: 100%;
+                        color: #666;
+                        font-weight: 600;
+                    "
+                >
+                    Carregando publicações...
+                </p>
             `;
 
-            // EVENTO DE CLIQUE: Quando clicar no card, joga os dados para o Modal e abre
-            card.addEventListener("click", () => abrirModal(noticia));
 
-            // Suporte para navegação via teclado (Enter ou Espaço)
-            card.addEventListener("keydown", (e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    abrirModal(noticia);
+            const response =
+                await fetch(
+                    API_URL,
+                    {
+                        method: "GET",
+                        headers: {
+                            Accept:
+                                "application/json"
+                        }
+                    }
+                );
+
+
+            if (!response.ok) {
+                throw new Error(
+                    `API respondeu com HTTP ${response.status}.`
+                );
+            }
+
+
+            const resultado =
+                await response.json();
+
+
+            if (
+                !resultado.ok
+            ) {
+                throw new Error(
+                    resultado.error ||
+                    "A API não conseguiu carregar as notícias."
+                );
+            }
+
+
+            const noticias =
+                Array.isArray(
+                    resultado.items
+                )
+                    ? resultado.items
+                    : [];
+
+
+            gridNoticias.innerHTML =
+                "";
+
+
+            // --------------------------------------------------
+            // BANCO VAZIO
+            // --------------------------------------------------
+
+            if (
+                noticias.length === 0
+            ) {
+                gridNoticias.innerHTML = `
+                    <p
+                        style="
+                            text-align: center;
+                            width: 100%;
+                            color: #666;
+                            font-weight: 600;
+                        "
+                    >
+                        Nenhuma publicação encontrada.
+                        Volte mais tarde!
+                    </p>
+                `;
+
+                return;
+            }
+
+
+            // --------------------------------------------------
+            // RENDERIZAR NOTÍCIAS
+            // --------------------------------------------------
+
+            noticias.forEach(
+                (noticia) => {
+                    const card =
+                        document.createElement(
+                            "article"
+                        );
+
+
+                    card.className =
+                        "noticia-card";
+
+
+                    card.setAttribute(
+                        "tabindex",
+                        "0"
+                    );
+
+
+                    card.setAttribute(
+                        "role",
+                        "button"
+                    );
+
+
+                    card.setAttribute(
+                        "aria-label",
+                        `Ler notícia: ${
+                            noticia.titulo ||
+                            "Sem título"
+                        }`
+                    );
+
+
+                    const dataFormatada =
+                        formatarDataExibicao(
+                            noticia.data
+                        );
+
+
+                    // ------------------------------------------------
+                    // IMAGEM
+                    // ------------------------------------------------
+
+                    const imagemHTML =
+                        noticia.imagem
+                            ? `
+                                <img
+                                    src="${noticia.imagem}"
+                                    alt="Prévia da notícia"
+                                    class="noticia-img-preview"
+                                    loading="lazy"
+                                >
+                              `
+                            : "";
+
+
+                    // ------------------------------------------------
+                    // CARD
+                    // ------------------------------------------------
+
+                    card.innerHTML = `
+                        ${imagemHTML}
+
+                        <div
+                            class="noticia-content-preview"
+                        >
+                            <span
+                                class="noticia-data"
+                            >
+                                📅 ${dataFormatada}
+                            </span>
+
+                            <h3>
+                                ${noticia.titulo || ""}
+                            </h3>
+
+                            <p>
+                                ${noticia.resumo || ""}
+                            </p>
+
+                            <span
+                                class="leia-mais"
+                            >
+                                Ler publicação completa ➔
+                            </span>
+                        </div>
+                    `;
+
+
+                    // ------------------------------------------------
+                    // CLIQUE
+                    // ------------------------------------------------
+
+                    card.addEventListener(
+                        "click",
+                        () => {
+                            abrirModal(
+                                noticia
+                            );
+                        }
+                    );
+
+
+                    // ------------------------------------------------
+                    // TECLADO
+                    // ------------------------------------------------
+
+                    card.addEventListener(
+                        "keydown",
+                        (event) => {
+                            if (
+                                event.key ===
+                                    "Enter" ||
+                                event.key ===
+                                    " "
+                            ) {
+                                event.preventDefault();
+
+                                abrirModal(
+                                    noticia
+                                );
+                            }
+                        }
+                    );
+
+
+                    gridNoticias.appendChild(
+                        card
+                    );
                 }
-            });
+            );
 
-            gridNoticias.appendChild(card);
-        });
-    });
+        } catch (error) {
+            console.error(
+                "Erro ao carregar notícias:",
+                error
+            );
+
+
+            gridNoticias.innerHTML = `
+                <p
+                    style="
+                        text-align: center;
+                        width: 100%;
+                        color: #b00020;
+                        font-weight: 600;
+                    "
+                >
+                    Não foi possível carregar as publicações.
+                    Tente novamente mais tarde.
+                </p>
+            `;
+        }
+    }
+
+
+    // ==========================================================
+    // INICIALIZAR
+    // ==========================================================
+
+    await carregarNoticias();
 });
