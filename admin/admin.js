@@ -151,7 +151,7 @@ function liberarPainel(papel, nome = NOMES_PAPEL[papel]) {
     conteudoPainel.style.display = "block";
 
     aplicarPermissoes(papel);
-    textoContaLogada.textContent = `Logado como: ${nome || NOMES_PAPEL[papel] || papel}`;
+    textoContaLogada.textContent = `Olá, ${nome || NOMES_PAPEL[papel] || "usuário autorizado"}`;
 
     if (papel === "admin") {
         inicializarGerenciadorManutencao();
