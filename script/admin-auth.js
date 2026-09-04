@@ -27,7 +27,7 @@ export const PAPEIS_VALIDOS = new Set(["admin", "playlist", "publicador"]);
 export const NOMES_PAPEL = {
     admin: "Administrador",
     publicador: "Publicador de Notícias",
-    playlist: "Gerente de Playlists"
+    playlist: "Editor de Vídeos"
 };
 
 export async function autenticarUsuario(email, senha) {
@@ -41,7 +41,9 @@ export async function autenticarUsuario(email, senha) {
 
     if (!PAPEIS_VALIDOS.has(papel)) {
         await signOut(auth);
-        throw new Error("Esta conta não possui um papel administrativo válido.");
+        const erro = new Error("Esta conta não possui um papel administrativo válido.");
+        erro.code = "auth/missing-role";
+        throw erro;
     }
 
     return { usuario: credencial.user, papel };

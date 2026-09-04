@@ -20,7 +20,7 @@
             <ul>
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="../pages/sobre.html">Sobre</a></li>
-                <li><a href="../pages/playlist.html">Playlists</a></li>
+                <li><a href="../pages/playlist.html">Vídeos</a></li>
                 <li><a href="../pages/publi.html">Notícias</a></li>
                 <li><a href="./admin.html" class="active">Admin</a></li>
             </ul>
@@ -33,7 +33,7 @@
     <div id="bloqueio-tela">
         <div class="card-senha" id="cardSenha">
             <h2>🔒 Painel Restrito</h2>
-            <p class="txt-subtitulo">Insira as credenciais da rádio para gerenciar as playlists expostas no site.</p>
+            <p class="txt-subtitulo">Entre com sua conta autorizada para gerenciar o conteúdo da rádio.</p>
             <form id="form-bloqueio-rga">
                 <input type="email" id="input-usuario-rga" placeholder="E-mail" required autocomplete="username">
 
@@ -85,8 +85,8 @@
         </div>
 
         <div class="admin-card" id="secao-playlists" data-papel="admin,playlist">
-            <h2>📹 Gerenciar Playlists</h2>
-            <p class="txt-subtitulo" style="margin-bottom: 20px;">Adicione, modifique ou exclua os cartões de transmissão de vídeos do YouTube.</p>
+            <h2>📹 Gerenciar Vídeos</h2>
+            <p class="txt-subtitulo" style="margin-bottom: 20px;">Adicione, modifique ou exclua os vídeos e playlists do YouTube.</p>
             <hr class="divider">
 
             <form id="form-playlist">
@@ -111,7 +111,7 @@
                     <option value="🔔">🔔 Avisos / Importante</option>
                 </select>
 
-                <label for="playlist-titulo">Título da Playlist</label>
+                <label for="playlist-titulo">Título do Vídeo ou Playlist</label>
                 <input type="text" id="playlist-titulo" placeholder="Ex: Programas e Podcasts" required>
 
                 <label for="playlist-desc">Descrição Breve</label>
@@ -121,13 +121,13 @@
                 <input type="text" id="playlist-url" placeholder="Ex: PLWKjhJtqVAbm04DK8TSUCRheRjW..." required>
 
                 <div class="botoes-playlist">
-                    <button type="submit" id="btn-salvar-playlist" class="btn-primary">Salvar Playlist</button>
+                    <button type="submit" id="btn-salvar-playlist" class="btn-primary">Salvar Vídeo</button>
                     <button type="button" id="btn-limpar-form" class="btn-secondary">Limpar Form</button>
                 </div>
             </form>
 
             <hr class="divider">
-            <h3>Playlists Ativas</h3>
+            <h3>Vídeos e Playlists Ativos</h3>
             <div id="lista-playlists-admin" class="playlists-admin-grid">
             </div>
         </div>

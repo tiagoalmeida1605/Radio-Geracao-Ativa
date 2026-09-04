@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 import { getDatabase, onValue, ref } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
-import { observarAutenticacao } from "./admin-auth.js";
+import { observarAutenticacao, obterPapel } from "./admin-auth.js?v=2";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBNCSo_-gKlWZnxRY06hEH8YumECD4Yj54",
@@ -59,12 +59,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const manutencaoRef = ref(database, CAMINHO_CONFIGURACAO);
 
     let manutencaoAtiva = false;
-    let usuarioAtual = null;
+    let usuarioAutorizado = false;
 
-    const avaliarAcesso = () => aplicarEstadoManutencao(manutencaoAtiva, usuarioAtual);
+    const avaliarAcesso = () => aplicarEstadoManutencao(manutencaoAtiva, usuarioAutorizado);
 
-    observarAutenticacao((usuario) => {
-        usuarioAtual = usuario;
+    observarAutenticacao(async (usuario) => {
+        try {
+            usuarioAutorizado = Boolean(usuario && await obterPapel(usuario));
+        } catch (error) {
+            usuarioAutorizado = false;
+            console.warn("Erro ao validar papel durante a manutenção:", error);
+        }
+
         avaliarAcesso();
     });
 

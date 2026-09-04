@@ -7,7 +7,7 @@ import {
     encerrarSessao,
     observarAutenticacao,
     obterPapel
-} from "../script/admin-auth.js";
+} from "../script/admin-auth.js?v=2";
 
 // 1. CONFIGURAÇÃO DO FIREBASE (Configurado Corretamente)
 const firebaseConfig = {
@@ -47,6 +47,20 @@ function escaparHtml(valor) {
     })[caractere]);
 }
 
+function mensagemFirebase(error, acao) {
+    const codigo = error?.code || "";
+
+    if (codigo === "PERMISSION_DENIED" || codigo === "permission-denied") {
+        return `O Firebase recusou a permissão para ${acao}.`;
+    }
+
+    if (codigo === "NETWORK_ERROR" || codigo === "unavailable") {
+        return `Não foi possível conectar ao Firebase para ${acao}.`;
+    }
+
+    return `Não foi possível ${acao}. Tente novamente.`;
+}
+
 observarAutenticacao(async (usuario) => {
     if (!usuario) {
         mostrarTelaLogin();
@@ -83,11 +97,21 @@ formBloqueio?.addEventListener("submit", async (e) => {
         await autenticarUsuario(inputUsuario.value, inputSenha.value);
         erroLogin.classList.remove("mostrar");
     } catch (error) {
+        const mensagensErro = {
+            "auth/invalid-credential": "E-mail ou senha incorretos.",
+            "auth/user-not-found": "E-mail ou senha incorretos.",
+            "auth/wrong-password": "E-mail ou senha incorretos.",
+            "auth/missing-role": "Esta conta não possui um papel administrativo válido.",
+            "auth/network-request-failed": "Não foi possível conectar ao Firebase. Tente novamente."
+        };
+
         mostrarErroLogin(
-            error.code === "auth/invalid-credential"
-                ? "E-mail ou senha incorretos."
-                : error.message
+            mensagensErro[error.code] ||
+            (error.code === "PERMISSION_DENIED"
+                ? "O Firebase recusou a leitura do papel desta conta."
+                : "Não foi possível concluir o login. Tente novamente.")
         );
+        console.error("Erro no login administrativo:", error);
     }
 });
 
@@ -197,7 +221,7 @@ function inicializarGerenciadorManutencao() {
                     : "Modo de manutenção desativado.";
             })
             .catch(err => {
-                feedbackManutencao.textContent = "Erro ao salvar: " + err.message;
+                feedbackManutencao.textContent = mensagemFirebase(err, "salvar a manutenção");
             })
             .finally(() => {
                 btnSalvar.disabled = false;
@@ -299,7 +323,7 @@ function inicializarGerenciadorPlaylists() {
 
             limparFormulario();
         } catch (error) {
-            alert("Erro ao salvar playlist: " + error.message);
+            alert(mensagemFirebase(error, "salvar o vídeo"));
         }
     });
 
@@ -312,7 +336,7 @@ function inicializarGerenciadorPlaylists() {
                 inputTitulo.value = item.titulo;
                 inputDesc.value = item.descricao;
                 inputUrl.value = `https://www.youtube.com/playlist?list=${item.playlistId}`;
-                document.getElementById("btn-salvar-playlist").textContent = "Substituir Dados";
+                document.getElementById("btn-salvar-playlist").textContent = "Atualizar Vídeo";
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
@@ -322,14 +346,14 @@ function inicializarGerenciadorPlaylists() {
         if (confirm("Tens a certeza que desejas remover esta playlist permanentemente da nuvem?")) {
             remove(ref(database, "playlists/" + id))
                 .then(() => alert("🗑️ Playlist removida com sucesso!"))
-                .catch(err => alert("Erro ao remover: " + err.message));
+                .catch(err => alert(mensagemFirebase(err, "remover o vídeo")));
         }
     }
 
     function limparFormulario() {
         inputId.value = "";
         formPlaylist.reset();
-        document.getElementById("btn-salvar-playlist").textContent = "Salvar Playlist";
+        document.getElementById("btn-salvar-playlist").textContent = "Salvar Vídeo";
     }
 
     btnLimpar.addEventListener("click", limparFormulario);
@@ -458,7 +482,7 @@ function inicializarGerenciadorNoticias() {
 
             limparFormularioNoticia();
         } catch (error) {
-            alert("Erro ao salvar notícia: " + error.message);
+            alert(mensagemFirebase(error, "salvar a notícia"));
         }
     });
 
@@ -493,7 +517,7 @@ function inicializarGerenciadorNoticias() {
         if (confirm("Tens a certeza que desejas remover esta notícia permanentemente da nuvem?")) {
             remove(ref(database, "noticias/" + id))
                 .then(() => alert("🗑️ Notícia removida com sucesso!"))
-                .catch(err => alert("Erro ao remover: " + err.message));
+                .catch(err => alert(mensagemFirebase(err, "remover a notícia")));
         }
     }
 
