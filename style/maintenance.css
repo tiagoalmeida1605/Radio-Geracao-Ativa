@@ -1,10 +1,37 @@
 :root {
-  --glass-bg: rgba(7, 18, 29, 0.76);
-  --glass-border: rgba(255, 255, 255, 0.14);
+  --maintenance-bg: linear-gradient(135deg, #eef5f4 0%, #dceceb 52%, #f9f3e8 100%);
+  --maintenance-glow-a: rgba(53, 148, 151, 0.18);
+  --maintenance-glow-b: rgba(220, 92, 62, 0.12);
+  --maintenance-text: #122232;
+  --maintenance-muted: rgba(18, 34, 50, 0.7);
+  --glass-bg: rgba(255, 255, 255, 0.58);
+  --glass-sheen: rgba(255, 255, 255, 0.54);
+  --glass-border: rgba(18, 34, 50, 0.14);
   --glass-blur: 18px;
-  --glass-shadow: 0 26px 76px rgba(0, 0, 0, 0.42);
-  --glass-highlight: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 26px 76px rgba(18, 34, 50, 0.18);
+  --glass-highlight: rgba(255, 255, 255, 0.72);
+  --glass-focus: #217d80;
   --glass-radius: clamp(20px, 4vw, 30px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --maintenance-bg: linear-gradient(135deg, #08131f, #122232 52%, #0b1724);
+    --maintenance-glow-a: rgba(53, 148, 151, 0.16);
+    --maintenance-glow-b: rgba(220, 92, 62, 0.12);
+    --maintenance-text: #f5f8fa;
+    --maintenance-muted: rgba(245, 248, 250, 0.72);
+    --glass-bg: rgba(7, 18, 29, 0.76);
+    --glass-sheen: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.14);
+    --glass-shadow: 0 26px 76px rgba(0, 0, 0, 0.42);
+    --glass-highlight: rgba(255, 255, 255, 0.1);
+    --glass-focus: #72d1ca;
+  }
+
+  .maintenance-brand {
+    color: #72d1ca;
+  }
 }
 
 .site-shell {
@@ -33,7 +60,7 @@ body.maintenance-active .site-shell {
   justify-content: center;
   align-items: center;
   padding: 24px;
-  background: rgba(18, 34, 50, 0.78);
+  background: color-mix(in srgb, var(--maintenance-text) 18%, transparent);
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
@@ -45,14 +72,14 @@ body.maintenance-active .site-shell {
 
 body.pagina-manutencao {
   background:
-    radial-gradient(circle at 18% 18%, rgba(53, 148, 151, 0.16), transparent 34%),
-    radial-gradient(circle at 82% 76%, rgba(220, 92, 62, 0.12), transparent 32%),
-    linear-gradient(135deg, #08131f, #122232 52%, #0b1724);
+    radial-gradient(circle at 18% 18%, var(--maintenance-glow-a), transparent 34%),
+    radial-gradient(circle at 82% 76%, var(--maintenance-glow-b), transparent 32%),
+    var(--maintenance-bg);
 }
 
 @supports ((backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px))) {
   .maintenance-overlay {
-    background: rgba(18, 34, 50, 0.62);
+    background: color-mix(in srgb, var(--maintenance-text) 12%, transparent);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
@@ -65,13 +92,13 @@ body.pagina-manutencao {
   margin: auto;
   height: auto;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.1), transparent 42%),
+    linear-gradient(145deg, var(--glass-sheen), transparent 42%),
     var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--glass-radius);
   box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
-  color: #f5f8fa;
+  color: var(--maintenance-text);
   padding: clamp(28px, 7vw, 52px) clamp(20px, 7vw, 42px);
   text-align: center;
   outline: none;
@@ -107,7 +134,7 @@ body.pagina-manutencao {
 
 .maintenance-brand {
   margin: 0 0 8px;
-  color: #72d1ca;
+  color: #217d80;
   font-size: 0.95rem;
   font-weight: 800;
   letter-spacing: 0;
@@ -118,7 +145,7 @@ body.pagina-manutencao {
 
 .maintenance-card h1 {
   margin: 0 0 14px;
-  color: #f5f8fa;
+  color: var(--maintenance-text);
   font-size: clamp(1.6rem, 5vw, 2rem);
   font-weight: 900;
   line-height: 1.2;
@@ -128,7 +155,7 @@ body.pagina-manutencao {
 }
 
 .maintenance-card p {
-  color: rgba(245, 248, 250, 0.72);
+  color: var(--maintenance-muted);
   font-size: clamp(0.95rem, 4vw, 1.05rem);
   font-weight: 600;
   line-height: 1.6;
@@ -154,7 +181,7 @@ body.pagina-manutencao {
   border: 1px solid rgba(114, 209, 202, 0.24);
   border-radius: 999px;
   background: rgba(114, 209, 202, 0.1);
-  color: #f5f8fa;
+  color: var(--maintenance-text);
   font-size: clamp(0.85rem, 3vw, 0.92rem);
   font-weight: 800;
   flex-wrap: wrap;

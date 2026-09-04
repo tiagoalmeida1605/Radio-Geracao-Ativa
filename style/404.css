@@ -1,18 +1,43 @@
 :root {
-  --glass-bg: rgba(14, 25, 37, 0.68);
-  --glass-border: rgba(255, 255, 255, 0.14);
+  --page-bg: linear-gradient(135deg, #eef5f4 0%, #dceceb 52%, #f9f3e8 100%);
+  --page-glow-a: rgba(53, 148, 151, 0.2);
+  --page-glow-b: rgba(220, 92, 62, 0.14);
+  --page-text: #122232;
+  --page-muted: rgba(18, 34, 50, 0.7);
+  --glass-bg: rgba(255, 255, 255, 0.58);
+  --glass-sheen: rgba(255, 255, 255, 0.54);
+  --glass-border: rgba(18, 34, 50, 0.14);
   --glass-blur: 18px;
-  --glass-shadow: 0 24px 70px rgba(4, 12, 20, 0.42);
-  --glass-highlight: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 24px 70px rgba(18, 34, 50, 0.18);
+  --glass-highlight: rgba(255, 255, 255, 0.72);
+  --glass-button: rgba(255, 255, 255, 0.42);
+  --glass-focus: #217d80;
   --glass-radius: clamp(20px, 4vw, 32px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page-bg: linear-gradient(135deg, #08131f 0%, #122232 52%, #0b1724 100%);
+    --page-glow-a: rgba(53, 148, 151, 0.2);
+    --page-glow-b: rgba(220, 92, 62, 0.15);
+    --page-text: #f5f8fa;
+    --page-muted: rgba(245, 248, 250, 0.72);
+    --glass-bg: rgba(14, 25, 37, 0.68);
+    --glass-sheen: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.14);
+    --glass-shadow: 0 24px 70px rgba(4, 12, 20, 0.42);
+    --glass-highlight: rgba(255, 255, 255, 0.1);
+    --glass-button: rgba(255, 255, 255, 0.06);
+    --glass-focus: #72d1ca;
+  }
 }
 
 body:has(.painel-404) {
   background:
-    radial-gradient(circle at 18% 18%, rgba(53, 148, 151, 0.2), transparent 34%),
-    radial-gradient(circle at 82% 76%, rgba(220, 92, 62, 0.15), transparent 32%),
-    linear-gradient(135deg, #08131f 0%, #122232 52%, #0b1724 100%);
-  color: #f5f8fa;
+    radial-gradient(circle at 18% 18%, var(--page-glow-a), transparent 34%),
+    radial-gradient(circle at 82% 76%, var(--page-glow-b), transparent 32%),
+    var(--page-bg);
+  color: var(--page-text);
   overflow-x: clip;
 }
 
@@ -21,7 +46,7 @@ html:has(.painel-404) {
 }
 
 body:has(.painel-404) header {
-  background: rgba(8, 19, 31, 0.66);
+  background: color-mix(in srgb, var(--glass-bg) 82%, transparent);
   box-shadow: 0 1px 0 var(--glass-border);
   backdrop-filter: blur(14px) saturate(130%);
   -webkit-backdrop-filter: blur(14px) saturate(130%);
@@ -29,11 +54,11 @@ body:has(.painel-404) header {
 
 body:has(.painel-404) .sidebar h2,
 body:has(.painel-404) .menu-btn {
-  color: #f5f8fa;
+  color: var(--page-text);
 }
 
 body:has(.painel-404) .sidebar a {
-  color: rgba(245, 248, 250, 0.78);
+  color: color-mix(in srgb, var(--page-text) 78%, transparent);
 }
 
 body:has(.painel-404) main {
@@ -62,13 +87,17 @@ body:has(.painel-404) main::after {
 body:has(.painel-404) main::before {
   top: 8%;
   left: 8%;
-  background: radial-gradient(circle, rgba(53, 148, 151, 0.28), transparent 68%);
+  background: radial-gradient(circle, var(--page-glow-a), transparent 68%);
 }
 
 body:has(.painel-404) main::after {
   right: 6%;
   bottom: 4%;
   background: radial-gradient(circle, rgba(239, 166, 52, 0.16), transparent 68%);
+}
+
+body:has(.painel-404) footer {
+  background: color-mix(in srgb, var(--page-text) 92%, transparent);
 }
 
 .painel-404 {
@@ -78,7 +107,7 @@ body:has(.painel-404) main::after {
   overflow: hidden;
   text-align: center;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.08), transparent 42%),
+    linear-gradient(145deg, var(--glass-sheen), transparent 42%),
     var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--glass-radius);
@@ -104,7 +133,7 @@ body:has(.painel-404) main::after {
   width: 34%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 68%);
+  background: radial-gradient(circle, var(--glass-highlight), transparent 68%);
   filter: blur(8px);
   pointer-events: none;
 }
@@ -113,7 +142,7 @@ body:has(.painel-404) main::after {
   position: relative;
   z-index: 1;
   margin: 0 0 clamp(8px, 2vw, 14px);
-  color: #f4c56f;
+  color: #b87508;
   font-size: clamp(5rem, 22vw, 12rem);
   font-weight: 900;
   letter-spacing: 0.04em;
@@ -125,7 +154,7 @@ body:has(.painel-404) main::after {
   position: relative;
   z-index: 1;
   margin: 0 0 14px;
-  color: #f5f8fa;
+  color: var(--page-text);
   font-size: clamp(1.45rem, 4vw, 2.35rem);
   line-height: 1.12;
   letter-spacing: 0.01em;
@@ -136,17 +165,9 @@ body:has(.painel-404) main::after {
   z-index: 1;
   max-width: 38rem;
   margin: 0 auto;
-  color: rgba(245, 248, 250, 0.72);
+  color: var(--page-muted);
   font-size: clamp(0.98rem, 2vw, 1.12rem);
   line-height: 1.65;
-}
-
-.codigo-404 {
-  font-size: clamp(2.5rem, 8vw, 3.5rem);
-  font-weight: 800;
-  color: var(--azul-marinho);
-  margin-bottom: 10px;
-  letter-spacing: -1px;
 }
 
 .acoes-404 {
@@ -172,8 +193,8 @@ body:has(.painel-404) main::after {
 }
 
 .btn-secundario {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(245, 248, 250, 0.88);
+  background: var(--glass-button);
+  color: color-mix(in srgb, var(--page-text) 88%, transparent);
   border: 1px solid var(--glass-border);
   padding: 12px 28px;
   border-radius: 30px;
@@ -186,7 +207,7 @@ body:has(.painel-404) main::after {
 }
 
 .btn-secundario:hover {
-  color: #ffffff;
+  color: var(--page-text);
   background-color: rgba(53, 148, 151, 0.22);
   transform: translateY(-2px);
 }
@@ -197,7 +218,7 @@ body:has(.painel-404) main::after {
 
 .btn-secundario:focus-visible,
 .acoes-404 .more:focus-visible {
-  outline: 3px solid #72d1ca;
+  outline: 3px solid var(--glass-focus);
   outline-offset: 3px;
 }
 
