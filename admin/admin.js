@@ -1,12 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 import { getDatabase, ref, onValue, set, push, remove, get } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 import {
-    CONTAS,
     NOMES_PAPEL,
-    criptografarSenha,
-    encerrarContaAutenticada,
-    obterContaAutenticada,
-    salvarContaAutenticada
+    PAPEIS_VALIDOS,
+    autenticarUsuario,
+    encerrarSessao,
+    observarAutenticacao,
+    obterPapel
 } from "../script/admin-auth.js";
 
 // 1. CONFIGURAÇÃO DO FIREBASE (Configurado Corretamente)
@@ -36,7 +36,6 @@ const btnToggleSenha = document.getElementById("btnToggleSenha");
 const textoContaLogada = document.getElementById("textoContaLogada");
 const btnSair = document.getElementById("btnSair");
 const gerenciadoresInicializados = new Set();
-const PAPEIS_VALIDOS = new Set(["admin", "playlist", "publicador"]);
 
 function escaparHtml(valor) {
     return String(valor ?? "").replace(/[&<>'"]/g, (caractere) => ({
@@ -48,10 +47,26 @@ function escaparHtml(valor) {
     })[caractere]);
 }
 
-const contaSalva = obterContaAutenticada();
-if (contaSalva) {
-    liberarPainel(contaSalva.papel);
-}
+observarAutenticacao(async (usuario) => {
+    if (!usuario) {
+        mostrarTelaLogin();
+        return;
+    }
+
+    try {
+        const papel = await obterPapel(usuario);
+        if (PAPEIS_VALIDOS.has(papel)) {
+            liberarPainel(papel);
+        } else {
+            await encerrarSessao();
+            mostrarErroLogin("Esta conta não possui permissão para acessar o painel.");
+        }
+    } catch (error) {
+        await encerrarSessao();
+        mostrarErroLogin("Não foi possível validar a conta administrativa.");
+        console.error("Erro ao validar papel administrativo:", error);
+    }
+});
 
 btnToggleSenha?.addEventListener("click", () => {
     const estaOculta = inputSenha.type === "password";
@@ -64,27 +79,31 @@ btnToggleSenha?.addEventListener("click", () => {
 formBloqueio?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const usuarioDigitado = inputUsuario.value.trim().toLowerCase();
-    const credenciaisDigitadas = `${usuarioDigitado}:${inputSenha.value}`;
-    const hashDigitado = await criptografarSenha(credenciaisDigitadas);
-
-    const contaEncontrada = CONTAS.find(c => c.hash === hashDigitado);
-
-    if (contaEncontrada) {
-        salvarContaAutenticada(contaEncontrada);
+    try {
+        await autenticarUsuario(inputUsuario.value, inputSenha.value);
         erroLogin.classList.remove("mostrar");
-        liberarPainel(contaEncontrada.papel);
-    } else {
-        mostrarErroLogin();
+    } catch (error) {
+        mostrarErroLogin(
+            error.code === "auth/invalid-credential"
+                ? "E-mail ou senha incorretos."
+                : error.message
+        );
     }
 });
 
 btnSair?.addEventListener("click", () => {
-    encerrarContaAutenticada();
-    location.reload();
+    encerrarSessao().catch((error) => {
+        console.error("Erro ao encerrar sessão:", error);
+    });
 });
 
-function mostrarErroLogin() {
+function mostrarTelaLogin() {
+    telaBloqueio.style.display = "block";
+    conteudoPainel.style.display = "none";
+}
+
+function mostrarErroLogin(mensagem = "E-mail ou senha incorretos.") {
+    erroLogin.textContent = mensagem;
     erroLogin.classList.add("mostrar");
     inputSenha.value = "";
     inputSenha.focus();
@@ -105,7 +124,7 @@ function aplicarPermissoes(papel) {
 
 function liberarPainel(papel) {
     if (!PAPEIS_VALIDOS.has(papel)) {
-        encerrarContaAutenticada();
+        encerrarSessao();
         return;
     }
 

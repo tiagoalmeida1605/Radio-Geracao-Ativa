@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 import { getDatabase, onValue, ref } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
-import { obterContaAutenticada } from "./admin-auth.js";
+import { observarAutenticacao } from "./admin-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBNCSo_-gKlWZnxRY06hEH8YumECD4Yj54",
@@ -40,12 +40,12 @@ function redirecionarParaManutencao() {
     window.location.replace(obterUrlManutencao());
 }
 
-function aplicarEstadoManutencao(ativo) {
+function aplicarEstadoManutencao(ativo, usuario) {
     if (window.location.pathname.includes("/admin")) {
         return;
     }
 
-    if (ativo && !obterContaAutenticada()) {
+    if (ativo && !usuario) {
         redirecionarParaManutencao();
         return;
     }
@@ -58,11 +58,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const manutencaoRef = ref(database, CAMINHO_CONFIGURACAO);
 
+    let manutencaoAtiva = false;
+    let usuarioAtual = null;
+
+    const avaliarAcesso = () => aplicarEstadoManutencao(manutencaoAtiva, usuarioAtual);
+
+    observarAutenticacao((usuario) => {
+        usuarioAtual = usuario;
+        avaliarAcesso();
+    });
+
     onValue(manutencaoRef, (snapshot) => {
         const configuracao = snapshot.val();
-        aplicarEstadoManutencao(Boolean(configuracao?.ativo));
+        manutencaoAtiva = Boolean(configuracao?.ativo);
+        avaliarAcesso();
     }, (error) => {
         console.warn("Erro ao ler status de manutenção:", error);
-        aplicarEstadoManutencao(false);
+        manutencaoAtiva = false;
+        avaliarAcesso();
     });
 });

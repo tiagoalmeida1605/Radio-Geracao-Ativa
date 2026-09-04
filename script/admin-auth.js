@@ -1,8 +1,28 @@
-export const CONTAS = [
-    { papel: "admin", hash: "f374d04f033f52346e2153151af9cfe761fab6959bbd92e54f0a37738d8963aa" },
-    { papel: "publicador", hash: "df396909399def576a471a3402484be047541c590ea72c6eced89aa6a65b3f6c" },
-    { papel: "playlist", hash: "4f1a2dc11ff8f84b5e936f345665580ba9317a96eb3e414e8fdf058d0151308d" }
-];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import {
+    getAuth,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+import { getDatabase, get, ref } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBNCSo_-gKlWZnxRY06hEH8YumECD4Yj54",
+    authDomain: "radiogeracaoativa-playlist.firebaseapp.com",
+    databaseURL: "https://radiogeracaoativa-playlist-default-rtdb.firebaseio.com",
+    projectId: "radiogeracaoativa-playlist",
+    storageBucket: "radiogeracaoativa-playlist.firebasestorage.app",
+    messagingSenderId: "437305061004",
+    appId: "1:437305061004:web:ee41f4d58d11d20af615a9",
+    measurementId: "G-SFVF2382KW"
+};
+
+const app = initializeApp(firebaseConfig, "rga-auth");
+export const auth = getAuth(app);
+const database = getDatabase(app);
+
+export const PAPEIS_VALIDOS = new Set(["admin", "playlist", "publicador"]);
 
 export const NOMES_PAPEL = {
     admin: "Administrador",
@@ -10,28 +30,41 @@ export const NOMES_PAPEL = {
     playlist: "Gerente de Playlists"
 };
 
-const CHAVE_HASH = "rga_autenticado";
-const CHAVE_PAPEL = "rga_papel";
+export async function autenticarUsuario(email, senha) {
+    const credencial = await signInWithEmailAndPassword(
+        auth,
+        email.trim().toLowerCase(),
+        senha
+    );
 
-export async function criptografarSenha(texto) {
-    const msgBuffer = new TextEncoder().encode(texto);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+    const papel = await obterPapel(credencial.user);
+
+    if (!PAPEIS_VALIDOS.has(papel)) {
+        await signOut(auth);
+        throw new Error("Esta conta não possui um papel administrativo válido.");
+    }
+
+    return { usuario: credencial.user, papel };
 }
 
-export function obterContaAutenticada() {
-    const hashSalvo = sessionStorage.getItem(CHAVE_HASH);
-    const papelSalvo = sessionStorage.getItem(CHAVE_PAPEL);
-    return CONTAS.find(c => c.hash === hashSalvo && c.papel === papelSalvo) || null;
+export async function obterPapel(usuario) {
+    if (!usuario) {
+        return null;
+    }
+
+    const snapshot = await get(ref(database, `usuarios/${usuario.uid}/papel`));
+    const papel = snapshot.val();
+    return PAPEIS_VALIDOS.has(papel) ? papel : null;
 }
 
-export function salvarContaAutenticada(conta) {
-    sessionStorage.setItem(CHAVE_HASH, conta.hash);
-    sessionStorage.setItem(CHAVE_PAPEL, conta.papel);
+export function observarAutenticacao(callback) {
+    return onAuthStateChanged(auth, callback);
 }
 
-export function encerrarContaAutenticada() {
-    sessionStorage.removeItem(CHAVE_HASH);
-    sessionStorage.removeItem(CHAVE_PAPEL);
+export function encerrarSessao() {
+    return signOut(auth);
+}
+
+export function usuarioAtual() {
+    return auth.currentUser;
 }
