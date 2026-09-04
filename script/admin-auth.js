@@ -37,26 +37,40 @@ export async function autenticarUsuario(email, senha) {
         senha
     );
 
-    const papel = await obterPapel(credencial.user);
+    const perfil = await obterPerfil(credencial.user);
 
-    if (!PAPEIS_VALIDOS.has(papel)) {
+    if (!perfil || !PAPEIS_VALIDOS.has(perfil.papel)) {
         await signOut(auth);
         const erro = new Error("Esta conta não possui um papel administrativo válido.");
         erro.code = "auth/missing-role";
         throw erro;
     }
 
-    return { usuario: credencial.user, papel };
+    return { usuario: credencial.user, perfil };
 }
 
-export async function obterPapel(usuario) {
+export async function obterPerfil(usuario) {
     if (!usuario) {
         return null;
     }
 
-    const snapshot = await get(ref(database, `usuarios/${usuario.uid}/papel`));
-    const papel = snapshot.val();
-    return PAPEIS_VALIDOS.has(papel) ? papel : null;
+    const snapshot = await get(ref(database, `usuarios/${usuario.uid}`));
+    const perfil = snapshot.val();
+
+    if (!perfil || !PAPEIS_VALIDOS.has(perfil.papel)) {
+        return null;
+    }
+
+    return {
+        identificador: String(perfil.identificador || ""),
+        nome: String(perfil.nome || NOMES_PAPEL[perfil.papel]),
+        papel: perfil.papel
+    };
+}
+
+export async function obterPapel(usuario) {
+    const perfil = await obterPerfil(usuario);
+    return perfil?.papel || null;
 }
 
 export function observarAutenticacao(callback) {

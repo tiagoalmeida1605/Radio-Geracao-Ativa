@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 import { getDatabase, onValue, ref } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
-import { observarAutenticacao, obterPapel } from "./admin-auth.js?v=2";
+import { observarAutenticacao, obterPapel } from "./admin-auth.js?v=3";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBNCSo_-gKlWZnxRY06hEH8YumECD4Yj54",

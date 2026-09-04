@@ -6,8 +6,8 @@ import {
     autenticarUsuario,
     encerrarSessao,
     observarAutenticacao,
-    obterPapel
-} from "../script/admin-auth.js?v=2";
+    obterPerfil
+} from "../script/admin-auth.js?v=3";
 
 // 1. CONFIGURAÇÃO DO FIREBASE (Configurado Corretamente)
 const firebaseConfig = {
@@ -68,9 +68,9 @@ observarAutenticacao(async (usuario) => {
     }
 
     try {
-        const papel = await obterPapel(usuario);
-        if (PAPEIS_VALIDOS.has(papel)) {
-            liberarPainel(papel);
+        const perfil = await obterPerfil(usuario);
+        if (perfil && PAPEIS_VALIDOS.has(perfil.papel)) {
+            liberarPainel(perfil.papel, perfil.nome);
         } else {
             await encerrarSessao();
             mostrarErroLogin("Esta conta não possui permissão para acessar o painel.");
@@ -146,7 +146,7 @@ function aplicarPermissoes(papel) {
     });
 }
 
-function liberarPainel(papel) {
+function liberarPainel(papel, nome = NOMES_PAPEL[papel]) {
     if (!PAPEIS_VALIDOS.has(papel)) {
         encerrarSessao();
         return;
@@ -156,7 +156,7 @@ function liberarPainel(papel) {
     conteudoPainel.style.display = "block";
 
     aplicarPermissoes(papel);
-    textoContaLogada.textContent = `Logado como: ${NOMES_PAPEL[papel] || papel}`;
+    textoContaLogada.textContent = `Logado como: ${nome || NOMES_PAPEL[papel] || papel}`;
 
     if (papel === "admin") {
         inicializarGerenciadorManutencao();
