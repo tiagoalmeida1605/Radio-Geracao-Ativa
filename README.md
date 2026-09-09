@@ -125,7 +125,6 @@ Documentação oficial: [Firebase Realtime Database](https://firebase.google.com
 | 📂 **GitHub** | [tiagoalmeida1605/Radio-Geracao-Ativa](https://github.com/tiagoalmeida1605/Radio-Geracao-Ativa) |
 | 📸 **Instagram** | [@radiogeracaoativa](https://www.instagram.com/radiogeracaoativa/) |
 | ▶️ **YouTube** | [@radiogeracaoativa](https://www.youtube.com/@radiogeracaoativa) |
-| 📧 **E-mail** | radiogeracaoativa@zohomail.com |
 
 ---
 
