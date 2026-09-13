@@ -3,16 +3,29 @@
 .pagina-manutencao {
   min-height: 100dvh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 24px;
+  padding: 0;
   background-color: var(--bg-creme);
 }
 
 .pagina-manutencao .manutencao-page-shell {
+  flex: 1;
   width: 100%;
   max-width: 520px;
   margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+}
+
+.pagina-manutencao footer {
+  width: 100%;
+  padding: 18px 16px;
+  background: color-mix(in srgb, var(--maintenance-text) 92%, transparent);
+  color: rgba(255, 255, 255, .82);
+  text-align: center;
+  font-size: .85rem;
 }
 
 .pagina-manutencao .maintenance-card {
@@ -33,6 +46,16 @@
 
 @media (max-width: 479px) {
   .pagina-manutencao {
+    padding: 0;
+  }
+
+  .pagina-manutencao .manutencao-page-shell {
     padding: 16px;
+  }
+}
+
+@media (max-height: 640px) and (min-width: 480px) {
+  .pagina-manutencao {
+    align-items: flex-start;
   }
 }

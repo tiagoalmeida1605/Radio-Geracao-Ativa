@@ -24,7 +24,6 @@ themeToggle?.addEventListener("click", () => {
   const proximoTema = document.documentElement.dataset.theme === "dark"
     ? "light"
     : "dark";
-  localStorage.setItem("rga-theme", proximoTema);
   aplicarTema(proximoTema);
 });
 

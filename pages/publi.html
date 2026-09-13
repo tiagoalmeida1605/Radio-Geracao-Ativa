@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>document.documentElement.dataset.theme=localStorage.getItem("rga-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");</script>
+    <script>document.documentElement.dataset.theme="light";</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -21,7 +21,6 @@
             <img src="../assets/logo.png" alt="Logo Rádio Geração Ativa">
             <h2>Rádio Geração Ativa</h2>
             <button class="menu-btn" id="menuBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-Menu">☰</button>
-            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" title="Alternar tema"><span aria-hidden="true">◐</span></button>
             <nav id="nav-Menu">
                 <ul>
                     <li><a href="../index.html">Home</a></li>
@@ -41,7 +40,7 @@
         </section>
 
         <section class="noticias-grid" id="grid-noticias">
-            <p style="text-align: center; width: 100%; color: #888;">Carregando as publicações...</p>
+            <p class="noticias-feedback" role="status">Carregando as publicações...</p>
         </section>
     </main>
 

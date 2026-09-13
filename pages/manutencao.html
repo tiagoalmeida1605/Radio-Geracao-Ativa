@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>document.documentElement.dataset.theme=localStorage.getItem("rga-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");</script>
+    <script>document.documentElement.dataset.theme="light";</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -19,7 +19,6 @@
         <section class="maintenance-card" aria-labelledby="manutencao-titulo" aria-describedby="manutencao-descricao">
             <div class="maintenance-icon" aria-hidden="true">🛠️</div>
             <p class="maintenance-brand">Rádio Geração Ativa</p>
-            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" title="Alternar tema"><span aria-hidden="true">◐</span></button>
             <h1 id="manutencao-titulo">MODO MANUTENÇÃO</h1>
             <p id="manutencao-descricao">O sistema está temporariamente indisponível enquanto realizamos algumas atualizações.</p>
             <p class="maintenance-thanks">Voltaremos em breve. Obrigado pela compreensão.</p>
@@ -32,6 +31,9 @@
             </div>
         </section>
     </main>
+    <footer>
+        <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
+    </footer>
     <script src="../script/menu.js?v=2"></script>
     <script type="module" src="../script/maintenance.js"></script>
 </body>

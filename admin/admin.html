@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>document.documentElement.dataset.theme=localStorage.getItem("rga-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");</script>
+    <script>document.documentElement.dataset.theme=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
 <body>
 <header>
     <div class="sidebar">
-        <img src="../assets/logo.png" alt="Logo Rádio Geração Ativa">
+        <span class="brand-logo"><img class="logo-default" src="../assets/logo.png" alt="Logo Rádio Geração Ativa"><img class="logo-light" src="../assets/RGA Claro.png" alt=""></span>
         <h2>Rádio Geração Ativa</h2>
         <button class="menu-btn" id="menuBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-Menu">☰</button>
         <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" title="Alternar tema"><span aria-hidden="true">◐</span></button>
@@ -90,8 +90,8 @@
         </div>
 
         <div class="admin-card" id="secao-playlists" data-papel="admin,playlist">
-            <h2>📹 Gerenciar Vídeos</h2>
-            <p class="txt-subtitulo" style="margin-bottom: 20px;">Adicione, modifique ou exclua os vídeos e playlists do YouTube.</p>
+            <h2>📹 Gerenciar vídeos e playlists</h2>
+            <p class="txt-subtitulo">Adicione, modifique ou exclua vídeos individuais e playlists do YouTube.</p>
             <hr class="divider">
 
             <form id="form-playlist">
@@ -122,24 +122,25 @@
                 <label for="playlist-desc">Descrição Breve</label>
                 <input type="text" id="playlist-desc" placeholder="Ex: Quadros gravados pelos alunos no estúdio..." required>
 
-                <label for="playlist-url">Link ou ID da Playlist do YouTube</label>
-                <input type="text" id="playlist-url" placeholder="Ex: PLWKjhJtqVAbm04DK8TSUCRheRjW..." required>
+                <label for="playlist-url">Link ou ID do YouTube</label>
+                <input type="text" id="playlist-url" placeholder="Cole o link de uma playlist ou de um vídeo" required aria-describedby="ajuda-video-playlist">
+                <small class="campo-ajuda" id="ajuda-video-playlist">Playlists continuam disponíveis. Links de vídeos individuais serão reconhecidos automaticamente.</small>
 
                 <div class="botoes-playlist">
-                    <button type="submit" id="btn-salvar-playlist" class="btn-primary">Salvar Vídeo</button>
+                    <button type="submit" id="btn-salvar-playlist" class="btn-primary">Salvar conteúdo</button>
                     <button type="button" id="btn-limpar-form" class="btn-secondary">Limpar Form</button>
                 </div>
             </form>
 
             <hr class="divider">
-            <h3>Vídeos e Playlists Ativos</h3>
+            <h3>Vídeos e playlists ativos</h3>
             <div id="lista-playlists-admin" class="playlists-admin-grid">
             </div>
         </div>
 
         <div class="admin-card" id="secao-noticias" data-papel="admin,publicador">
             <h2>📰 Gerenciar Notícias</h2>
-            <p class="txt-subtitulo" style="margin-bottom: 20px;">Publique, edite ou remova as notícias exibidas no site.</p>
+            <p class="txt-subtitulo">Publique, edite ou remova as notícias exibidas no site.</p>
             <hr class="divider">
 
             <form id="form-noticia">
@@ -157,9 +158,9 @@
                 <label for="noticia-imagem">Imagem da Notícia (Upload de arquivo)</label>
                 <input type="file" id="noticia-imagem" accept="image/*">
 
-                <div id="preview-imagem-admin" style="margin-top: 12px; display: none; background: #f5f5f5; padding: 10px; border-radius: 8px;">
-                    <span style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 5px;">Imagem atual salva na nuvem:</span>
-                    <img id="img-preview-noticia" src="" alt="Preview da imagem" style="max-width: 160px; height: auto; border-radius: 6px; display: block;">
+                <div id="preview-imagem-admin" class="preview-imagem-admin" hidden>
+                    <span>Imagem atual salva na nuvem:</span>
+                    <img id="img-preview-noticia" src="" alt="Preview da imagem">
                 </div>
 
                 <label for="noticia-data" style="margin-top: 15px; display: block;">Data</label>

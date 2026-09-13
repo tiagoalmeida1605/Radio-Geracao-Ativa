@@ -249,12 +249,36 @@ function inicializarGerenciadorPlaylists() {
 
     gerenciadoresInicializados.add("playlists");
 
-    function filtrarIdPlaylist(valor) {
-        let urlInserida = valor.trim();
-        if (urlInserida.includes("list=")) {
-            return urlInserida.split("list=")[1].split("&")[0];
+    function extrairMidiaYouTube(valor) {
+        const entrada = valor.trim();
+        let url;
+
+        // O Admin antigo aceitava o ID puro de uma playlist (ex.: PL...).
+        // Mantemos esse atalho e só analisamos como URL quando houver um domínio/caminho.
+        if (!/[./]/.test(entrada) && !entrada.includes("://")) {
+            return { tipo: "playlist", playlistId: entrada };
         }
-        return urlInserida;
+
+        try {
+            url = new URL(entrada.includes("://") ? entrada : `https://${entrada}`);
+        } catch {
+            // IDs legados sem URL continuam sendo playlists, como no fluxo anterior.
+            return { tipo: "playlist", playlistId: entrada };
+        }
+
+        const playlistId = url.searchParams.get("list");
+        if (playlistId) return { tipo: "playlist", playlistId };
+
+        const host = url.hostname.replace(/^www\./, "");
+        let videoId = "";
+        if (host === "youtu.be") videoId = url.pathname.split("/").filter(Boolean)[0] || "";
+        if (host.endsWith("youtube.com")) {
+            videoId = url.searchParams.get("v") ||
+                url.pathname.match(/^\/(?:embed|shorts|live)\/([^/?#]+)/)?.[1] || "";
+        }
+
+        if (videoId) return { tipo: "video", videoId };
+        throw new Error("Informe um link válido de playlist ou vídeo do YouTube.");
     }
 
     const playlistsRef = ref(database, "playlists");
@@ -277,7 +301,7 @@ function inicializarGerenciadorPlaylists() {
                 <div>
                     <strong>${escaparHtml(iconeDisplay)} ${escaparHtml(dados.titulo)}</strong>
                     <p>${escaparHtml(dados.descricao)}</p>
-                    <small>ID YouTube: ${escaparHtml(dados.playlistId)}</small>
+                    <small>${dados.tipo === "video" ? "Vídeo" : "Playlist"}: ${escaparHtml(dados.tipo === "video" ? dados.videoId : dados.playlistId)}</small>
                 </div>
                 <div class="botoes-acoes">
                     <button class="btn-edit btn-edit-playlist" data-id="${key}">✏️ Editar</button>
@@ -302,11 +326,20 @@ function inicializarGerenciadorPlaylists() {
         e.preventDefault();
 
         const idAtual = inputId.value;
+        let midia;
+        try {
+            midia = extrairMidiaYouTube(inputUrl.value);
+        } catch (error) {
+            alert(error.message);
+            inputUrl.focus();
+            return;
+        }
+
         const itemPlaylist = {
             icone: inputIcone.value || "📹",
             titulo: inputTitulo.value.trim(),
             descricao: inputDesc.value.trim(),
-            playlistId: filtrarIdPlaylist(inputUrl.value)
+            ...midia
         };
 
         try {
@@ -334,8 +367,10 @@ function inicializarGerenciadorPlaylists() {
                 inputIcone.value = item.icone || "📹";
                 inputTitulo.value = item.titulo;
                 inputDesc.value = item.descricao;
-                inputUrl.value = `https://www.youtube.com/playlist?list=${item.playlistId}`;
-                document.getElementById("btn-salvar-playlist").textContent = "Atualizar Vídeo";
+                inputUrl.value = item.tipo === "video"
+                    ? `https://www.youtube.com/watch?v=${item.videoId || ""}`
+                    : `https://www.youtube.com/playlist?list=${item.playlistId || ""}`;
+                document.getElementById("btn-salvar-playlist").textContent = "Atualizar conteúdo";
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
@@ -353,7 +388,7 @@ function inicializarGerenciadorPlaylists() {
     function limparFormulario() {
         inputId.value = "";
         formPlaylist.reset();
-        document.getElementById("btn-salvar-playlist").textContent = "Salvar Vídeo";
+        document.getElementById("btn-salvar-playlist").textContent = "Salvar conteúdo";
     }
 
     btnLimpar.addEventListener("click", limparFormulario);
@@ -503,9 +538,9 @@ function inicializarGerenciadorNoticias() {
                 // Se houver uma imagem salva, exibe a miniatura no painel
                 if (item.imagem) {
                     imgPreview.src = item.imagem;
-                    previewContainer.style.display = "block";
+                    previewContainer.hidden = false;
                 } else {
-                    previewContainer.style.display = "none";
+                    previewContainer.hidden = true;
                 }
 
                 inputData.value = item.data || '';
@@ -527,7 +562,7 @@ function inicializarGerenciadorNoticias() {
     function limparFormularioNoticia() {
         inputId.value = "";
         formNoticia.reset();
-        if (previewContainer) previewContainer.style.display = "none";
+        if (previewContainer) previewContainer.hidden = true;
         document.getElementById("btn-salvar-noticia").textContent = "Publicar Notícia";
     }
 

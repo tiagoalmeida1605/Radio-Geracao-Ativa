@@ -1,9 +1,6 @@
 /**
- * Rádio Geração Ativa
- * Playlists / Vídeos
- *
- * Fonte de dados:
- * Firebase Realtime Database → playlists
+ * Conteúdo de vídeo da Rádio Geração Ativa.
+ * Registros legados sem `tipo` continuam sendo tratados como playlists.
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
@@ -24,223 +21,76 @@ const database = getDatabase(initializeApp(firebaseConfig, "rga-public-playlists
 
 function escaparHtml(valor) {
     return String(valor ?? "").replace(/[&<>'"]/g, (caractere) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        "'": "&#39;",
-        '"': "&quot;"
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
     })[caractere]);
 }
 
+function obterMidia(item) {
+    const tipo = item.tipo === "video" ? "video" : "playlist";
+    const id = String((tipo === "video" ? item.videoId : item.playlistId) || "").trim();
 
-document.addEventListener(
-    "DOMContentLoaded",
-    async () => {
+    return {
+        tipo,
+        embedUrl: tipo === "video"
+            ? `https://www.youtube.com/embed/${encodeURIComponent(id)}`
+            : `https://www.youtube.com/embed/videoseries?list=${encodeURIComponent(id)}`,
+        externalUrl: tipo === "video"
+            ? `https://www.youtube.com/watch?v=${encodeURIComponent(id)}`
+            : `https://www.youtube.com/playlist?list=${encodeURIComponent(id)}`
+    };
+}
 
-        // ======================================================
-        // REFERÊNCIA DO HTML
-        // ======================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const gridDinamica = document.getElementById("grid-dinamica");
+    if (!gridDinamica) return;
 
-        const gridDinamica =
-            document.getElementById(
-                "grid-dinamica"
-            );
+    function mostrarFeedback(mensagem, erro = false) {
+        gridDinamica.innerHTML = `<p class="playlist-feedback${erro ? " is-error" : ""}" role="status">${escaparHtml(mensagem)}</p>`;
+    }
 
-
-        if (!gridDinamica) {
-            console.error(
-                "Elemento #grid-dinamica não encontrado."
-            );
-
+    function renderizarConteudos(conteudos) {
+        gridDinamica.innerHTML = "";
+        if (conteudos.length === 0) {
+            mostrarFeedback("Nenhum vídeo ou playlist foi adicionado pela administração ainda.");
             return;
         }
 
+        conteudos.forEach((conteudo) => {
+            const midia = obterMidia(conteudo);
+            const artigo = document.createElement("article");
+            artigo.className = "playlist-card";
+            artigo.dataset.tipo = midia.tipo;
 
-        // ======================================================
-        // CARREGAR PLAYLISTS PELA API
-        // ======================================================
+            const proporcaoInformada = String(conteudo.proporcao || "").trim();
+            const proporcao = /^\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?$/.test(proporcaoInformada)
+                ? proporcaoInformada
+                : "16 / 9";
+            artigo.style.setProperty("--video-ratio", proporcao);
 
-        function renderizarPlaylists(playlists) {
-            try {
-
-                gridDinamica.innerHTML = `
-                    <p
-                        style="
-                            text-align: center;
-                            width: 100%;
-                            color: #666;
-                            font-weight: 600;
-                        "
-                    >
-                        Carregando playlists...
-                    </p>
-                `;
-
-
-                gridDinamica.innerHTML =
-                    "";
-
-
-                // ==================================================
-                // BANCO VAZIO
-                // ==================================================
-
-                if (
-                    playlists.length === 0
-                ) {
-                    gridDinamica.innerHTML = `
-                        <p
-                            style="
-                                text-align: center;
-                                width: 100%;
-                                color: #666;
-                                font-weight: 600;
-                            "
-                        >
-                            Nenhuma playlist foi adicionada
-                            pelo administrador ainda.
-                        </p>
-                    `;
-
-                    return;
-                }
-
-
-                // ==================================================
-                // RENDERIZAR PLAYLISTS
-                // ==================================================
-
-                playlists.forEach(
-                    (playlist) => {
-
-                        const iconeDisplay =
-                            playlist.icone ||
-                            "📹";
-
-
-                        const article =
-                            document.createElement(
-                                "article"
-                            );
-
-
-                        article.className =
-                            "playlist-card";
-
-                        const proporcaoInformada =
-                            String(playlist.proporcao || "").trim();
-
-                        const proporcao =
-                            /^\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?$/.test(
-                                proporcaoInformada
-                            )
-                                ? proporcaoInformada
-                                : "16 / 9";
-
-                        article.style.setProperty(
-                            "--video-ratio",
-                            proporcao
-                        );
-
-
-                        article.innerHTML = `
-                            <div
-                                class="playlist-header"
-                            >
-                                <span
-                                    class="playlist-icon"
-                                    aria-hidden="true"
-                                >
-                                    ${escaparHtml(iconeDisplay)}
-                                </span>
-
-                                <h2>
-                                    ${escaparHtml(playlist.titulo)}
-                                </h2>
-                            </div>
-
-
-                            <p
-                                class="playlist-description"
-                            >
-                                ${escaparHtml(playlist.descricao)}
-                            </p>
-
-
-                            <div
-                                class="playlist-video"
-                            >
-                                <iframe
-                                    src="https://www.youtube.com/embed/videoseries?list=${encodeURIComponent(
-                                        playlist.playlistId || ""
-                                    )}"
-                                    title="${
-                                        escaparHtml(playlist.titulo) ||
-                                        "Playlist da Rádio Geração Ativa"
-                                    } - Rádio Geração Ativa"
-                                    loading="lazy"
-                                    allowfullscreen
-                                >
-                                </iframe>
-                            </div>
-
-
-                            <a
-                                class="playlist-btn"
-                                href="https://www.youtube.com/playlist?list=${encodeURIComponent(
-                                    playlist.playlistId || ""
-                                )}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                Abrir Playlist
-                            </a>
-                        `;
-
-
-                        gridDinamica.appendChild(
-                            article
-                        );
-                    }
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "Erro ao carregar playlists:",
-                    error
-                );
-
-
-                gridDinamica.innerHTML = `
-                    <p
-                        style="
-                            text-align: center;
-                            width: 100%;
-                            color: #b00020;
-                            font-weight: 600;
-                        "
-                    >
-                        Não foi possível carregar as playlists.
-                        Tente novamente mais tarde.
-                    </p>
-                `;
-            }
-        }
-
-
-        const playlistsRef = ref(database, "playlists");
-        onValue(playlistsRef, (snapshot) => {
-            const dados = snapshot.val() || {};
-            renderizarPlaylists(Object.values(dados));
-        }, (error) => {
-            console.error("Erro ao carregar playlists:", error);
-            gridDinamica.innerHTML = `
-                <p class="playlist-feedback">
-                    Não foi possível carregar as playlists. Tente novamente mais tarde.
-                </p>
-            `;
+            const tipoLegivel = midia.tipo === "video" ? "Vídeo" : "Playlist";
+            artigo.innerHTML = `
+                <div class="playlist-header">
+                    <span class="playlist-icon" aria-hidden="true">${escaparHtml(conteudo.icone || "📹")}</span>
+                    <div>
+                        <span class="playlist-type">${tipoLegivel}</span>
+                        <h2>${escaparHtml(conteudo.titulo || "Conteúdo da Rádio Geração Ativa")}</h2>
+                    </div>
+                </div>
+                <p class="playlist-description">${escaparHtml(conteudo.descricao || "")}</p>
+                <div class="playlist-video">
+                    <iframe src="${midia.embedUrl}" title="${escaparHtml(conteudo.titulo || tipoLegivel)} - Rádio Geração Ativa" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+                <a class="playlist-btn" href="${midia.externalUrl}" target="_blank" rel="noopener noreferrer">
+                    ${midia.tipo === "video" ? "Assistir vídeo" : "Abrir playlist"}
+                </a>`;
+            gridDinamica.appendChild(artigo);
         });
     }
-);
+
+    onValue(ref(database, "playlists"), (snapshot) => {
+        renderizarConteudos(Object.values(snapshot.val() || {}));
+    }, (error) => {
+        console.error("Erro ao carregar conteúdos:", error);
+        mostrarFeedback("Não foi possível carregar os vídeos e playlists. Tente novamente mais tarde.", true);
+    });
+});
