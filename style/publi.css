@@ -467,6 +467,7 @@ body.menu-aberto {
         border: none;
         font-size: 1.8rem;
         color: var(--azul-marinho);
+        color: var(--tema-text, var(--azul-marinho));
         cursor: pointer;
     }
 
@@ -478,6 +479,8 @@ body.menu-aberto {
         width: min(78vw, 320px);
         background-color: #ffffff;
         box-shadow: -8px 0 30px rgba(18, 34, 50, 0.15);
+        background-color: var(--tema-surface, #ffffff);
+        box-shadow: -8px 0 30px rgba(0, 0, 0, 0.25);
         z-index: 1001;
         transform: translateX(100%);
         transition: transform 0.35s ease;
@@ -508,6 +511,7 @@ body.menu-aberto {
         border-radius: 12px;
         text-decoration: none;
         color: var(--azul-marinho);
+        color: var(--tema-text, var(--azul-marinho));
         transition: background-color 0.2s ease, transform 0.1s ease;
     }
 

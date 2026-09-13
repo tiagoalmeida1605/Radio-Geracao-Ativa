@@ -5,6 +5,7 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 import { getDatabase, onValue, ref } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+import { renderIconMarkup, escaparHtml } from "./icon-catalog.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBNCSo_-gKlWZnxRY06hEH8YumECD4Yj54",
@@ -71,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
             artigo.innerHTML = `
                 <div class="playlist-header">
                     <span class="playlist-icon" aria-hidden="true">${escaparHtml(conteudo.icone || "📹")}</span>
+                    <span class="playlist-icon" aria-hidden="true">${renderIconMarkup(conteudo.icone)}</span>
                     <div>
                         <span class="playlist-type">${tipoLegivel}</span>
                         <h2>${escaparHtml(conteudo.titulo || "Conteúdo da Rádio Geração Ativa")}</h2>
@@ -85,6 +87,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 </a>`;
             gridDinamica.appendChild(artigo);
         });
+
+        if (window.lucide && typeof window.lucide.createIcons === "function") {
+            window.lucide.createIcons();
+        }
     }
 
     onValue(ref(database, "playlists"), (snapshot) => {
