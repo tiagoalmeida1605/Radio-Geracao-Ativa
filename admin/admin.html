@@ -98,23 +98,20 @@
                 <input type="hidden" id="playlist-id">
 
                 <label for="playlist-icone">Ícone de Exibição</label>
-                <select id="playlist-icone" required>
-                    <option value="📹">📹 Câmera de Vídeo</option>
-                    <option value="📻">📻 Rádio Clássico</option>
-                    <option value="🎙️">🎙️ Microfone Podcast</option>
-                    <option value="🎧">🎧 Fones de Ouvido</option>
-                    <option value="🎤">🎤 Microfone Palco</option>
-                    <option value="🎬">🎬 Claquete de Cinema</option>
-                    <option value="📰">📰 Jornal / Notícias</option>
-                    <option value="⚽">⚽ Futebol / Esportes</option>
-                    <option value="🏆">🏆 Troféu / Campeonatos</option>
-                    <option value="🎮">🎮 Videogame / E-sports</option>
-                    <option value="🎶">🎶 Música / Cultura</option>
-                    <option value="🧠">🧠 Conhecimento / Aulas</option>
-                    <option value="🔥">🔥 Em Alta / Destaques</option>
-                    <option value="😂">😂 Humor / Entretenimento</option>
-                    <option value="🔔">🔔 Avisos / Importante</option>
-                </select>
+                <div class="icon-picker" id="playlist-icon-picker" aria-live="polite">
+                    <div class="icon-picker-selected" id="playlist-icone-selected" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="icon-picker-preview" id="playlist-icone-preview" aria-hidden="true"></span>
+                        <span class="icon-picker-label" id="playlist-icone-label">Vídeo</span>
+                    </div>
+
+                    <div class="icon-picker-search">
+                        <input type="search" id="playlist-icone-busca" placeholder="Pesquisar ícones..." aria-label="Pesquisar ícones da playlist">
+                    </div>
+
+                    <div class="icon-picker-filtros" id="playlist-icon-filtros" aria-label="Categorias de ícones"></div>
+                    <div class="icon-picker-grid" id="playlist-icon-grid" role="listbox" aria-label="Seletor de ícones"></div>
+                </div>
+                <input type="hidden" id="playlist-icone" value="video" required>
 
                 <label for="playlist-titulo">Título do Vídeo ou Playlist</label>
                 <input type="text" id="playlist-titulo" placeholder="Ex: Programas e Podcasts" required>
