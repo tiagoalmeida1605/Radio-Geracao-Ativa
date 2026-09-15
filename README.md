@@ -103,11 +103,6 @@ Radio-Geracao-Ativa/
 ├── 📄 index.html                   ← Página inicial
 ├── 📄 404.html                     ← Página de erro elegante
 │
-├── 📁 admin/                       ← Painel administrativo
-│   ├── admin.html
-│   ├── admin.css
-│   └── admin.js
-│
 ├── 📁 pages/                       ← Páginas internas
 │   ├── sobre.html                  (Institucional)
 │   ├── playlist.html               (YouTube Playlists)
@@ -115,7 +110,6 @@ Radio-Geracao-Ativa/
 │   └── manutencao.html             (Tela de manutenção)
 │
 ├── 📁 script/                      ← JavaScript modular
-│   ├── admin-auth.js               (Autenticação por papel)
 │   ├── maintenance.js              (Controle de manutenção)
 │   ├── menu.js                     (Menu mobile)
 │   ├── playlist.js                 (Sincroniza playlists)
@@ -134,6 +128,7 @@ Radio-Geracao-Ativa/
 │   └── icon.png
 │
 └── README.md                       ← Você está aqui! 👈
+```
 ```
 
 ---
