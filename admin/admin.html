@@ -146,6 +146,22 @@
                 <label for="noticia-titulo">Título da Notícia</label>
                 <input type="text" id="noticia-titulo" placeholder="Ex: Rádio Geração Ativa estreia novo programa" required>
 
+                <label for="noticia-icone">Ícone da Notícia</label>
+                <div class="icon-picker" id="noticia-icon-picker" aria-live="polite">
+                    <div class="icon-picker-selected" id="noticia-icone-selected" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="icon-picker-preview" id="noticia-icone-preview" aria-hidden="true"></span>
+                        <span class="icon-picker-label" id="noticia-icone-label">Jornal</span>
+                    </div>
+
+                    <div class="icon-picker-search">
+                        <input type="search" id="noticia-icone-busca" placeholder="Pesquisar ícones..." aria-label="Pesquisar ícones da notícia">
+                    </div>
+
+                    <div class="icon-picker-filtros" id="noticia-icon-filtros" aria-label="Categorias de ícones"></div>
+                    <div class="icon-picker-grid" id="noticia-icon-grid" role="listbox" aria-label="Seletor de ícones"></div>
+                </div>
+                <input type="hidden" id="noticia-icone" value="newspaper" required>
+
                 <label for="noticia-resumo">Resumo Breve</label>
                 <input type="text" id="noticia-resumo" placeholder="Ex: Confira as novidades da nossa grade de programação..." required>
 

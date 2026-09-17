@@ -8,6 +8,7 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 import { getDatabase, onValue, ref } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+import { resolveIcon, renderIconMarkup, ICON_MAP, ICON_DEFAULT } from "../script/icon-catalog.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBNCSo_-gKlWZnxRY06hEH8YumECD4Yj54",
@@ -347,12 +348,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                     // CARD
                     // ------------------------------------------------
 
-                    card.innerHTML = `
+                    // Determinar o ícone e label para a categoria da notícia
+const iconeNomeNoticia = resolveIcon(noticia.icone || "");
+const iconeItemNoticia = ICON_MAP[iconeNomeNoticia] || ICON_MAP[ICON_DEFAULT];
+const iconeLabelNoticia = iconeItemNoticia.label;
+
+card.innerHTML = `
                         ${imagemHTML}
 
                         <div
                             class="noticia-content-preview"
                         >
+                            <span class="tag">
+                                ${renderIconMarkup(iconeNomeNoticia)}
+                                <span class="tag-label">${iconeLabelNoticia}</span>
+                            </span>
                             <span
                                 class="noticia-data"
                             >
@@ -445,8 +455,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const noticiasRef = ref(database, "noticias");
     onValue(noticiasRef, (snapshot) => {
-        const dados = snapshot.val() || {};
-        renderizarNoticias(Object.values(dados));
+        const dados = snapshot.val();
+        if (dados && typeof dados === 'object' && !Array.isArray(dados)) {
+            renderizarNoticias(Object.values(dados));
+        } else {
+            // Handle case where data is not an object (null, primitive, or array)
+            renderizarNoticias([]);
+        }
     }, (error) => {
         console.error("Erro ao carregar notícias:", error);
         gridNoticias.innerHTML = `

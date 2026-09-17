@@ -5,7 +5,7 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 import { getDatabase, onValue, ref } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
-import { renderIconMarkup, escaparHtml } from "./icon-catalog.js";
+import { renderIconMarkup, escaparHtml, resolveIcon, ICON_MAP, ICON_DEFAULT } from "./icon-catalog.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBNCSo_-gKlWZnxRY06hEH8YumECD4Yj54",
@@ -68,19 +68,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 : "16 / 9";
             artigo.style.setProperty("--video-ratio", proporcao);
 
-            const tipoLegivel = midia.tipo === "video" ? "Vídeo" : "Playlist";
+            // Obter o label do ícone para exibição como categoria TAG
+            const iconeNome = resolveIcon(conteudo.icone || "");
+            const iconeItem = ICON_MAP[iconeNome] || ICON_MAP[ICON_DEFAULT];
+            const iconeLabel = iconeItem.label;
+
             artigo.innerHTML = `
                 <div class="playlist-header">
-                    <span class="playlist-icon" aria-hidden="true">${escaparHtml(conteudo.icone || "📹")}</span>
-                    <span class="playlist-icon" aria-hidden="true">${renderIconMarkup(conteudo.icone)}</span>
                     <div>
-                        <span class="playlist-type">${tipoLegivel}</span>
+                        <span class="tag">
+                            ${renderIconMarkup(conteudo.icone)}
+                            <span class="tag-label">${iconeLabel}</span>
+                        </span>
                         <h2>${escaparHtml(conteudo.titulo || "Conteúdo da Rádio Geração Ativa")}</h2>
                     </div>
                 </div>
                 <p class="playlist-description">${escaparHtml(conteudo.descricao || "")}</p>
                 <div class="playlist-video">
-                    <iframe src="${midia.embedUrl}" title="${escaparHtml(conteudo.titulo || tipoLegivel)} - Rádio Geração Ativa" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <iframe src="${midia.embedUrl}" title="${escaparHtml(conteudo.titulo || midia.tipo === 'video' ? 'Vídeo' : 'Playlist')} - Rádio Geração Ativa" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
                 <a class="playlist-btn" href="${midia.externalUrl}" target="_blank" rel="noopener noreferrer">
                     ${midia.tipo === "video" ? "Assistir vídeo" : "Abrir playlist"}
@@ -94,7 +99,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     onValue(ref(database, "playlists"), (snapshot) => {
-        renderizarConteudos(Object.values(snapshot.val() || {}));
+        const val = snapshot.val();
+        if (val && typeof val === 'object' && !Array.isArray(val)) {
+            renderizarConteudos(Object.values(val));
+        } else {
+            // Handle case where data is not an object (null, primitive, or array)
+            renderizarConteudos([]);
+        }
     }, (error) => {
         console.error("Erro ao carregar conteúdos:", error);
         mostrarFeedback("Não foi possível carregar os vídeos e playlists. Tente novamente mais tarde.", true);

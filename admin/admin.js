@@ -10,6 +10,7 @@ import {
     observarAutenticacao,
     obterPerfil
 } from "../script/admin-auth.js?v=4";
+import { obterEntradaIcone, renderizarMarkupIcone, resolveIcon } from "../script/icon-catalog.js";
 
 const telaBloqueio = document.getElementById("bloqueio-tela");
 const conteudoPainel = document.getElementById("conteudo-painel");
@@ -22,8 +23,6 @@ const btnToggleSenha = document.getElementById("btnToggleSenha");
 const textoContaLogada = document.getElementById("textoContaLogada");
 const btnSair = document.getElementById("btnSair");
 const gerenciadoresInicializados = new Set();
-const PLAYLIST_ICON_DEFAULT = "video";
-const PLAYLIST_ICON_CATALOG = [
     { name: "video", label: "Vídeo", category: "Áudio", tags: ["video", "filme", "camera"] },
     { name: "radio", label: "Rádio", category: "Áudio", tags: ["radio", "broadcast", "wave"] },
     { name: "mic", label: "Microfone", category: "Áudio", tags: ["microfone", "mic", "podcast"] },
@@ -391,6 +390,123 @@ function inicializarSeletorIcones() {
 }
 
 /* ==========================================================================
+   INICIALIZAR SELETOR DE ÍCONES PARA NOTÍCIAS
+   ========================================================================== */
+function inicializarSeletorIconesNoticias() {
+    const inputIcone = document.getElementById("noticia-icone");
+    const picker = document.getElementById("noticia-icon-picker");
+    const pickerButton = document.getElementById("noticia-icone-selected");
+    const preview = document.getElementById("noticia-icone-preview");
+    const label = document.getElementById("noticia-icone-label");
+    const busca = document.getElementById("noticia-icone-busca");
+    const filtros = document.getElementById("noticia-icon-filtros");
+    const grid = document.getElementById("noticia-icon-grid");
+
+    if (!inputIcone || !picker || !pickerButton || !preview || !label || !busca || !filtros || !grid) {
+        return;
+    }
+
+    const categorias = ["Todos", ...new Set(PLAYLIST_ICON_CATALOG.map((item) => item.category))];
+    let categoriaAtiva = "Todos";
+
+    function atualizarVisualizacao(valor) {
+        const nome = obterEntradaIcone(valor);
+        const item = PLAYLIST_ICON_MAP[nome] || PLAYLIST_ICON_MAP[PLAYLIST_ICON_DEFAULT];
+        inputIcone.value = nome;
+        preview.innerHTML = renderizarMarkupIcone(nome);
+        label.textContent = item.label;
+        pickerButton.setAttribute("aria-label", `Ícone selecionado: ${item.label}`);
+
+        const itens = grid.querySelectorAll(".icon-picker-item");
+        itens.forEach((botao) => {
+            const estaSelecionado = botao.dataset.iconName === nome;
+            botao.classList.toggle("selected", estaSelecionado);
+            botao.setAttribute("aria-selected", String(estaSelecionado));
+        });
+
+        if (window.lucide && typeof window.lucide.createIcons === "function") {
+            window.lucide.createIcons();
+        }
+    }
+
+    function renderizarFiltros() {
+        filtros.innerHTML = categorias.map((categoria) => `
+            <button type="button" class="icon-picker-filter ${categoria === categoriaAtiva ? "active" : ""}" data-filter="${escaparHtml(categoria)}">
+                ${escaparHtml(categoria)}
+            </button>
+        `).join("");
+
+        filtros.querySelectorAll(".icon-picker-filter").forEach((botao) => {
+            botao.addEventListener("click", () => {
+                categoriaAtiva = botao.dataset.filter;
+                renderizarFiltros();
+                renderizarGrid();
+            });
+        });
+    }
+
+    function renderizarGrid() {
+        const termoBusca = busca.value.trim().toLowerCase();
+        const itens = PLAYLIST_ICON_CATALOG.filter((item) => {
+            const categoriaOk = categoriaAtiva === "Todos" || item.category === categoriaAtiva;
+            const textoBusca = `${item.label} ${item.tags.join(" ")}`.toLowerCase();
+            return categoriaOk && (!termoBusca || textoBusca.includes(termoBusca));
+        });
+
+        if (itens.length === 0) {
+            grid.innerHTML = '<p class="icon-picker-empty">Nenhum ícone encontrado para essa busca.</p>';
+            return;
+        }
+
+        grid.innerHTML = itens.map((item) => `
+            <button
+                type="button"
+                class="icon-picker-item ${obterEntradaIcone(inputIcone.value) === item.name ? "selected" : ""}"
+                data-icon-name="${escaparHtml(item.name)}"
+                aria-label="Selecionar ícone ${escaparHtml(item.label)}"
+                aria-selected="${obterEntradaIcone(inputIcone.value) === item.name}"
+                title="${escaparHtml(item.label)}"
+            >
+                <svg data-lucide="${escaparHtml(item.name)}" class="lucide-icon" aria-hidden="true"></svg>
+                <span class="icon-picker-item-name">${escaparHtml(item.label)}</span>
+            </button>
+        `).join("");
+
+        grid.querySelectorAll(".icon-picker-item").forEach((botao) => {
+            botao.addEventListener("click", () => {
+                atualizarVisualizacao(botao.dataset.iconName);
+            });
+        });
+
+        if (window.lucide && typeof window.lucide.createIcons === "function") {
+            window.lucide.createIcons();
+        }
+    }
+
+    busca.addEventListener("input", renderizarGrid);
+    pickerButton.addEventListener("click", () => {
+        picker.classList.toggle("is-open");
+        pickerButton.setAttribute("aria-expanded", String(picker.classList.contains("is-open")));
+    });
+
+    pickerButton.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            pickerButton.click();
+        }
+    });
+
+    renderizarFiltros();
+    renderizarGrid();
+    atualizarVisualizacao(inputIcone.value || PLAYLIST_ICON_DEFAULT);
+    window.RGANoticiaIconPicker = { atualizarVisualizacao };
+}
+
+/* ==========================================================================
+   CONFIGURAÇÃO DO MODO DE MANUTENÇÃO
+   ========================================================================== */
+
+/* ==========================================================================
    CONFIGURAÇÃO DO MODO DE MANUTENÇÃO
    ========================================================================== */
 function inicializarGerenciadorManutencao() {
@@ -513,7 +629,8 @@ function inicializarGerenciadorPlaylists() {
         listaContainer.innerHTML = "";
         const dadosFirebase = snapshot.val();
 
-        if (!dadosFirebase) {
+        // Handle case where data is not an object (null, primitive, or array)
+        if (!dadosFirebase || typeof dadosFirebase !== 'object' || Array.isArray(dadosFirebase)) {
             listaContainer.innerHTML = '<p class="txt-ajuda">Nenhuma playlist cadastrada na nuvem do Firebase.</p>';
             return;
         }
@@ -659,6 +776,8 @@ function inicializarGerenciadorNoticias() {
 
     gerenciadoresInicializados.add("noticias");
 
+    inicializarSeletorIconesNoticias();
+
     // Função Auxiliar: Converte arquivo de imagem para string Base64 texto
     function arquivoParaBase64(file) {
         return new Promise((resolve, reject) => {
@@ -680,7 +799,8 @@ function inicializarGerenciadorNoticias() {
         listaContainer.innerHTML = "";
         const dadosFirebase = snapshot.val();
 
-        if (!dadosFirebase) {
+        // Handle case where data is not an object (null, primitive, or array)
+        if (!dadosFirebase || typeof dadosFirebase !== 'object' || Array.isArray(dadosFirebase)) {
             listaContainer.innerHTML = '<p class="txt-ajuda">Nenhuma notícia publicada na nuvem do Firebase.</p>';
             return;
         }
@@ -692,7 +812,13 @@ function inicializarGerenciadorNoticias() {
             item.className = "item-playlist-admin";
             item.innerHTML = `
                 <div>
-                    <strong>📰 ${escaparHtml(dados.titulo)}</strong>
+                    <strong>
+                        <span class="tag">
+                            ${renderizarMarkupIcone(dados.icone || "newspaper")}
+                            <span class="tag-label">${PLAYLIST_ICON_MAP[resolveIcon(dados.icone || "newspaper")]?.label || "Notícia"}</span>
+                        </span>
+                        ${escaparHtml(dados.titulo)}
+                    </strong>
                     <p>${escaparHtml(dados.resumo)}</p>
                     <small>Publicado em: ${escaparHtml(formatarDataExibicao(dados.data))}</small>
                 </div>
@@ -740,6 +866,7 @@ function inicializarGerenciadorNoticias() {
             resumo: inputResumo.value.trim(),
             conteudo: inputConteudo.value.trim(),
             imagem: imagemString,
+            icone: inputIcone.value || "newspaper",
             data: inputData.value
         };
 
@@ -768,6 +895,10 @@ function inicializarGerenciadorNoticias() {
                 inputTitulo.value = item.titulo || '';
                 inputResumo.value = item.resumo || '';
                 inputConteudo.value = item.conteudo || '';
+                inputIcone.value = obterEntradaIcone(item.icone || "newspaper");
+                if (window.RGANoticiaIconPicker && typeof window.RGANoticiaIconPicker.atualizarVisualizacao === "function") {
+                    window.RGANoticiaIconPicker.atualizarVisualizacao(inputIcone.value);
+                }
 
                 // Limpa o seletor de arquivos por segurança
                 inputImagem.value = "";
@@ -799,6 +930,10 @@ function inicializarGerenciadorNoticias() {
     function limparFormularioNoticia() {
         inputId.value = "";
         formNoticia.reset();
+        inputIcone.value = "newspaper";
+        if (window.RGANoticiaIconPicker && typeof window.RGANoticiaIconPicker.atualizarVisualizacao === "function") {
+            window.RGANoticiaIconPicker.atualizarVisualizacao("newspaper");
+        }
         if (previewContainer) previewContainer.hidden = true;
         document.getElementById("btn-salvar-noticia").textContent = "Publicar Notícia";
     }

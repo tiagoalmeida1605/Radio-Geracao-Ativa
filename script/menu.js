@@ -21,29 +21,34 @@ function aplicarTema(tema) {
   }
 }
 
+// Aplicar o tema definido no atributo data-theme do elemento HTML
+// Isso permite que o tema seja fixo para páginas públicas (definido no HTML)
+// e ainda funcione para o admin onde o tema pode ser alterado dynamicamente
 try {
-  const temaSalvo = localStorage.getItem("rga-theme");
-  if (temaSalvo) {
-    aplicarTema(temaSalvo);
+  const temaAtual = document.documentElement.dataset.theme;
+  if (temaAtual) {
+    aplicarTema(temaAtual);
   } else {
-    const prefereEscuro = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    aplicarTema(document.documentElement.dataset.theme || (prefereEscuro ? "dark" : "light"));
+    aplicarTema("light"); // fallback padrão
   }
 } catch {
-  aplicarTema(document.documentElement.dataset.theme || "light");
+  aplicarTema("light");
 }
 
-themeToggle?.addEventListener("click", () => {
-  const proximoTema = document.documentElement.dataset.theme === "dark"
-    ? "light"
-    : "dark";
-  aplicarTema(proximoTema);
-  try {
-    localStorage.setItem("rga-theme", proximoTema);
-  } catch {
-    // Modo privado com storage restrito
-  }
-});
+// Só permite alternar e salvar o tema se o botão de tema existir (área administrativa)
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    const proximoTema = document.documentElement.dataset.theme === "dark"
+      ? "light"
+      : "dark";
+    aplicarTema(proximoTema);
+    try {
+      localStorage.setItem("rga-theme", proximoTema);
+    } catch {
+      // Modo privado com storage restrito
+    }
+  });
+}
 
 if (menuBtn && navMenu) {
   menuBtn.setAttribute("aria-expanded", "false");
