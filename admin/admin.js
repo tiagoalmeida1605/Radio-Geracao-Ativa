@@ -673,19 +673,25 @@ function inicializarGerenciadorPlaylists() {
 
     function extrairMidiaYouTube(valor) {
         const entrada = valor.trim();
-        let url;
+        if (!entrada) {
+            throw new Error("URL ou ID vazio. Informe um link válido do YouTube.");
+        }
 
-        // O Admin antigo aceitava o ID puro de uma playlist (ex.: PL...).
-        // Mantemos esse atalho e só analisamos como URL quando houver um domínio/caminho.
-        if (!/[./]/.test(entrada) && !entrada.includes("://")) {
+        // Se for apenas letras/números (ID puro)
+        if (/^[a-zA-Z0-9_-]+$/.test(entrada)) {
+            // IDs de vídeo do YouTube têm 11 caracteres
+            if (entrada.length === 11) {
+                return { tipo: "video", videoId: entrada };
+            }
+            // Playlist IDs podem ter mais caracteres
             return { tipo: "playlist", playlistId: entrada };
         }
 
+        let url;
         try {
             url = new URL(entrada.includes("://") ? entrada : `https://${entrada}`);
         } catch {
-            // IDs legados sem URL continuam sendo playlists, como no fluxo anterior.
-            return { tipo: "playlist", playlistId: entrada };
+            throw new Error("URL inválida. Informe um link válido do YouTube.");
         }
 
         const playlistId = url.searchParams.get("list");
