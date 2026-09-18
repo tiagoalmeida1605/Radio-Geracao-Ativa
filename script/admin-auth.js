@@ -57,14 +57,19 @@ export async function obterPerfil(usuario) {
     const snapshot = await get(ref(database, `usuarios/${usuario.uid}`));
     const perfil = snapshot.val();
 
-    if (!perfil || !PAPEIS_VALIDOS.has(perfil.papel)) {
+    if (!perfil) {
+        return null;
+    }
+
+    const papelValido = String(perfil.papel).trim();
+    if (!PAPEIS_VALIDOS.has(papelValido)) {
         return null;
     }
 
     return {
         identificador: String(perfil.identificador || ""),
-        nome: String(perfil.nome || NOMES_PAPEL[perfil.papel]),
-        papel: perfil.papel
+        nome: String(perfil.nome || NOMES_PAPEL[papelValido]),
+        papel: papelValido
     };
 }
 

@@ -10,19 +10,59 @@ import {
     observarAutenticacao,
     obterPerfil
 } from "../script/admin-auth.js?v=4";
-import { obterEntradaIcone, renderizarMarkupIcone, resolveIcon } from "../script/icon-catalog.js";
+import { ICON_DEFAULT, ICON_MAP, resolveIcon, renderIconMarkup } from "../script/icon-catalog.js";
 
 const telaBloqueio = document.getElementById("bloqueio-tela");
+if (!telaBloqueio) {
+    console.error("[RGA Admin] Elemento #bloqueio-tela não encontrado");
+}
+
 const conteudoPainel = document.getElementById("conteudo-painel");
+if (!conteudoPainel) {
+    console.error("[RGA Admin] Elemento #conteudo-painel não encontrado");
+}
+
 const formBloqueio = document.getElementById("form-bloqueio-rga");
+if (!formBloqueio) {
+    console.error("[RGA Admin] Elemento #form-bloqueio-rga não encontrado");
+}
+
 const cardSenha = document.getElementById("cardSenha");
+if (!cardSenha) {
+    console.error("[RGA Admin] Elemento #cardSenha não encontrado");
+}
+
 const inputUsuario = document.getElementById("input-usuario-rga");
+if (!inputUsuario) {
+    console.error("[RGA Admin] Elemento #input-usuario-rga não encontrado");
+}
+
 const inputSenha = document.getElementById("input-senha-rga");
+if (!inputSenha) {
+    console.error("[RGA Admin] Elemento #input-senha-rga não encontrado");
+}
+
 const erroLogin = document.getElementById("erroLogin");
+if (!erroLogin) {
+    console.error("[RGA Admin] Elemento #erroLogin não encontrado");
+}
+
 const btnToggleSenha = document.getElementById("btnToggleSenha");
+if (!btnToggleSenha) {
+    console.error("[RGA Admin] Elemento #btnToggleSenha não encontrado");
+}
+
 const textoContaLogada = document.getElementById("textoContaLogada");
+if (!textoContaLogada) {
+    console.error("[RGA Admin] Elemento #textoContaLogada não encontrado");
+}
+
 const btnSair = document.getElementById("btnSair");
+if (!btnSair) {
+    console.error("[RGA Admin] Elemento #btnSair não encontrado");
+}
 const gerenciadoresInicializados = new Set();
+const PLAYLIST_ICON_CATALOG = [
     { name: "video", label: "Vídeo", category: "Áudio", tags: ["video", "filme", "camera"] },
     { name: "radio", label: "Rádio", category: "Áudio", tags: ["radio", "broadcast", "wave"] },
     { name: "mic", label: "Microfone", category: "Áudio", tags: ["microfone", "mic", "podcast"] },
@@ -172,23 +212,31 @@ function diagnosticarOperacao(caminho) {
 }
 
 observarAutenticacao(async (usuario) => {
+    console.debug("[RGA Admin] Estado de autenticação mudou:", usuario ? usuario.uid : "null");
+
     if (!usuario) {
+        console.debug("[RGA Admin] Usuário deslogado, mostrando tela de login");
         mostrarTelaLogin();
         return;
     }
 
     try {
+        console.debug("[RGA Admin] Obtendo perfil do usuário:", usuario.uid);
         const perfil = await obterPerfil(usuario);
+        console.debug("[RGA Admin] Perfil obtido:", perfil);
+
         if (perfil && PAPEIS_VALIDOS.has(perfil.papel)) {
+            console.debug("[RGA Admin] Perfil válido, liberando painel para papel:", perfil.papel);
             liberarPainel(perfil.papel, perfil.nome);
         } else {
+            console.debug("[RGA Admin] Perfil inválido ou papel não autorizado");
             await encerrarSessao();
             mostrarErroLogin("Esta conta não possui permissão para acessar o painel.");
         }
     } catch (error) {
+        console.error("[RGA Admin] Erro ao validar papel administrativo:", error);
         await encerrarSessao();
         mostrarErroLogin("Não foi possível validar a conta administrativa.");
-        console.error("Erro ao validar papel administrativo:", error);
     }
 });
 
@@ -201,12 +249,26 @@ btnToggleSenha?.addEventListener("click", () => {
 });
 
 formBloqueio?.addEventListener("submit", async (e) => {
+    console.debug("[RGA Admin] Formulário de login submetido");
     e.preventDefault();
 
+    if (!inputUsuario || !inputSenha) {
+        console.error("[RGA Admin] Elementos de input não encontrados");
+        mostrarErroLogin("Erro interno de configuração. Contate o administrador.");
+        return;
+    }
+
+    const email = inputUsuario.value.trim();
+    const senha = inputSenha.value;
+
+    console.debug("[RGA Admin] Tentando autenticar usuário:", email);
+
     try {
-        await autenticarUsuario(inputUsuario.value, inputSenha.value);
+        await autenticarUsuario(email, senha);
+        console.debug("[RGA Admin] Autenticação bem-sucedida");
         erroLogin.classList.remove("mostrar");
     } catch (error) {
+        console.warn("[RGA Admin] Falha na autenticação:", error);
         const mensagensErro = {
             "auth/invalid-credential": "E-mail ou senha incorretos.",
             "auth/user-not-found": "E-mail ou senha incorretos.",
@@ -232,19 +294,30 @@ btnSair?.addEventListener("click", () => {
 });
 
 function mostrarTelaLogin() {
-    telaBloqueio.style.display = "block";
-    conteudoPainel.style.display = "none";
+    if (telaBloqueio) {
+        telaBloqueio.style.display = "block";
+    }
+    if (conteudoPainel) {
+        conteudoPainel.style.display = "none";
+    }
 }
 
 function mostrarErroLogin(mensagem = "E-mail ou senha incorretos.") {
-    erroLogin.textContent = mensagem;
-    erroLogin.classList.add("mostrar");
-    inputSenha.value = "";
-    inputSenha.focus();
+    if (erroLogin) {
+        erroLogin.textContent = mensagem;
+        erroLogin.classList.add("mostrar");
+    }
+    if (inputSenha) {
+        inputSenha.value = "";
+        inputSenha.focus();
+    }
 
-    cardSenha.classList.remove("erro");
-    void cardSenha.offsetWidth;
-    cardSenha.classList.add("erro");
+    if (cardSenha) {
+        cardSenha.classList.remove("erro");
+        // Trigger reflow for animation
+        void cardSenha.offsetWidth;
+        cardSenha.classList.add("erro");
+    }
 }
 
 function aplicarPermissoes(papel) {
@@ -262,11 +335,17 @@ function liberarPainel(papel, nome = NOMES_PAPEL[papel]) {
         return;
     }
 
-    telaBloqueio.style.display = "none";
-    conteudoPainel.style.display = "block";
+    if (telaBloqueio) {
+        telaBloqueio.style.display = "none";
+    }
+    if (conteudoPainel) {
+        conteudoPainel.style.display = "block";
+    }
 
     aplicarPermissoes(papel);
-    textoContaLogada.textContent = `Olá, ${nome || NOMES_PAPEL[papel] || "usuário autorizado"}`;
+    if (textoContaLogada) {
+        textoContaLogada.textContent = `Olá, ${nome || NOMES_PAPEL[papel] || "usuário autorizado"}`;
+    }
 
     if (papel === "admin") {
         inicializarGerenciadorManutencao();

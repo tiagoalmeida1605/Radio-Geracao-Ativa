@@ -18,7 +18,15 @@ const firebaseConfig = {
     measurementId: "G-SFVF2382KW"
 };
 
-const database = getDatabase(initializeApp(firebaseConfig, "rga-public-playlists"));
+try {
+    const app = initializeApp(firebaseConfig, "rga-public-playlists");
+    const database = getDatabase(app);
+    console.debug("[RGA Playlist] Firebase app initialized successfully");
+} catch (error) {
+    console.error("[RGA Playlist] Failed to initialize Firebase app:", error);
+    // Re-throw to prevent silent failure
+    throw error;
+}
 
 function escaparHtml(valor) {
     return String(valor ?? "").replace(/[&<>'"]/g, (caractere) => ({
@@ -43,10 +51,17 @@ function obterMidia(item) {
 
 document.addEventListener("DOMContentLoaded", () => {
     const gridDinamica = document.getElementById("grid-dinamica");
-    if (!gridDinamica) return;
+    if (!gridDinamica) {
+        console.error("[RGA Playlist] Elemento #grid-dinamica não encontrado");
+        return;
+    }
 
     function mostrarFeedback(mensagem, erro = false) {
-        gridDinamica.innerHTML = `<p class="playlist-feedback${erro ? " is-error" : ""}" role="status">${escaparHtml(mensagem)}</p>`;
+        if (gridDinamica) {
+            gridDinamica.innerHTML = `<p class="playlist-feedback${erro ? " is-error" : ""}" role="status">${escaparHtml(mensagem)}</p>`;
+        } else {
+            console.error("[RGA Playlist] Tentativa de mostrar feedback mas #grid-dinamica não está disponível");
+        }
     }
 
     function renderizarConteudos(conteudos) {
@@ -99,15 +114,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     onValue(ref(database, "playlists"), (snapshot) => {
+        console.debug("[RGA Playlist] Dados recebidos do Firebase");
         const val = snapshot.val();
+        console.debug("[RGA Playlist] Valor:", val);
+
         if (val && typeof val === 'object' && !Array.isArray(val)) {
-            renderizarConteudos(Object.values(val));
+            console.debug("[RGA Playlist] Dados são objeto válido, processando...");
+            try {
+                renderizarConteudos(Object.values(val));
+            } catch (error) {
+                console.error("[RGA Playlist] Erro ao renderizar conteúdos:", error);
+                mostrarFeedback("Erro ao processar os dados dos vídeos e playlists. Tente novamente mais tarde.", true);
+            }
         } else {
             // Handle case where data is not an object (null, primitive, or array)
+            console.debug("[RGA Playlist] Dados não são objeto ou são null:", val);
             renderizarConteudos([]);
         }
     }, (error) => {
-        console.error("Erro ao carregar conteúdos:", error);
+        console.error("[RGA Playlist] Erro ao carregar conteúdos:", error);
         mostrarFeedback("Não foi possível carregar os vídeos e playlists. Tente novamente mais tarde.", true);
     });
 });

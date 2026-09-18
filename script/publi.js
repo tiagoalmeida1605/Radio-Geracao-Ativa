@@ -21,7 +21,15 @@ const firebaseConfig = {
     measurementId: "G-SFVF2382KW"
 };
 
-const database = getDatabase(initializeApp(firebaseConfig, "rga-public-news"));
+try {
+    const app = initializeApp(firebaseConfig, "rga-public-news");
+    const database = getDatabase(app);
+    console.debug("[RGA Notícias] Firebase app initialized successfully");
+} catch (error) {
+    console.error("[RGA Notícias] Failed to initialize Firebase app:", error);
+    // Re-throw to prevent silent failure
+    throw error;
+}
 
 function escaparHtml(valor) {
     return String(valor ?? "").replace(/[&<>'"]/g, (caractere) => ({
@@ -41,25 +49,53 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const gridNoticias =
         document.getElementById("grid-noticias");
+    if (!gridNoticias) {
+        console.error("[RGA Notícias] Elemento #grid-noticias não encontrado");
+        return;
+    }
 
     const modal =
         document.getElementById("noticiaModal");
+    if (!modal) {
+        console.error("[RGA Notícias] Elemento #noticiaModal não encontrado");
+        return;
+    }
 
     const closeModalBtn =
         document.getElementById("closeModal");
+    if (!closeModalBtn) {
+        console.error("[RGA Notícias] Elemento #closeModal não encontrado");
+        return;
+    }
 
     // Referências dos campos dentro do Modal
     const modalImg =
         document.getElementById("modalImg");
+    if (!modalImg) {
+        console.error("[RGA Notícias] Elemento #modalImg não encontrado");
+        return;
+    }
 
     const modalTitulo =
         document.getElementById("modalTitulo");
+    if (!modalTitulo) {
+        console.error("[RGA Notícias] Elemento #modalTitulo não encontrado");
+        return;
+    }
 
     const modalData =
         document.getElementById("modalData");
+    if (!modalData) {
+        console.error("[RGA Notícias] Elemento #modalData não encontrado");
+        return;
+    }
 
     const modalTexto =
         document.getElementById("modalTexto");
+    if (!modalTexto) {
+        console.error("[RGA Notícias] Elemento #modalTexto não encontrado");
+        return;
+    }
 
 
     // ==========================================================
@@ -455,19 +491,39 @@ card.innerHTML = `
 
     const noticiasRef = ref(database, "noticias");
     onValue(noticiasRef, (snapshot) => {
+        console.debug("[RGA Notícias] Dados recebidos do Firebase");
         const dados = snapshot.val();
+        console.debug("[RGA Notícias] Valor:", dados);
+
         if (dados && typeof dados === 'object' && !Array.isArray(dados)) {
-            renderizarNoticias(Object.values(dados));
+            console.debug("[RGA Notícias] Dados são objeto válido, processando...");
+            try {
+                renderizarNoticias(Object.values(dados));
+            } catch (error) {
+                console.error("[RGA Notícias] Erro ao renderizar notícias:", error);
+                if (gridNoticias) {
+                    gridNoticias.innerHTML = `
+                        <p class="noticias-feedback">
+                            Erro ao processar os dados das notícias. Tente novamente mais tarde.
+                        </p>
+                    `;
+                }
+            }
         } else {
             // Handle case where data is not an object (null, primitive, or array)
+            console.debug("[RGA Notícias] Dados não são objeto ou são null:", dados);
             renderizarNoticias([]);
         }
     }, (error) => {
-        console.error("Erro ao carregar notícias:", error);
-        gridNoticias.innerHTML = `
-            <p class="noticias-feedback">
-                Não foi possível carregar as publicações. Tente novamente mais tarde.
-            </p>
-        `;
+        console.error("[RGA Notícias] Erro ao carregar notícias:", error);
+        if (gridNoticias) {
+            gridNoticias.innerHTML = `
+                <p class="noticias-feedback">
+                    Não foi possível carregar as publicações. Tente novamente mais tarde.
+                </p>
+            `;
+        } else {
+            console.error("[RGA Notícias] #grid-noticias não disponível para mostrar mensagem de erro");
+        }
     });
 });
