@@ -1,6 +1,6 @@
 import { database } from "./firebase-config.js";
 import { onValue, ref } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
-import { auth, observarAutenticacao, obterPapel } from "./admin-auth.js?v=3";
+import { auth, observarAutenticacao, obterPapel } from "./admin-auth.js";
 
 const CAMINHO_CONFIGURACAO = "configuracoes/manutencao";
 

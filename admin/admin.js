@@ -9,7 +9,7 @@ import {
     encerrarSessao,
     observarAutenticacao,
     obterPerfil
-} from "../script/admin-auth.js?v=4";
+} from "../script/admin-auth.js";
 import { ICON_DEFAULT, ICON_MAP, resolveIcon, renderIconMarkup } from "../script/icon-catalog.js";
 
 const telaBloqueio = document.getElementById("bloqueio-tela");
