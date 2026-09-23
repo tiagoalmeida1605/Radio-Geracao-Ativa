@@ -10,7 +10,13 @@ import {
     observarAutenticacao,
     obterPerfil
 } from "../script/admin-auth.js";
-import { ICON_DEFAULT, ICON_MAP, resolveIcon, renderIconMarkup } from "../script/icon-catalog.js";
+import {
+    ICON_CATALOG,
+    ICON_DEFAULT,
+    ICON_MAP,
+    resolveIcon,
+    renderIconMarkup
+} from "../script/icon-catalog.js";
 
 const telaBloqueio = document.getElementById("bloqueio-tela");
 if (!telaBloqueio) {
@@ -62,108 +68,10 @@ if (!btnSair) {
     console.error("[RGA Admin] Elemento #btnSair não encontrado");
 }
 const gerenciadoresInicializados = new Set();
-const PLAYLIST_ICON_CATALOG = [
-    { name: "video", label: "Vídeo", category: "Áudio", tags: ["video", "filme", "camera"] },
-    { name: "radio", label: "Rádio", category: "Áudio", tags: ["radio", "broadcast", "wave"] },
-    { name: "mic", label: "Microfone", category: "Áudio", tags: ["microfone", "mic", "podcast"] },
-    { name: "headphones", label: "Fones", category: "Áudio", tags: ["fones", "audio", "ouvido"] },
-    { name: "speaker", label: "Alto-falante", category: "Áudio", tags: ["altofalante", "audio", "som"] },
-    { name: "volume2", label: "Volume", category: "Áudio", tags: ["volume", "som", "audio"] },
-    { name: "music", label: "Música", category: "Música", tags: ["musica", "nota", "melodia"] },
-    { name: "album", label: "Álbum", category: "Música", tags: ["album", "disco", "playlist"] },
-    { name: "disc3", label: "Disco", category: "Música", tags: ["disco", "vinil", "musica"] },
-    { name: "guitar", label: "Guitarra", category: "Música", tags: ["guitarra", "instrumento", "rock"] },
-    { name: "drum", label: "Bateria", category: "Música", tags: ["bateria", "instrumento", "ritmo"] },
-    { name: "music4", label: "Notas", category: "Música", tags: ["notas", "musica", "melodia"] },
-    { name: "newspaper", label: "Jornal", category: "Conteúdo", tags: ["jornal", "noticia", "artigo"] },
-    { name: "file-text", label: "Arquivo", category: "Conteúdo", tags: ["arquivo", "documento", "texto"] },
-    { name: "info", label: "Informação", category: "Conteúdo", tags: ["info", "informacao", "dica"] },
-    { name: "star", label: "Estrela", category: "Conteúdo", tags: ["estrela", "destaque", "favorito"] },
-    { name: "sparkles", label: "Sparkles", category: "Conteúdo", tags: ["sparkles", "brilho", "destaque"] },
-    { name: "megaphone", label: "Megafone", category: "Conteúdo", tags: ["megafone", "anuncio", "comunicacao"] },
-    { name: "bookmark", label: "Marca", category: "Conteúdo", tags: ["bookmark", "marcador", "salvar"] },
-    { name: "user", label: "Usuário", category: "Pessoas", tags: ["usuario", "pessoa", "perfil"] },
-    { name: "users", label: "Equipe", category: "Pessoas", tags: ["equipe", "grupo", "usuarios"] },
-    { name: "briefcase-business", label: "Apresentador", category: "Pessoas", tags: ["apresentador", "trabalho", "perfil"] },
-    { name: "message-square", label: "Mensagem", category: "Comunicação", tags: ["mensagem", "chat", "comunicacao"] },
-    { name: "phone", label: "Telefone", category: "Comunicação", tags: ["telefone", "ligacao", "contato"] },
-    { name: "mail", label: "E-mail", category: "Comunicação", tags: ["email", "mail", "mensagem"] },
-    { name: "send", label: "Enviar", category: "Comunicação", tags: ["enviar", "share", "compartilhar"] },
-    { name: "share-2", label: "Compartilhar", category: "Comunicação", tags: ["compartilhar", "share", "social"] },
-    { name: "calendar", label: "Calendário", category: "Programação", tags: ["calendario", "agenda", "evento"] },
-    { name: "clock3", label: "Relógio", category: "Programação", tags: ["relogio", "hora", "tempo"] },
-    { name: "timer-reset", label: "Timer", category: "Programação", tags: ["timer", "tempo", "programacao"] },
-    { name: "sun", label: "Sol", category: "Programação", tags: ["sol", "dia", "amanhecer"] },
-    { name: "moon", label: "Lua", category: "Programação", tags: ["lua", "noite", "noturno"] },
-    { name: "monitor", label: "Monitor", category: "Tecnologia", tags: ["monitor", "desktop", "tela"] },
-    { name: "laptop", label: "Laptop", category: "Tecnologia", tags: ["laptop", "notebook", "pc"] },
-    { name: "smartphone", label: "Smartphone", category: "Tecnologia", tags: ["smartphone", "celular", "mobile"] },
-    { name: "code2", label: "Código", category: "Tecnologia", tags: ["codigo", "programacao", "dev"] },
-    { name: "globe", label: "Globo", category: "Tecnologia", tags: ["globo", "mundo", "web"] },
-    { name: "wifi", label: "Wi-Fi", category: "Tecnologia", tags: ["wifi", "internet", "conexao"] },
-    { name: "cloud", label: "Nuvem", category: "Tecnologia", tags: ["nuvem", "cloud", "storage"] },
-    { name: "server", label: "Servidor", category: "Tecnologia", tags: ["servidor", "dados", "infra"] },
-    { name: "database", label: "Banco de dados", category: "Tecnologia", tags: ["dados", "database", "storage"] },
-    { name: "link", label: "Link", category: "Tecnologia", tags: ["link", "referencia", "url"] },
-    { name: "church", label: "Igreja", category: "Espiritualidade", tags: ["igreja", "church", "templo"] },
-    { name: "cross", label: "Cruz", category: "Espiritualidade", tags: ["cruz", "religiao", "santo"] },
-    { name: "book-open", label: "Livro", category: "Espiritualidade", tags: ["livro", "bible", "estudo"] },
-    { name: "heart", label: "Coração", category: "Social", tags: ["coracao", "amor", "social"] },
-    { name: "thumbs-up", label: "Curtida", category: "Social", tags: ["curtida", "like", "aprovacao"] },
-    { name: "home", label: "Casa", category: "Objetos", tags: ["casa", "inicio", "home"] },
-    { name: "camera", label: "Câmera", category: "Objetos", tags: ["camera", "foto", "imagens"] },
-    { name: "image", label: "Imagem", category: "Objetos", tags: ["imagem", "foto", "visual"] },
-    { name: "folder", label: "Pasta", category: "Objetos", tags: ["pasta", "arquivo", "organizar"] },
-    { name: "gift", label: "Presente", category: "Objetos", tags: ["presente", "gift", "promo"] },
-    { name: "flag", label: "Bandeira", category: "Objetos", tags: ["bandeira", "destino", "marca"] },
-    { name: "sunrise", label: "Nascer do sol", category: "Natureza", tags: ["sol", "nascer", "natureza"] },
-    { name: "sunset", label: "Pôr do sol", category: "Natureza", tags: ["sol", "por", "natureza"] },
-    { name: "leaf", label: "Folha", category: "Natureza", tags: ["folha", "natureza", "verde"] },
-    { name: "flower2", label: "Flor", category: "Natureza", tags: ["flor", "natureza", "beleza"] },
-    { name: "tree-palm", label: "Árvore", category: "Natureza", tags: ["arvore", "floresta", "natureza"] },
-    { name: "settings", label: "Configurações", category: "Sistema", tags: ["configuracoes", "settings", "ajustes"] },
-    { name: "check", label: "Check", category: "Sistema", tags: ["check", "confirmado", "ok"] },
-    { name: "badge-check", label: "Verificado", category: "Sistema", tags: ["verificado", "check", "confirmado"] },
-    { name: "alert-circle", label: "Alerta", category: "Sistema", tags: ["alerta", "aviso", "importante"] },
-    { name: "bell", label: "Sino", category: "Sistema", tags: ["sino", "alerta", "notificacao"] },
-    { name: "lock", label: "Cadeado", category: "Sistema", tags: ["cadeado", "seguranca", "privado"] },
-    { name: "eye", label: "Olho", category: "Sistema", tags: ["olho", "visualizar", "preview"] },
-    { name: "filter", label: "Filtro", category: "Sistema", tags: ["filtro", "buscar", "ordenar"] },
-    { name: "search", label: "Busca", category: "Sistema", tags: ["busca", "search", "pesquisa"] },
-    { name: "plus", label: "Adicionar", category: "Sistema", tags: ["adicionar", "novo", "plus"] },
-    { name: "play", label: "Play", category: "Áudio", tags: ["play", "reproducao", "assistir"] },
-    { name: "podcast", label: "Podcast", category: "Áudio", tags: ["podcast", "audio", "programa"] },
-    { name: "waves", label: "Ondas", category: "Áudio", tags: ["ondas", "audio", "som"] },
-    { name: "gamepad2", label: "Gamepad", category: "Entretenimento", tags: ["gamepad", "jogo", "esporte"] },
-    { name: "trophy", label: "Troféu", category: "Entretenimento", tags: ["trofeu", "campeonato", "premio"] },
-    { name: "football", label: "Futebol", category: "Entretenimento", tags: ["futebol", "esporte", "campeonato"] },
-    { name: "sparkle", label: "Brilho", category: "Conteúdo", tags: ["brilho", "destaque", "especial"] }
-];
-const PLAYLIST_ICON_MAP = Object.fromEntries(PLAYLIST_ICON_CATALOG.map((item) => [item.name, item]));
-const PLAYLIST_EMOJI_MAP = {
-    "📹": "video",
-    "📻": "radio",
-    "🎙️": "mic",
-    "🎧": "headphones",
-    "🎤": "mic",
-    "🎬": "video",
-    "📰": "newspaper",
-    "⚽": "football",
-    "🏆": "trophy",
-    "🎮": "gamepad2",
-    "🎶": "music",
-    "🧠": "brain",
-    "🔥": "sparkles",
-    "😂": "laugh",
-    "🔔": "bell",
-    "📚": "book-open",
-    "🌤️": "sun",
-    "🏠": "home",
-    "📷": "camera",
-    "📡": "radio",
-    "💡": "sparkles",
-    "🎵": "music"
-};
+const PLAYLIST_ICON_DEFAULT = ICON_DEFAULT;
+const NOTICIA_ICON_DEFAULT = "newspaper";
+const PLAYLIST_ICON_CATALOG = ICON_CATALOG;
+const PLAYLIST_ICON_MAP = ICON_MAP;
 
 function escaparHtml(valor) {
     return String(valor ?? "").replace(/[&<>'"]/g, (caractere) => ({
@@ -175,17 +83,12 @@ function escaparHtml(valor) {
     })[caractere]);
 }
 
-function obterEntradaIcone(icone) {
-    if (!icone) return PLAYLIST_ICON_DEFAULT;
-    if (PLAYLIST_ICON_MAP[icone]) return icone;
-    const valorNormalizado = String(icone).trim().replace(/\uFE0F/g, "");
-    return PLAYLIST_EMOJI_MAP[valorNormalizado] || PLAYLIST_ICON_DEFAULT;
+function obterEntradaIcone(icone, padrao = PLAYLIST_ICON_DEFAULT) {
+    return resolveIcon(icone || padrao);
 }
 
 function renderizarMarkupIcone(icone) {
-    const nome = obterEntradaIcone(icone);
-    const item = PLAYLIST_ICON_MAP[nome] || PLAYLIST_ICON_MAP[PLAYLIST_ICON_DEFAULT];
-    return `<svg data-lucide="${escaparHtml(nome)}" class="lucide-icon" aria-hidden="true"></svg><span class="sr-only">${escaparHtml(item.label)}</span>`;
+    return renderIconMarkup(obterEntradaIcone(icone));
 }
 
 function mensagemFirebase(error, acao) {
@@ -348,13 +251,21 @@ function liberarPainel(papel, nome = NOMES_PAPEL[papel]) {
     }
 
     if (papel === "admin") {
-        inicializarGerenciadorManutencao();
+        inicializarModuloPainel("manutenção", inicializarGerenciadorManutencao);
     }
     if (papel === "admin" || papel === "playlist") {
-        inicializarGerenciadorPlaylists();
+        inicializarModuloPainel("vídeos e playlists", inicializarGerenciadorPlaylists);
     }
     if (papel === "admin" || papel === "publicador") {
-        inicializarGerenciadorNoticias();
+        inicializarModuloPainel("notícias", inicializarGerenciadorNoticias);
+    }
+}
+
+function inicializarModuloPainel(nome, inicializar) {
+    try {
+        inicializar();
+    } catch (error) {
+        console.error(`[RGA Admin] Não foi possível inicializar o módulo de ${nome}:`, error);
     }
 }
 
@@ -489,7 +400,7 @@ function inicializarSeletorIconesNoticias() {
     let categoriaAtiva = "Todos";
 
     function atualizarVisualizacao(valor) {
-        const nome = obterEntradaIcone(valor);
+        const nome = obterEntradaIcone(valor, NOTICIA_ICON_DEFAULT);
         const item = PLAYLIST_ICON_MAP[nome] || PLAYLIST_ICON_MAP[PLAYLIST_ICON_DEFAULT];
         inputIcone.value = nome;
         preview.innerHTML = renderizarMarkupIcone(nome);
@@ -540,10 +451,10 @@ function inicializarSeletorIconesNoticias() {
         grid.innerHTML = itens.map((item) => `
             <button
                 type="button"
-                class="icon-picker-item ${obterEntradaIcone(inputIcone.value) === item.name ? "selected" : ""}"
+                class="icon-picker-item ${obterEntradaIcone(inputIcone.value, NOTICIA_ICON_DEFAULT) === item.name ? "selected" : ""}"
                 data-icon-name="${escaparHtml(item.name)}"
                 aria-label="Selecionar ícone ${escaparHtml(item.label)}"
-                aria-selected="${obterEntradaIcone(inputIcone.value) === item.name}"
+                aria-selected="${obterEntradaIcone(inputIcone.value, NOTICIA_ICON_DEFAULT) === item.name}"
                 title="${escaparHtml(item.label)}"
             >
                 <svg data-lucide="${escaparHtml(item.name)}" class="lucide-icon" aria-hidden="true"></svg>
@@ -577,7 +488,7 @@ function inicializarSeletorIconesNoticias() {
 
     renderizarFiltros();
     renderizarGrid();
-    atualizarVisualizacao(inputIcone.value || PLAYLIST_ICON_DEFAULT);
+    atualizarVisualizacao(inputIcone.value || NOTICIA_ICON_DEFAULT);
     window.RGANoticiaIconPicker = { atualizarVisualizacao };
 }
 
@@ -616,7 +527,7 @@ function inicializarGerenciadorManutencao() {
         statusManutencao.classList.toggle("ativo", manutencaoAtiva);
     }, (error) => {
         statusManutencao.textContent = "INDISPONÍVEL";
-        feedbackManutencao.textContent = "Não foi possível ler o status: " + error.message;
+        feedbackManutencao.textContent = mensagemFirebase(error, "carregar o status da manutenção");
     });
 
     formManutencao.addEventListener("submit", (e) => {
@@ -751,7 +662,7 @@ function inicializarGerenciadorPlaylists() {
             btn.addEventListener("click", () => apagarPlaylist(btn.getAttribute("data-id")));
         });
     }, (error) => {
-        listaContainer.innerHTML = `<p class="txt-ajuda">Não foi possível carregar as playlists: ${error.message}</p>`;
+        listaContainer.innerHTML = `<p class="txt-ajuda">${mensagemFirebase(error, "carregar os vídeos e playlists")}</p>`;
     });
 
     formPlaylist.addEventListener("submit", async (e) => {
@@ -792,23 +703,25 @@ function inicializarGerenciadorPlaylists() {
     });
 
     function carregarFormParaEdicao(id) {
-        get(ref(database, "playlists/" + id)).then((snapshot) => {
-            const item = snapshot.val();
-            if (item) {
-                inputId.value = id;
-                inputIcone.value = obterEntradaIcone(item.icone || PLAYLIST_ICON_DEFAULT);
-                if (window.RGAPlaylistIconPicker && typeof window.RGAPlaylistIconPicker.atualizarVisualizacao === "function") {
-                    window.RGAPlaylistIconPicker.atualizarVisualizacao(inputIcone.value);
+        get(ref(database, "playlists/" + id))
+            .then((snapshot) => {
+                const item = snapshot.val();
+                if (item) {
+                    inputId.value = id;
+                    inputIcone.value = obterEntradaIcone(item.icone || PLAYLIST_ICON_DEFAULT);
+                    if (window.RGAPlaylistIconPicker && typeof window.RGAPlaylistIconPicker.atualizarVisualizacao === "function") {
+                        window.RGAPlaylistIconPicker.atualizarVisualizacao(inputIcone.value);
+                    }
+                    inputTitulo.value = item.titulo;
+                    inputDesc.value = item.descricao;
+                    inputUrl.value = item.tipo === "video"
+                        ? `https://www.youtube.com/watch?v=${item.videoId || ""}`
+                        : `https://www.youtube.com/playlist?list=${item.playlistId || ""}`;
+                    document.getElementById("btn-salvar-playlist").textContent = "Atualizar conteúdo";
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
-                inputTitulo.value = item.titulo;
-                inputDesc.value = item.descricao;
-                inputUrl.value = item.tipo === "video"
-                    ? `https://www.youtube.com/watch?v=${item.videoId || ""}`
-                    : `https://www.youtube.com/playlist?list=${item.playlistId || ""}`;
-                document.getElementById("btn-salvar-playlist").textContent = "Atualizar conteúdo";
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        });
+            })
+            .catch((error) => alert(mensagemFirebase(error, "carregar o vídeo ou playlist")));
     }
 
     function apagarPlaylist(id) {
@@ -843,6 +756,7 @@ function inicializarGerenciadorNoticias() {
 
     const formNoticia = document.getElementById("form-noticia");
     const inputId = document.getElementById("noticia-id");
+    const inputIcone = document.getElementById("noticia-icone");
     const inputTitulo = document.getElementById("noticia-titulo");
     const inputResumo = document.getElementById("noticia-resumo");
     const inputConteudo = document.getElementById("noticia-conteudo");
@@ -855,7 +769,7 @@ function inicializarGerenciadorNoticias() {
     const previewContainer = document.getElementById("preview-imagem-admin");
     const imgPreview = document.getElementById("img-preview-noticia");
 
-    if (!formNoticia || !inputId || !inputTitulo || !inputResumo || !inputConteudo || !inputImagem || !inputData || !btnLimpar || !listaContainer) {
+    if (!formNoticia || !inputId || !inputIcone || !inputTitulo || !inputResumo || !inputConteudo || !inputImagem || !inputData || !btnLimpar || !listaContainer) {
         return;
     }
 
@@ -923,7 +837,7 @@ function inicializarGerenciadorNoticias() {
             btn.addEventListener("click", () => apagarNoticia(btn.getAttribute("data-id")));
         });
     }, (error) => {
-        listaContainer.innerHTML = `<p class="txt-ajuda">Não foi possível carregar as notícias: ${error.message}</p>`;
+        listaContainer.innerHTML = `<p class="txt-ajuda">${mensagemFirebase(error, "carregar as notícias")}</p>`;
     });
 
     // Evento transformado em ASYNC para poder esperar o carregamento do arquivo
@@ -932,30 +846,30 @@ function inicializarGerenciadorNoticias() {
 
         const idAtual = inputId.value;
 
-        let imagemString = "";
-
-        // Verifica se o usuário escolheu algum arquivo
-        if (inputImagem.files && inputImagem.files[0]) {
-            imagemString = await arquivoParaBase64(inputImagem.files[0]);
-        } else if (idAtual) {
-            // Se está editando e não enviou arquivo novo, recupera a imagem que já estava lá
-            const snapshot = await get(ref(database, "noticias/" + idAtual));
-            const item = snapshot.val();
-            if (item && item.imagem) {
-                imagemString = item.imagem;
-            }
-        }
-
-        const itemNoticia = {
-            titulo: inputTitulo.value.trim(),
-            resumo: inputResumo.value.trim(),
-            conteudo: inputConteudo.value.trim(),
-            imagem: imagemString,
-            icone: inputIcone.value || "newspaper",
-            data: inputData.value
-        };
-
         try {
+            let imagemString = "";
+
+            // Verifica se o usuário escolheu algum arquivo
+            if (inputImagem.files && inputImagem.files[0]) {
+                imagemString = await arquivoParaBase64(inputImagem.files[0]);
+            } else if (idAtual) {
+                // Se está editando e não enviou arquivo novo, recupera a imagem que já estava lá
+                const snapshot = await get(ref(database, "noticias/" + idAtual));
+                const item = snapshot.val();
+                if (item && item.imagem) {
+                    imagemString = item.imagem;
+                }
+            }
+
+            const itemNoticia = {
+                titulo: inputTitulo.value.trim(),
+                resumo: inputResumo.value.trim(),
+                conteudo: inputConteudo.value.trim(),
+                imagem: imagemString,
+                icone: obterEntradaIcone(inputIcone.value, NOTICIA_ICON_DEFAULT),
+                data: inputData.value
+            };
+
             if (idAtual) {
                 diagnosticarOperacao(`noticias/${idAtual}`);
                 await set(ref(database, "noticias/" + idAtual), itemNoticia);
@@ -973,34 +887,36 @@ function inicializarGerenciadorNoticias() {
     });
 
     function carregarNoticiaParaEdicao(id) {
-        get(ref(database, "noticias/" + id)).then((snapshot) => {
-            const item = snapshot.val();
-            if (item) {
-                inputId.value = id;
-                inputTitulo.value = item.titulo || '';
-                inputResumo.value = item.resumo || '';
-                inputConteudo.value = item.conteudo || '';
-                inputIcone.value = obterEntradaIcone(item.icone || "newspaper");
-                if (window.RGANoticiaIconPicker && typeof window.RGANoticiaIconPicker.atualizarVisualizacao === "function") {
-                    window.RGANoticiaIconPicker.atualizarVisualizacao(inputIcone.value);
+        get(ref(database, "noticias/" + id))
+            .then((snapshot) => {
+                const item = snapshot.val();
+                if (item) {
+                    inputId.value = id;
+                    inputTitulo.value = item.titulo || '';
+                    inputResumo.value = item.resumo || '';
+                    inputConteudo.value = item.conteudo || '';
+                    inputIcone.value = obterEntradaIcone(item.icone, NOTICIA_ICON_DEFAULT);
+                    if (window.RGANoticiaIconPicker && typeof window.RGANoticiaIconPicker.atualizarVisualizacao === "function") {
+                        window.RGANoticiaIconPicker.atualizarVisualizacao(inputIcone.value);
+                    }
+
+                    // Limpa o seletor de arquivos por segurança
+                    inputImagem.value = "";
+
+                    // Se houver uma imagem salva, exibe a miniatura no painel
+                    if (item.imagem) {
+                        imgPreview.src = item.imagem;
+                        previewContainer.hidden = false;
+                    } else {
+                        previewContainer.hidden = true;
+                    }
+
+                    inputData.value = item.data || '';
+                    document.getElementById("btn-salvar-noticia").textContent = "Substituir Notícia";
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
-
-                // Limpa o seletor de arquivos por segurança
-                inputImagem.value = "";
-
-                // Se houver uma imagem salva, exibe a miniatura no painel
-                if (item.imagem) {
-                    imgPreview.src = item.imagem;
-                    previewContainer.hidden = false;
-                } else {
-                    previewContainer.hidden = true;
-                }
-
-                inputData.value = item.data || '';
-                document.getElementById("btn-salvar-noticia").textContent = "Substituir Notícia";
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        });
+            })
+            .catch((error) => alert(mensagemFirebase(error, "carregar a notícia")));
     }
 
     function apagarNoticia(id) {

@@ -7,12 +7,6 @@ import { database } from "./firebase-config.js";
 import { onValue, ref } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 import { renderIconMarkup, escaparHtml, resolveIcon, ICON_MAP, ICON_DEFAULT } from "./icon-catalog.js";
 
-function escaparHtml(valor) {
-    return String(valor ?? "").replace(/[&<>'"]/g, (caractere) => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
-    })[caractere]);
-}
-
 function obterMidia(item) {
     const tipo = item.tipo === "video" ? "video" : "playlist";
     const id = String((tipo === "video" ? item.videoId : item.playlistId) || "").trim();
@@ -79,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
                 <p class="playlist-description">${escaparHtml(conteudo.descricao || "")}</p>
                 <div class="playlist-video">
-                    <iframe src="${midia.embedUrl}" title="${escaparHtml(conteudo.titulo || midia.tipo === 'video' ? 'Vídeo' : 'Playlist')} - Rádio Geração Ativa" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <iframe src="${midia.embedUrl}" title="${escaparHtml(conteudo.titulo || (midia.tipo === "video" ? "Vídeo" : "Playlist"))} - Rádio Geração Ativa" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
                 <a class="playlist-btn" href="${midia.externalUrl}" target="_blank" rel="noopener noreferrer">
                     ${midia.tipo === "video" ? "Assistir vídeo" : "Abrir playlist"}
