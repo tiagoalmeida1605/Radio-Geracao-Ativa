@@ -97,10 +97,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const val = snapshot.val();
         console.debug("[RGA Playlist] Valor:", val);
 
-        if (val && typeof val === 'object' && !Array.isArray(val)) {
+        if (val && typeof val === 'object') {
             console.debug("[RGA Playlist] Dados são objeto válido, processando...");
             try {
-                renderizarConteudos(Object.values(val));
+                // Handle both objects and arrays
+                const valArray = Array.isArray(val) ? val : Object.values(val);
+                renderizarConteudos(valArray);
             } catch (error) {
                 console.error("[RGA Playlist] Erro ao renderizar conteúdos:", error);
                 mostrarFeedback("Erro ao processar os dados dos vídeos e playlists. Tente novamente mais tarde.", true);

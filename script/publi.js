@@ -263,10 +263,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         const dados = snapshot.val();
         console.debug("[RGA Notícias] Valor:", dados);
 
-        if (dados && typeof dados === 'object' && !Array.isArray(dados)) {
+        if (dados && typeof dados === 'object') {
             console.debug("[RGA Notícias] Dados são objeto válido, processando...");
             try {
-                renderizarNoticias(Object.values(dados));
+                // Handle both objects and arrays
+                const dadosArray = Array.isArray(dados) ? dados : Object.values(dados);
+                renderizarNoticias(dadosArray);
             } catch (error) {
                 console.error("[RGA Notícias] Erro ao renderizar notícias:", error);
                 if (gridNoticias) {
