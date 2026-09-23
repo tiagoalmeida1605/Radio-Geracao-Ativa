@@ -39,6 +39,11 @@
             <p class="description">Fique por dentro de todos os avisos, bastidores e novidades do UNASP trazidas pela equipe da Rádio Geração Ativa.</p>
         </section>
 
+        <section class="filtros-tags-section" aria-labelledby="filtros-tags-titulo">
+            <h2 id="filtros-tags-titulo">Filtrar publicações</h2>
+            <div class="filtros-tags" id="filtros-tags" role="group" aria-label="Filtros por categoria"></div>
+        </section>
+
         <section class="noticias-grid" id="grid-noticias">
             <p class="noticias-feedback" role="status">Carregando as publicações...</p>
         </section>
@@ -50,6 +55,7 @@
             <img id="modalImg" src="" alt="Imagem da notícia" style="display: none;">
             <span class="modal-data" id="modalData"></span>
             <h2 id="modalTitulo"></h2>
+            <div class="modal-noticia-tags" id="modalNoticiaTags" hidden aria-label="Categorias da publicação"></div>
             <div class="modal-texto" id="modalTexto"></div>
         </div>
     </div>
@@ -60,6 +66,7 @@
 </div>
 
 <script src="../script/menu.js?v=2"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script type="module" src="../script/publi.js"></script>
 <script type="module" src="../script/maintenance.js"></script>
 </body>

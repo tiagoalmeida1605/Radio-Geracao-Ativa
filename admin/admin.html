@@ -162,6 +162,26 @@
                 </div>
                 <input type="hidden" id="noticia-icone" value="newspaper" required>
 
+                <fieldset class="noticia-tags-fieldset">
+                    <legend>Categorias / Tags</legend>
+                    <p class="campo-ajuda">Selecione uma ou mais categorias para ajudar o público a encontrar esta publicação.</p>
+                    <div class="noticia-tags-selecionadas" id="noticia-tags-selecionadas" aria-live="polite"></div>
+                    <div class="noticia-tags-adicionar">
+                        <label class="sr-only" for="noticia-tag-disponivel">Adicionar categoria à publicação</label>
+                        <select id="noticia-tag-disponivel" aria-describedby="noticia-tags-ajuda">
+                            <option value="">Selecionar uma categoria</option>
+                        </select>
+                        <label class="sr-only" for="noticia-tag-personalizada">Nova categoria</label>
+                        <input type="text" id="noticia-tag-personalizada" maxlength="40" placeholder="Nova categoria">
+                        <button type="button" class="btn-adicionar-tag" id="btn-adicionar-noticia-tag">
+                            <i data-lucide="plus" aria-hidden="true"></i>
+                            Adicionar categoria
+                        </button>
+                    </div>
+                    <p class="sr-only" id="noticia-tags-ajuda">As categorias selecionadas aparecerão como chips e podem ser removidas individualmente.</p>
+                    <p class="sr-only" id="noticia-tags-status" aria-live="polite"></p>
+                </fieldset>
+
                 <label for="noticia-resumo">Resumo Breve</label>
                 <input type="text" id="noticia-resumo" placeholder="Ex: Confira as novidades da nossa grade de programação..." required>
 

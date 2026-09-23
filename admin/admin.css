@@ -417,6 +417,33 @@ input[type="file"]::file-selector-button { margin-right: 10px; padding: 7px 10px
   text-align: center;
 }
 
+/* Tags editoriais das notícias ------------------------------------------ */
+.noticia-tags-fieldset {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 22px 0 0;
+  padding: 16px;
+  border: 1px solid var(--rga-border);
+  border-radius: 14px;
+  background: var(--rga-surface-muted);
+}
+.noticia-tags-fieldset legend { padding: 0 7px; color: var(--rga-text); font-size: .92rem; font-weight: 800; }
+.noticia-tags-fieldset .campo-ajuda { margin: -3px 0 0; }
+.noticia-tags-selecionadas { display: flex; flex-wrap: wrap; gap: 8px; min-height: 38px; }
+.noticia-tags-vazia { align-self: center; margin: 0; color: var(--rga-text-muted); font-size: .84rem; }
+.noticia-tag-admin { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; padding: 6px 7px 6px 10px; border: 1px solid rgba(41, 138, 141, .25); border-radius: 999px; color: var(--rga-teal); background: rgba(41, 138, 141, .10); font-size: .8rem; font-weight: 800; }
+.noticia-tag-admin > span { overflow-wrap: anywhere; }
+.btn-remover-noticia-tag { display: inline-grid; place-items: center; width: 24px; height: 24px; flex: none; padding: 0; border: 0; border-radius: 50%; color: var(--rga-teal); background: transparent; }
+.btn-remover-noticia-tag:hover { color: #fff; background: var(--rga-coral); }
+.btn-remover-noticia-tag .lucide-icon { width: 15px; height: 15px; stroke-width: 2.5; }
+.noticia-tags-adicionar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 8px; }
+.noticia-tags-adicionar select,
+.noticia-tags-adicionar input { min-width: 0; margin: 0; }
+.btn-adicionar-tag { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 10px 13px; border: 1px solid var(--rga-teal); border-radius: 10px; color: var(--rga-teal); background: var(--rga-surface); font-size: .82rem; font-weight: 800; white-space: nowrap; }
+.btn-adicionar-tag:hover { color: #fff; background: var(--rga-teal); }
+.btn-adicionar-tag .lucide-icon { width: 16px; height: 16px; stroke-width: 2.5; }
+
 /* Botões ----------------------------------------------------------------- */
 .botoes-playlist { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 25px; }
 
@@ -551,6 +578,8 @@ footer { margin-top: auto; padding: 20px 16px; color: #d9e6e4; background: var(-
   label { margin-top: 17px; }
   .botoes-playlist { flex-direction: column; }
   .btn-primary, .btn-secondary { width: 100%; }
+  .noticia-tags-adicionar { grid-template-columns: 1fr; }
+  .btn-adicionar-tag { width: 100%; }
   .barra-conta, .maintenance-admin-control, .item-playlist-admin { align-items: flex-start; flex-direction: column; }
   .barra-conta { padding: 14px; }
   .btn-sair { width: 100%; }

@@ -79,8 +79,8 @@ Firebase Realtime Database mantém tudo atualizado
 <tr>
 <td align="center" colspan="2">
 
-### 🗂️ **Catálogo com Filtro por Tags** <sub>(em desenvolvimento 🚧)</sub>
-Organização de conteúdos em catálogo com filtragem dinâmica por tags
+### 🗂️ **Publicações com Filtro por Tags**
+Organização de notícias com filtragem dinâmica por categorias editoriais
 
 </td>
 </tr>
@@ -152,13 +152,9 @@ Radio-Geracao-Ativa/
 
 ---
 
-## 🚧 Em Desenvolvimento
+## 🗂️ Categorias nas Publicações
 
-### 🗂️ Sistema de Catálogo com Filtro por Tags
-
-Está em desenvolvimento um **sistema de catálogo** que permitirá organizar os conteúdos do site e aplicar **filtragem dinâmica por tags**, facilitando a navegação e a busca por publicações, playlists e vídeos relacionados.
-
-> ⚠️ Essa funcionalidade ainda está em fase de implementação e pode sofrer alterações.
+As notícias podem receber uma ou mais tags editoriais no painel administrativo. Elas são salvas no campo `tags` do Firebase Realtime Database e usadas na página de Notícias para filtrar publicações sem recarregar a página. Conteúdos antigos sem tags permanecem visíveis e são tratados como sem categoria.
 
 ---
 

@@ -17,6 +17,7 @@ import {
     resolveIcon,
     renderIconMarkup
 } from "../script/icon-catalog.js";
+import { PUBLICATION_TAGS, normalizarTagsPublicacao } from "../script/publication-tags.js";
 
 const telaBloqueio = document.getElementById("bloqueio-tela");
 if (!telaBloqueio) {
@@ -762,6 +763,11 @@ function inicializarGerenciadorNoticias() {
     const inputConteudo = document.getElementById("noticia-conteudo");
     const inputImagem = document.getElementById("noticia-imagem");
     const inputData = document.getElementById("noticia-data");
+    const selectTagDisponivel = document.getElementById("noticia-tag-disponivel");
+    const inputTagPersonalizada = document.getElementById("noticia-tag-personalizada");
+    const tagsSelecionadasContainer = document.getElementById("noticia-tags-selecionadas");
+    const statusTags = document.getElementById("noticia-tags-status");
+    const btnAdicionarTag = document.getElementById("btn-adicionar-noticia-tag");
     const btnLimpar = document.getElementById("btn-limpar-form-noticia");
     const listaContainer = document.getElementById("lista-noticias-admin");
 
@@ -769,13 +775,91 @@ function inicializarGerenciadorNoticias() {
     const previewContainer = document.getElementById("preview-imagem-admin");
     const imgPreview = document.getElementById("img-preview-noticia");
 
-    if (!formNoticia || !inputId || !inputIcone || !inputTitulo || !inputResumo || !inputConteudo || !inputImagem || !inputData || !btnLimpar || !listaContainer) {
+    if (!formNoticia || !inputId || !inputIcone || !inputTitulo || !inputResumo || !inputConteudo || !inputImagem || !inputData || !selectTagDisponivel || !inputTagPersonalizada || !tagsSelecionadasContainer || !statusTags || !btnAdicionarTag || !btnLimpar || !listaContainer) {
         return;
     }
 
     gerenciadoresInicializados.add("noticias");
 
     inicializarSeletorIconesNoticias();
+
+    let tagsSelecionadas = [];
+
+    function atualizarOpcoesTags() {
+        const opcoes = normalizarTagsPublicacao([...PUBLICATION_TAGS, ...tagsSelecionadas]);
+        const tagsDisponiveis = opcoes.filter((tag) => !tagsSelecionadas.includes(tag));
+
+        selectTagDisponivel.innerHTML = `
+            <option value="">Selecionar uma categoria</option>
+            ${tagsDisponiveis.map((tag) => `<option value="${escaparHtml(tag)}">${escaparHtml(tag)}</option>`).join("")}
+        `;
+        selectTagDisponivel.disabled = tagsDisponiveis.length === 0;
+    }
+
+    function renderizarTagsSelecionadas() {
+        if (tagsSelecionadas.length === 0) {
+            tagsSelecionadasContainer.innerHTML = '<p class="noticia-tags-vazia">Nenhuma categoria selecionada.</p>';
+        } else {
+            tagsSelecionadasContainer.innerHTML = tagsSelecionadas.map((tag) => `
+                <span class="noticia-tag-admin">
+                    <span>${escaparHtml(tag)}</span>
+                    <button type="button" class="btn-remover-noticia-tag" data-tag="${escaparHtml(tag)}" aria-label="Remover categoria ${escaparHtml(tag)}">
+                        <i data-lucide="x" aria-hidden="true"></i>
+                    </button>
+                </span>
+            `).join("");
+
+            tagsSelecionadasContainer.querySelectorAll(".btn-remover-noticia-tag").forEach((botao) => {
+                botao.addEventListener("click", () => {
+                    tagsSelecionadas = tagsSelecionadas.filter((tag) => tag !== botao.dataset.tag);
+                    renderizarTagsSelecionadas();
+                    atualizarOpcoesTags();
+                    statusTags.textContent = `Categoria ${botao.dataset.tag} removida.`;
+                });
+            });
+        }
+
+        if (window.lucide && typeof window.lucide.createIcons === "function") {
+            window.lucide.createIcons();
+        }
+    }
+
+    function definirTagsSelecionadas(tags) {
+        tagsSelecionadas = normalizarTagsPublicacao(tags);
+        inputTagPersonalizada.value = "";
+        renderizarTagsSelecionadas();
+        atualizarOpcoesTags();
+    }
+
+    function adicionarTagSelecionada() {
+        const novaTag = (inputTagPersonalizada.value || selectTagDisponivel.value).trim();
+        if (!novaTag) {
+            statusTags.textContent = "Selecione ou escreva uma categoria para adicionar.";
+            selectTagDisponivel.focus();
+            return;
+        }
+
+        const tagsAtualizadas = normalizarTagsPublicacao([...tagsSelecionadas, novaTag]);
+        if (tagsAtualizadas.length === tagsSelecionadas.length) {
+            statusTags.textContent = "Essa categoria já foi selecionada.";
+            return;
+        }
+
+        tagsSelecionadas = tagsAtualizadas;
+        inputTagPersonalizada.value = "";
+        renderizarTagsSelecionadas();
+        atualizarOpcoesTags();
+        statusTags.textContent = `Categoria ${novaTag} adicionada.`;
+    }
+
+    btnAdicionarTag.addEventListener("click", adicionarTagSelecionada);
+    inputTagPersonalizada.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            adicionarTagSelecionada();
+        }
+    });
+    definirTagsSelecionadas([]);
 
     // Função Auxiliar: Converte arquivo de imagem para string Base64 texto
     function arquivoParaBase64(file) {
@@ -867,6 +951,7 @@ function inicializarGerenciadorNoticias() {
                 conteudo: inputConteudo.value.trim(),
                 imagem: imagemString,
                 icone: obterEntradaIcone(inputIcone.value, NOTICIA_ICON_DEFAULT),
+                tags: normalizarTagsPublicacao(tagsSelecionadas),
                 data: inputData.value
             };
 
@@ -895,6 +980,7 @@ function inicializarGerenciadorNoticias() {
                     inputTitulo.value = item.titulo || '';
                     inputResumo.value = item.resumo || '';
                     inputConteudo.value = item.conteudo || '';
+                    definirTagsSelecionadas(item.tags);
                     inputIcone.value = obterEntradaIcone(item.icone, NOTICIA_ICON_DEFAULT);
                     if (window.RGANoticiaIconPicker && typeof window.RGANoticiaIconPicker.atualizarVisualizacao === "function") {
                         window.RGANoticiaIconPicker.atualizarVisualizacao(inputIcone.value);
@@ -931,6 +1017,7 @@ function inicializarGerenciadorNoticias() {
     function limparFormularioNoticia() {
         inputId.value = "";
         formNoticia.reset();
+        definirTagsSelecionadas([]);
         inputIcone.value = "newspaper";
         if (window.RGANoticiaIconPicker && typeof window.RGANoticiaIconPicker.atualizarVisualizacao === "function") {
             window.RGANoticiaIconPicker.atualizarVisualizacao("newspaper");

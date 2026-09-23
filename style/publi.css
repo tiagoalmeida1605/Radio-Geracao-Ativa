@@ -174,6 +174,69 @@ main {
 }
 
 /* ==========================================================================
+   FILTROS E TAGS EDITORIAIS
+   ========================================================================== */
+.filtros-tags-section {
+    margin: -16px auto 34px;
+    text-align: center;
+}
+
+.filtros-tags-section h2 {
+    margin-bottom: 13px;
+    color: var(--tema-text);
+    font-size: .82rem;
+    font-weight: 800;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}
+
+.filtros-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.filtro-tag {
+    min-height: 38px;
+    padding: 8px 13px;
+    border: 1px solid var(--tema-border);
+    border-radius: 999px;
+    color: var(--tema-muted);
+    background: var(--tema-surface);
+    font-size: .82rem;
+    font-weight: 800;
+    transition: color .2s ease, background-color .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.filtro-tag:hover { transform: translateY(-1px); border-color: var(--cor-destaque); color: var(--cor-destaque); }
+.filtro-tag.active { border-color: var(--cor-destaque); color: #fff; background: var(--cor-destaque); box-shadow: 0 6px 14px color-mix(in srgb, var(--cor-destaque) 24%, transparent); }
+
+.noticia-tags,
+.modal-noticia-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.noticia-tags { margin: -2px 0 12px; }
+.modal-noticia-tags { margin: -5px 0 18px; }
+
+.noticia-tag {
+    display: inline-flex;
+    max-width: 100%;
+    padding: 4px 8px;
+    border: 1px solid color-mix(in srgb, var(--cor-destaque) 28%, var(--tema-border));
+    border-radius: 999px;
+    color: var(--cor-destaque);
+    background: color-mix(in srgb, var(--cor-destaque) 9%, var(--tema-surface));
+    font-size: .72rem;
+    font-weight: 800;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+/* ==========================================================================
    GRADE DE NOTÍCIAS
    ========================================================================== */
 .noticias-grid {
@@ -549,6 +612,8 @@ body.menu-aberto {
         font-size: 1rem;
     }
 
+    .filtros-tags-section { margin-top: -22px; }
+
     .modal-content {
         padding: 28px 20px;
         border-radius: 16px;
@@ -576,6 +641,9 @@ body.menu-aberto {
     .noticia-content-preview h3 {
         font-size: 1.15rem;
     }
+
+    .filtros-tags { justify-content: flex-start; }
+    .filtro-tag { min-height: 36px; padding-inline: 11px; font-size: .78rem; }
 
     .modal-content {
         padding: 24px 16px;

@@ -120,7 +120,7 @@ Dados hoje cobrem: playlists, notícias/publicações, configurações, manuten�
 
 ## 10. Bugs / pendências conhecidas
 
-- Sistema de categorias não funciona corretamente ainda.
+- **PROBLEMA RESOLVIDO**: As categorias/tags editoriais das publicações usam o campo `tags` (array) no Firebase. O Admin permite selecionar ou criar chips de tags; o público filtra as notícias no cliente. Publicações antigas sem `tags` continuam compatíveis e aparecem normalmente.
 - Fluxo de publicar/postar precisa de validação ponta a ponta.
 - Divergência de nomes de campo entre Admin (`resumo`/`conteudo`) e o front público `publi.js` (espera `texto`) - **CORRIGIDO** ( agora aceita ambos os campos ).
 - Inconsistência de formato de data entre armazenamento ISO e exibição crua na seção de notícias.

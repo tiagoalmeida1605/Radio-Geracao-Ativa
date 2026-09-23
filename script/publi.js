@@ -9,6 +9,7 @@
 import { database } from "./firebase-config.js";
 import { onValue, ref } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 import { resolveIcon, renderIconMarkup, ICON_MAP, ICON_DEFAULT } from "./icon-catalog.js";
+import { PUBLICATION_TAGS, normalizarTagsPublicacao } from "./publication-tags.js";
 
 console.debug("[RGA Notícias] Using centralized Firebase config");
 
@@ -71,6 +72,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
+    const filtrosTags = document.getElementById("filtros-tags");
+    const modalNoticiaTags = document.getElementById("modalNoticiaTags");
+    if (!filtrosTags || !modalNoticiaTags) {
+        console.error("[RGA Notícias] Elementos de tags não encontrados");
+        return;
+    }
+
 
     // ==========================================================
     // VALIDAÇÕES INICIAIS
@@ -122,6 +130,64 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
+    let noticiasCarregadas = [];
+    let tagAtiva = "";
+
+    function obterTagsDisponiveis() {
+        return normalizarTagsPublicacao([
+            ...PUBLICATION_TAGS,
+            ...noticiasCarregadas.flatMap((noticia) => normalizarTagsPublicacao(noticia.tags))
+        ]);
+    }
+
+    function chaveTag(tag) {
+        return String(tag ?? "")
+            .trim()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLocaleLowerCase("pt-BR");
+    }
+
+    function noticiasFiltradas() {
+        if (!tagAtiva) {
+            return noticiasCarregadas;
+        }
+
+        const chaveAtiva = chaveTag(tagAtiva);
+        return noticiasCarregadas.filter((noticia) =>
+            normalizarTagsPublicacao(noticia.tags).some((tag) => chaveTag(tag) === chaveAtiva)
+        );
+    }
+
+    function renderizarFiltrosTags() {
+        const tags = obterTagsDisponiveis();
+        if (tagAtiva && !tags.includes(tagAtiva)) {
+            tagAtiva = "";
+        }
+
+        filtrosTags.innerHTML = `
+            <button type="button" class="filtro-tag ${!tagAtiva ? "active" : ""}" data-tag="" aria-pressed="${!tagAtiva}">Todas</button>
+            ${tags.map((tag) => `
+                <button type="button" class="filtro-tag ${tagAtiva === tag ? "active" : ""}" data-tag="${escaparHtml(tag)}" aria-pressed="${tagAtiva === tag}">${escaparHtml(tag)}</button>
+            `).join("")}
+        `;
+
+        filtrosTags.querySelectorAll(".filtro-tag").forEach((botao) => {
+            botao.addEventListener("click", () => {
+                tagAtiva = botao.dataset.tag || "";
+                renderizarFiltrosTags();
+                renderizarNoticias(noticiasFiltradas());
+            });
+        });
+    }
+
+    function renderizarTagsModal(tags) {
+        modalNoticiaTags.innerHTML = tags.map((tag) =>
+            `<span class="noticia-tag">${escaparHtml(tag)}</span>`
+        ).join("");
+        modalNoticiaTags.hidden = tags.length === 0;
+    }
+
 
     // ==========================================================
     // ABRIR MODAL
@@ -136,6 +202,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // CORREÇÃO: campo conteudo vs texto
         modalTexto.textContent = noticia.conteudo || noticia.texto || "";
+        renderizarTagsModal(normalizarTagsPublicacao(noticia.tags));
 
         if (noticia.imagem) {
             modalImg.src = noticia.imagem;
@@ -195,7 +262,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             // BANCO VAZIO
             // --------------------------------------------------
             if (noticias.length === 0) {
-                gridNoticias.innerHTML = `<p style="text-align: center; width: 100%; color: #666; font-weight: 600;">Nenhuma publicação encontrada. Volte mais tarde!</p>`;
+                const mensagemVazia = tagAtiva
+                    ? "Nenhuma publicação encontrada nesta categoria."
+                    : "Nenhuma publicação encontrada. Volte mais tarde!";
+                gridNoticias.innerHTML = `<p class="noticias-feedback" role="status">${mensagemVazia}</p>`;
                 return;
             }
 
@@ -210,6 +280,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 card.setAttribute("aria-label", `Ler notícia: ${escaparHtml(noticia.titulo) || "Sem título"}`);
 
                 const dataFormatada = formatarDataExibicao(noticia.data);
+                const tagsNoticia = normalizarTagsPublicacao(noticia.tags);
 
                 // IMAGEM
                 const imagemHTML = noticia.imagem
@@ -220,6 +291,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const iconeNomeNoticia = resolveIcon(noticia.icone || "");
                 const iconeItemNoticia = ICON_MAP[iconeNomeNoticia] || ICON_MAP[ICON_DEFAULT];
                 const iconeLabelNoticia = iconeItemNoticia.label;
+                const tagsHTML = tagsNoticia.length > 0
+                    ? `<div class="noticia-tags" aria-label="Categorias: ${escaparHtml(tagsNoticia.join(", "))}">${tagsNoticia.map((tag) => `<span class="noticia-tag">${escaparHtml(tag)}</span>`).join("")}</div>`
+                    : "";
 
                 card.innerHTML = `
                     ${imagemHTML}
@@ -231,6 +305,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <span class="noticia-data">
                             📅 ${escaparHtml(dataFormatada)}
                         </span>
+                        ${tagsHTML}
                         <h3>${escaparHtml(noticia.titulo)}</h3>
                         <p>${escaparHtml(noticia.resumo)}</p>
                         <span class="leia-mais">Ler publicação completa →</span>
@@ -267,8 +342,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.debug("[RGA Notícias] Dados são objeto válido, processando...");
             try {
                 // Handle both objects and arrays
-                const dadosArray = Array.isArray(dados) ? dados : Object.values(dados);
-                renderizarNoticias(dadosArray);
+                noticiasCarregadas = Array.isArray(dados) ? dados : Object.values(dados);
+                renderizarFiltrosTags();
+                renderizarNoticias(noticiasFiltradas());
             } catch (error) {
                 console.error("[RGA Notícias] Erro ao renderizar notícias:", error);
                 if (gridNoticias) {
@@ -277,7 +353,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         } else {
             console.debug("[RGA Notícias] Dados não são objeto ou são null:", dados);
-            renderizarNoticias([]);
+            noticiasCarregadas = [];
+            renderizarFiltrosTags();
+            renderizarNoticias(noticiasFiltradas());
         }
     }, (error) => {
         console.error("[RGA Notícias] Erro ao carregar notícias:", error);
