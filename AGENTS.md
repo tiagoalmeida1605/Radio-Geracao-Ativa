@@ -128,7 +128,7 @@ Dados hoje cobrem: playlists, notícias/publicações, configurações, manuten�
 - Vídeo/playlist ainda não distinguem corretamente formatos e não usam layout totalmente adaptativo.
 - Tema não deve vazar para o público (ver seção 4).
 - Emojis como ícones ainda presentes em várias telas — substituir gradualmente.
-- **PROBLEMA RESOLVIDO**: O sistema de postagem estava mostrando "ok" mas não salvando devido a verificação incorreta de Array.isArray nos listeners do Firebase (admin/admin.js, script/publi.js, script/playlist.js) - **CORRIGIDO** (removed improper Array.isArray check that was treating valid data as empty in all Firebase listeners).
+- **PROBLEMA RESOLVIDO**: O sistema de postagens voltou a funcionar. Vídeos/playlists são publicados corretamente e notícias/publicações são salvas novamente após a correção de erros de JavaScript no Admin que impediam o fluxo de gravação. O fluxo Firebase → painel → site público está operacional.
 
 ## 11. CSS
 
