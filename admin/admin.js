@@ -714,8 +714,8 @@ function inicializarGerenciadorPlaylists() {
         listaContainer.innerHTML = "";
         const dadosFirebase = snapshot.val();
 
-        // Handle case where data is not an object (null, primitive, or array)
-        if (!dadosFirebase || typeof dadosFirebase !== 'object' || Array.isArray(dadosFirebase)) {
+        // Handle case where data is not an object (null or primitive)
+        if (!dadosFirebase || typeof dadosFirebase !== 'object') {
             listaContainer.innerHTML = '<p class="txt-ajuda">Nenhuma playlist cadastrada na nuvem do Firebase.</p>';
             return;
         }
@@ -884,8 +884,8 @@ function inicializarGerenciadorNoticias() {
         listaContainer.innerHTML = "";
         const dadosFirebase = snapshot.val();
 
-        // Handle case where data is not an object (null, primitive, or array)
-        if (!dadosFirebase || typeof dadosFirebase !== 'object' || Array.isArray(dadosFirebase)) {
+        // Handle case where data is not an object (null or primitive)
+        if (!dadosFirebase || typeof dadosFirebase !== 'object') {
             listaContainer.innerHTML = '<p class="txt-ajuda">Nenhuma notícia publicada na nuvem do Firebase.</p>';
             return;
         }

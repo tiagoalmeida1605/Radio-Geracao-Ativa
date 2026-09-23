@@ -122,12 +122,13 @@ Dados hoje cobrem: playlists, notícias/publicações, configurações, manuten�
 
 - Sistema de categorias não funciona corretamente ainda.
 - Fluxo de publicar/postar precisa de validação ponta a ponta.
-- Divergência de nomes de campo entre Admin (`resumo`/`conteudo`) e o front público `publi.js` (espera `texto`).
+- Divergência de nomes de campo entre Admin (`resumo`/`conteudo`) e o front público `publi.js` (espera `texto`) - **CORRIGIDO** ( agora aceita ambos os campos ).
 - Inconsistência de formato de data entre armazenamento ISO e exibição crua na seção de notícias.
 - Lista de jogos/placar usa `get()` (busca única) em vez de `onValue()`, então itens novos não aparecem sem refresh manual.
 - Vídeo/playlist ainda não distinguem corretamente formatos e não usam layout totalmente adaptativo.
 - Tema não deve vazar para o público (ver seção 4).
 - Emojis como ícones ainda presentes em várias telas — substituir gradualmente.
+- **PROBLEMA RESOLVIDO**: O sistema de postagem estava mostrando "ok" mas não salvando devido a verificação incorreta de Array.isArray nos listeners do Firebase - **CORRIGIDO** (removed improper Array.isArray check that was treating valid data as empty).
 
 ## 11. CSS
 
