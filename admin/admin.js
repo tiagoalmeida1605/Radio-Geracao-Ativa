@@ -147,8 +147,11 @@ observarAutenticacao(async (usuario) => {
 btnToggleSenha?.addEventListener("click", () => {
     const estaOculta = inputSenha.type === "password";
     inputSenha.type = estaOculta ? "text" : "password";
-    btnToggleSenha.textContent = estaOculta ? "🙈" : "👁️";
+    btnToggleSenha.innerHTML = `<i data-lucide="${estaOculta ? "eye-off" : "eye"}" aria-hidden="true"></i>`;
     btnToggleSenha.setAttribute("aria-label", estaOculta ? "Ocultar senha" : "Mostrar senha");
+    if (window.lucide && typeof window.lucide.createIcons === "function") {
+        window.lucide.createIcons();
+    }
     inputSenha.focus();
 });
 
@@ -634,7 +637,7 @@ function inicializarGerenciadorPlaylists() {
 
         Object.keys(dadosFirebase).forEach((key) => {
             const dados = dadosFirebase[key];
-            const iconeDisplay = dados.icone || "📹";
+            const iconeDisplay = dados.icone || PLAYLIST_ICON_DEFAULT;
 
             const item = document.createElement("div");
             item.className = "item-playlist-admin";
@@ -648,8 +651,8 @@ function inicializarGerenciadorPlaylists() {
                     <small>${dados.tipo === "video" ? "Vídeo" : "Playlist"}: ${escaparHtml(dados.tipo === "video" ? dados.videoId : dados.playlistId)}</small>
                 </div>
                 <div class="botoes-acoes">
-                    <button class="btn-edit btn-edit-playlist" data-id="${key}">✏️ Editar</button>
-                    <button class="btn-delete btn-delete-playlist" data-id="${key}">❌ Remover</button>
+                    <button class="btn-edit btn-edit-playlist" data-id="${key}"><i data-lucide="pencil" aria-hidden="true"></i>Editar</button>
+                    <button class="btn-delete btn-delete-playlist" data-id="${key}"><i data-lucide="trash-2" aria-hidden="true"></i>Remover</button>
                 </div>
             `;
             listaContainer.appendChild(item);
@@ -662,6 +665,10 @@ function inicializarGerenciadorPlaylists() {
         document.querySelectorAll(".btn-delete-playlist").forEach(btn => {
             btn.addEventListener("click", () => apagarPlaylist(btn.getAttribute("data-id")));
         });
+
+        if (window.lucide && typeof window.lucide.createIcons === "function") {
+            window.lucide.createIcons();
+        }
     }, (error) => {
         listaContainer.innerHTML = `<p class="txt-ajuda">${mensagemFirebase(error, "carregar os vídeos e playlists")}</p>`;
     });
@@ -690,11 +697,11 @@ function inicializarGerenciadorPlaylists() {
             if (idAtual) {
                 diagnosticarOperacao(`playlists/${idAtual}`);
                 await set(ref(database, "playlists/" + idAtual), itemPlaylist);
-                alert("🔄 Alterações guardadas na nuvem!");
+                alert("Alterações guardadas na nuvem!");
             } else {
                 diagnosticarOperacao("playlists");
                 await push(ref(database, "playlists"), itemPlaylist);
-                alert("✨ Nova playlist inserida na nuvem!");
+                alert("Novo conteúdo inserido na nuvem!");
             }
 
             limparFormulario();
@@ -729,7 +736,7 @@ function inicializarGerenciadorPlaylists() {
         if (confirm("Tens a certeza que desejas remover esta playlist permanentemente da nuvem?")) {
             diagnosticarOperacao(`playlists/${id}`);
             remove(ref(database, "playlists/" + id))
-                .then(() => alert("🗑️ Playlist removida com sucesso!"))
+                .then(() => alert("Playlist removida com sucesso!"))
                 .catch(err => alert(mensagemFirebase(err, "remover o vídeo")));
         }
     }
@@ -906,8 +913,8 @@ function inicializarGerenciadorNoticias() {
                     <small>Publicado em: ${escaparHtml(formatarDataExibicao(dados.data))}</small>
                 </div>
                 <div class="botoes-acoes">
-                    <button class="btn-edit btn-edit-noticia" data-id="${key}">✏️ Editar</button>
-                    <button class="btn-delete btn-delete-noticia" data-id="${key}">❌ Remover</button>
+                    <button class="btn-edit btn-edit-noticia" data-id="${key}"><i data-lucide="pencil" aria-hidden="true"></i>Editar</button>
+                    <button class="btn-delete btn-delete-noticia" data-id="${key}"><i data-lucide="trash-2" aria-hidden="true"></i>Remover</button>
                 </div>
             `;
             listaContainer.appendChild(item);
@@ -920,6 +927,10 @@ function inicializarGerenciadorNoticias() {
         document.querySelectorAll(".btn-delete-noticia").forEach(btn => {
             btn.addEventListener("click", () => apagarNoticia(btn.getAttribute("data-id")));
         });
+
+        if (window.lucide && typeof window.lucide.createIcons === "function") {
+            window.lucide.createIcons();
+        }
     }, (error) => {
         listaContainer.innerHTML = `<p class="txt-ajuda">${mensagemFirebase(error, "carregar as notícias")}</p>`;
     });
@@ -958,11 +969,11 @@ function inicializarGerenciadorNoticias() {
             if (idAtual) {
                 diagnosticarOperacao(`noticias/${idAtual}`);
                 await set(ref(database, "noticias/" + idAtual), itemNoticia);
-                alert("🔄 Notícia atualizada na nuvem!");
+                alert("Notícia atualizada na nuvem!");
             } else {
                 diagnosticarOperacao("noticias");
                 await push(ref(database, "noticias"), itemNoticia);
-                alert("✨ Notícia publicada na nuvem!");
+                alert("Notícia publicada na nuvem!");
             }
 
             limparFormularioNoticia();
@@ -1009,7 +1020,7 @@ function inicializarGerenciadorNoticias() {
         if (confirm("Tens a certeza que desejas remover esta notícia permanentemente da nuvem?")) {
             diagnosticarOperacao(`noticias/${id}`);
             remove(ref(database, "noticias/" + id))
-                .then(() => alert("🗑️ Notícia removida com sucesso!"))
+                .then(() => alert("Notícia removida com sucesso!"))
                 .catch(err => alert(mensagemFirebase(err, "remover a notícia")));
         }
     }

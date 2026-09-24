@@ -141,6 +141,8 @@ html[data-theme="dark"] .brand-logo .logo-light { display: block; }
 
 .theme-toggle:hover { border-color: var(--rga-teal); color: var(--rga-teal); }
 .menu-btn { display: none; width: 40px; height: 40px; border-radius: 10px; font-size: 1.35rem; }
+.theme-toggle .lucide-icon,
+.menu-btn .lucide-icon { width: 20px; height: 20px; stroke-width: 2.2; }
 .menu-overlay { display: none; }
 
 /* Estrutura principal ----------------------------------------------------- */
@@ -271,6 +273,7 @@ input[type="file"]::file-selector-button { margin-right: 10px; padding: 7px 10px
 .campo-senha input { padding-right: 52px; }
 .btn-toggle-senha { position: absolute; top: 50%; right: 6px; width: 38px; height: 38px; transform: translateY(-50%); border: 0; border-radius: 8px; color: var(--rga-text); background: transparent; }
 .btn-toggle-senha:hover { background: rgba(41, 138, 141, .11); }
+.btn-toggle-senha .lucide-icon { width: 19px; height: 19px; stroke-width: 2.2; }
 .erro-login { display: none; margin: 14px 0 0; color: var(--rga-coral); font-size: .88rem; font-weight: 700; }
 .erro-login.mostrar { display: block; }
 .card-senha.erro { animation: shake .42s ease; }
@@ -462,6 +465,10 @@ input[type="file"]::file-selector-button { margin-right: 10px; padding: 7px 10px
 .btn-secondary { flex: 1 1 135px; border: 1px solid var(--rga-border); color: var(--rga-text); background: var(--rga-surface); }
 .btn-secondary:hover { transform: translateY(-2px); border-color: var(--rga-coral); color: #fff; background: var(--rga-coral); }
 .btn-sair { flex: 0 0 auto; min-height: 38px; padding: 8px 15px; }
+.btn-sair,
+.botoes-acoes button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.btn-sair .lucide-icon,
+.botoes-acoes button .lucide-icon { width: 15px; height: 15px; flex: none; stroke-width: 2.3; }
 
 /* Configuração de manutenção -------------------------------------------- */
 .maintenance-admin-control {
@@ -533,6 +540,7 @@ input[type="file"]::file-selector-button { margin-right: 10px; padding: 7px 10px
 .preview-imagem-admin[hidden] { display: none; }
 .preview-imagem-admin span { display: block; margin-bottom: 8px; color: var(--rga-text-muted); font-size: .8rem; }
 .preview-imagem-admin img { display: block; width: min(100%, 190px); max-height: 145px; border-radius: 9px; object-fit: cover; }
+.heading-icon { width: 1.05em; height: 1.05em; margin-right: .38em; vertical-align: -.16em; color: var(--rga-teal); stroke-width: 2.3; }
 
 footer { margin-top: auto; padding: 20px 16px; color: #d9e6e4; background: var(--rga-navy); text-align: center; font-size: .84rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }

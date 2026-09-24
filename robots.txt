@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://radio-geracao-ativa.vercel.app/sitemap.xml

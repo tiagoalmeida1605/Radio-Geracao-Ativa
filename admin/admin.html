@@ -17,8 +17,8 @@
     <div class="sidebar">
         <span class="brand-logo"><img class="logo-default" src="../assets/logo.png" alt="Logo Rádio Geração Ativa"><img class="logo-light" src="../assets/RGA Claro.png" alt=""></span>
         <h2>Rádio Geração Ativa</h2>
-        <button class="menu-btn" id="menuBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-Menu">☰</button>
-        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" title="Alternar tema"><span aria-hidden="true">◐</span></button>
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-Menu"><i data-lucide="menu" aria-hidden="true"></i></button>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" title="Alternar tema"><i data-lucide="moon" aria-hidden="true"></i></button>
         <nav id="nav-Menu">
             <ul>
                 <li><a href="../index.html">Home</a></li>
@@ -35,7 +35,7 @@
 <main>
     <div id="bloqueio-tela">
         <div class="card-senha" id="cardSenha">
-            <h2>🔒 Painel Restrito</h2>
+            <h2><i class="heading-icon" data-lucide="lock" aria-hidden="true"></i>Painel Restrito</h2>
             <p class="txt-subtitulo">Entre com sua conta autorizada para gerenciar o conteúdo da rádio.</p>
             <form id="form-bloqueio-rga">
                 <label for="input-usuario-rga">E-mail da conta</label>
@@ -44,10 +44,10 @@
 
                 <div class="campo-senha">
                     <input type="password" id="input-senha-rga" placeholder="Senha" required autocomplete="current-password">
-                    <button type="button" class="btn-toggle-senha" id="btnToggleSenha" aria-label="Mostrar senha">👁️</button>
+                    <button type="button" class="btn-toggle-senha" id="btnToggleSenha" aria-label="Mostrar senha"><i data-lucide="eye" aria-hidden="true"></i></button>
                 </div>
 
-                <p class="erro-login" id="erroLogin">❌ Usuário ou senha incorretos.</p>
+                <p class="erro-login" id="erroLogin">Usuário ou senha incorretos.</p>
 
                 <button type="submit" class="btn-primary">Desbloquear Painel</button>
             </form>
@@ -57,11 +57,11 @@
     <div id="conteudo-painel" style="display: none;">
         <div class="barra-conta" id="barraConta">
             <span id="textoContaLogada">Olá, usuário autorizado</span>
-            <button type="button" id="btnSair" class="btn-secondary btn-sair">Sair</button>
+            <button type="button" id="btnSair" class="btn-secondary btn-sair"><i data-lucide="log-out" aria-hidden="true"></i>Sair</button>
         </div>
 
         <div class="admin-card maintenance-admin-card" id="secao-manutencao" data-papel="admin">
-            <h2>🛠️ Modo de manutenção</h2>
+            <h2><i class="heading-icon" data-lucide="wrench" aria-hidden="true"></i>Modo de manutenção</h2>
             <p class="txt-subtitulo" style="margin-bottom: 20px;">Quando ativado, visitantes verão a tela de manutenção. Administradores autenticados continuarão tendo acesso ao site.</p>
             <hr class="divider">
 
@@ -90,7 +90,7 @@
         </div>
 
         <div class="admin-card" id="secao-playlists" data-papel="admin,playlist">
-            <h2>📹 Gerenciar vídeos e playlists</h2>
+            <h2><i class="heading-icon" data-lucide="video" aria-hidden="true"></i>Gerenciar vídeos e playlists</h2>
             <p class="txt-subtitulo">Adicione, modifique ou exclua vídeos individuais e playlists do YouTube.</p>
             <hr class="divider">
 
@@ -136,7 +136,7 @@
         </div>
 
         <div class="admin-card" id="secao-noticias" data-papel="admin,publicador">
-            <h2>📰 Gerenciar Notícias</h2>
+            <h2><i class="heading-icon" data-lucide="newspaper" aria-hidden="true"></i>Gerenciar Notícias</h2>
             <p class="txt-subtitulo">Publique, edite ou remova as notícias exibidas no site.</p>
             <hr class="divider">
 

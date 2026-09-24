@@ -180,6 +180,7 @@ body.pagina-manutencao {
   line-height: 1;
   animation: maintenance-icon-pulse 2.4s ease-in-out infinite;
 }
+.maintenance-icon .lucide-icon { width: clamp(30px, 6vw, 38px); height: clamp(30px, 6vw, 38px); stroke-width: 2.1; }
 
 .maintenance-brand {
   margin: 0 0 8px;

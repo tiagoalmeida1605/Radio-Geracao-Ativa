@@ -137,6 +137,7 @@ html[data-theme="dark"] .brand-logo .logo-light { display: block; }
     cursor: pointer;
     color: var(--azul-marinho);
 }
+.menu-btn .lucide-icon { width: 1.7rem; height: 1.7rem; stroke-width: 2.2; }
 
 /* ==========================================================================
    CONTEÚDO PRINCIPAL
@@ -408,6 +409,7 @@ main {
     color: #ffffff;
     transform: rotate(90deg);
 }
+.close-btn .lucide-icon { width: 20px; height: 20px; stroke-width: 2.4; }
 
 #modalImg {
     width: 100%;

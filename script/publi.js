@@ -303,7 +303,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <span class="tag-label">${iconeLabelNoticia}</span>
                         </span>
                         <span class="noticia-data">
-                            📅 ${escaparHtml(dataFormatada)}
+                            ${renderIconMarkup("calendar")}
+                            <span>${escaparHtml(dataFormatada)}</span>
                         </span>
                         ${tagsHTML}
                         <h3>${escaparHtml(noticia.titulo)}</h3>

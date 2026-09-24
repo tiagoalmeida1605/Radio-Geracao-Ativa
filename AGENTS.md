@@ -127,7 +127,7 @@ Dados hoje cobrem: playlists, notícias/publicações, configurações, manuten�
 - Lista de jogos/placar usa `get()` (busca única) em vez de `onValue()`, então itens novos não aparecem sem refresh manual.
 - Vídeo/playlist ainda não distinguem corretamente formatos e não usam layout totalmente adaptativo.
 - Tema não deve vazar para o público (ver seção 4).
-- Emojis como ícones ainda presentes em várias telas — substituir gradualmente.
+- **PROBLEMA RESOLVIDO**: Emojis usados como elementos de interface foram substituídos por ícones Lucide (menu, ações do Admin, data, manutenção, login e controles). Emojis do mapa de compatibilidade em `icon-catalog.js` permanecem apenas para interpretar registros legados do Firebase.
 - **PROBLEMA RESOLVIDO**: O sistema de postagens voltou a funcionar. Vídeos/playlists são publicados corretamente e notícias/publicações são salvas novamente após a correção de erros de JavaScript no Admin que impediam o fluxo de gravação. O fluxo Firebase → painel → site público está operacional.
 
 ## 11. CSS
