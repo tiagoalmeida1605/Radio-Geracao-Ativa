@@ -44,10 +44,105 @@
                 <div class="menu-overlay" id="menuOverlay"></div>
             </div>
         </header>
-        <main>
-            <h1>Bem-vindo a Rádio Geração Ativa</h1>
-            <p>A Rádio dos alunos do UNASP São Paulo, com foco em trazer conteúdos relevantes e diversificados para nossa comunidade escolar.</p>
-            <a href="./pages/sobre.html" class="more">Saiba mais</a>
+        <main class="home-main">
+            <section class="home-hero" aria-labelledby="home-hero-title">
+                <div class="home-hero-copy">
+                    <p class="home-kicker">RÁDIO GERAÇÃO ATIVA · UNASP SP</p>
+
+                    <h1 id="home-hero-title">
+                        A voz dos alunos, em movimento.
+                    </h1>
+
+                    <p>
+                        Notícias, vídeos e histórias que aproximam
+                        nossa comunidade.
+                    </p>
+
+                    <div class="home-hero-actions">
+                        <a class="home-action home-action-primary"
+                            href="./pages/publi.html">
+                            Acompanhar notícias
+                        </a>
+
+                        <a class="home-action"
+                            href="./pages/playlist.html">
+                            Explorar vídeos
+                        </a>
+                    </div>
+                </div>
+
+                <div class="home-hero-identity">
+                    <img
+                        src="/assets/RGA%20Claro%20Microfone.png"
+                        alt="Rádio Geração Ativa"
+                    >
+
+                    <p>Conteúdo feito pela comunidade do UNASP São Paulo.</p>
+                    <span>Notícias · Vídeos · Programação</span>
+                </div>
+            </section>
+
+            <section class="home-feed-section"
+                     aria-labelledby="home-news-title">
+
+                <div class="home-feed-heading">
+                    <div>
+                        <p class="home-kicker">FIQUE POR DENTRO</p>
+                        <h2 id="home-news-title">Notícias recentes</h2>
+                        <p>Acompanhe os avisos e as novidades da rádio.</p>
+                    </div>
+
+                    <div class="home-feed-controls" id="home-news-controls" hidden>
+                        <button type="button" data-scroll-target="home-news-track"
+                                data-scroll-direction="-1"
+                                aria-label="Ver notícias anteriores">‹</button>
+
+                        <button type="button" data-scroll-target="home-news-track"
+                                data-scroll-direction="1"
+                                aria-label="Ver próximas notícias">›</button>
+                    </div>
+                </div>
+
+                <div class="home-card-track" id="home-news-track"
+                     aria-live="polite">
+                    <p class="home-feed-feedback">Carregando notícias...</p>
+                </div>
+
+                <a class="home-section-link" href="./pages/publi.html">
+                    Ver todas as notícias <span aria-hidden="true">↗</span>
+                </a>
+            </section>
+
+            <section class="home-feed-section"
+                     aria-labelledby="home-videos-title">
+
+                <div class="home-feed-heading">
+                    <div>
+                        <p class="home-kicker">NA TELA DA RGA</p>
+                        <h2 id="home-videos-title">Vídeos recentes</h2>
+                        <p>Assista aos conteúdos publicados pela equipe da rádio.</p>
+                    </div>
+
+                    <div class="home-feed-controls" id="home-videos-controls" hidden>
+                        <button type="button" data-scroll-target="home-videos-track"
+                                data-scroll-direction="-1"
+                                aria-label="Ver vídeos anteriores">‹</button>
+
+                    <button type="button" data-scroll-target="home-videos-track"
+                            data-scroll-direction="1"
+                            aria-label="Ver próximos vídeos">›</button>
+                </div>
+            </div>
+
+            <div class="home-card-track" id="home-videos-track"
+                aria-live="polite">
+                <p class="home-feed-feedback">Carregando vídeos...</p>
+            </div>
+
+            <a class="home-section-link" href="./pages/playlist.html">
+                Ver todos os vídeos <span aria-hidden="true">↗</span>
+            </a>
+            </section>
         </main>
         <footer>
             <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
@@ -55,6 +150,7 @@
     </div>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="./script/menu.js?v=2"></script>
+    <script type="module" src="./script/home-feed.js"></script>
     <script type="module" src="./script/maintenance.js"></script>
 </body>
 </html>
