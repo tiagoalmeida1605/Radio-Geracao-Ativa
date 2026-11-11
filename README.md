@@ -11,7 +11,7 @@
 [![Status](https://img.shields.io/badge/Status-Online-31A24C?style=for-the-badge&logo=status-page&logoColor=white)](https://radio-geracao-ativa.vercel.app/)
 [![License](https://img.shields.io/badge/License-©%202026-blue?style=for-the-badge)](LICENSE)
 
-[🌐 Visite o Site](https://radio-geracao-ativa.vercel.app/) • [📱 Acesse o Admin](https://radio-geracao-ativa.vercel.app/admin/admin.html) • [💬 Nos Acompanhe](#-redes-sociais)
+[🌐 Visite o Site](https://radio-geracao-ativa.vercel.app/) • [💬 Nos Acompanhe](#-redes-sociais)
 
 </div>
 
@@ -175,7 +175,6 @@ As notícias podem receber uma ou mais tags editoriais no painel administrativo.
 | Link | Descrição |
 |------|-----------|
 | 🌐 [**Website**](https://radio-geracao-ativa.vercel.app/) | Visite o site oficial |
-| 🔐 [**Painel Admin**](https://radio-geracao-ativa.vercel.app/admin/admin.html) | Acesse o dashboard |
 | 📂 [**GitHub Repo**](https://github.com/tiagoalmeida1605/Radio-Geracao-Ativa) | Repositório do projeto |
 | 📸 [**Instagram**](https://www.instagram.com/radiogeracaoativa/) | Nos siga @radiogeracaoativa |
 | ▶️ [**YouTube**](https://www.youtube.com/@radiogeracaoativa) | Inscreva-se no canal |
