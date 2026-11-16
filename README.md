@@ -1,228 +1,189 @@
 <div align="center">
 
-<img src="./assets/RGA%20Claro.png" alt="Rádio Geração Ativa" width="220"/>
+<img src="./assets/RGA%20Claro.png" alt="Rádio Geração Ativa" width="220" />
 
-# 📻 Rádio Geração Ativa
+# Rádio Geração Ativa
 
-**A voz dos alunos do UNASP São Paulo na palma da sua mão**
+**A voz dos alunos do UNASP São Paulo na palma da sua mão.**
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://radio-geracao-ativa.vercel.app/)
-[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
-[![Status](https://img.shields.io/badge/Status-Online-31A24C?style=for-the-badge&logo=status-page&logoColor=white)](https://radio-geracao-ativa.vercel.app/)
-[![License](https://img.shields.io/badge/License-©%202026-blue?style=for-the-badge)](LICENSE)
+[![Deploy na Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=for-the-badge)](https://radio-geracao-ativa.vercel.app/)
+[![Firebase](https://img.shields.io/badge/Backend-Firebase-FFCA28?style=for-the-badge)](https://firebase.google.com/)
+[![Licença MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-blue?style=for-the-badge)](LICENSE)
 
-[🌐 Visite o Site](https://radio-geracao-ativa.vercel.app/) • [💬 Nos Acompanhe](#-redes-sociais)
+[Visitar o site](https://radio-geracao-ativa.vercel.app/) · [Instagram](https://www.instagram.com/radiogeracaoativa/) · [YouTube](https://www.youtube.com/@radiogeracaoativa)
 
 </div>
 
 ---
 
-## ✨ O que é?
+## Sobre o projeto
 
-A **Rádio Geração Ativa** é a plataforma web oficial da rádio escolar do UNASP São Paulo. Um espaço digital vibrante onde você encontra:
+A **Rádio Geração Ativa** é a plataforma digital da rádio escolar do UNASP São Paulo. O site reúne conteúdos produzidos pela equipe, informações institucionais e ferramentas para administrar as publicações e os conteúdos em vídeo.
 
-- 🎙️ **Programas ao vivo e gravados** — Tudo disponível no YouTube
-- 📰 **Notícias da comunidade** — Fique por dentro do que acontece na rádio
-- 📖 **Informações institucionais** — Missão, visão, valores e equipe
-- 👥 **Painel administrativo inteligente** — Gerenciamento de conteúdo em tempo real
-- 🎯 **Design responsivo** — Perfeito em qualquer dispositivo
+A plataforma foi desenvolvida para facilitar o acesso da comunidade escolar à programação e às novidades da rádio, tanto em computadores quanto em dispositivos móveis.
 
-> **Acesse agora:** [radio-geracao-ativa.vercel.app](https://radio-geracao-ativa.vercel.app/)
+**Acesse:** [radio-geracao-ativa.vercel.app](https://radio-geracao-ativa.vercel.app/)
 
----
+## Funcionalidades
 
-## 🚀 Funcionalidades Principais
+- **Conteúdo do YouTube:** exibição de vídeos e playlists cadastrados pela equipe.
+- **Feed da página inicial:** consulta e apresentação das notícias e dos vídeos mais recentes.
+- **Notícias e publicações:** criação, edição, remoção e organização de notícias.
+- **Categorias editoriais:** classificação das publicações por tags, com filtros na página de notícias.
+- **Painel administrativo:** área restrita para gerenciamento dos conteúdos e das configurações disponíveis a cada perfil.
+- **Autenticação:** login administrativo integrado ao Firebase Authentication.
+- **Modo de manutenção:** recurso para controlar a exibição da página de manutenção.
+- **Layout responsivo:** interface adaptada para celulares, tablets e computadores.
 
-<table align="center">
-<tr>
-<td align="center" width="50%">
-
-### 📺 **Playlists Dinâmicas**
-Players embutidos dos programas, entrevistas e coberturas diretamente no site
-
-</td>
-<td align="center" width="50%">
-
-### 📰 **Painel de Notícias**
-Publicações atualizadas pela equipe em tempo real
-
-</td>
-</tr>
-<tr>
-<td align="center" width="50%">
-
-### 🔐 **Autenticação Segura**
-Login com controle de permissões e três níveis de acesso distintos
-
-</td>
-<td align="center" width="50%">
-
-### 🛠️ **Modo Manutenção**
-Tela dedicada para visitantes durante atualizações do site
-
-</td>
-</tr>
-<tr>
-<td align="center" width="50%">
-
-### 📱 **100% Responsivo**
-Funciona perfeitamente em celular, tablet e desktop
-
-</td>
-<td align="center" width="50%">
-
-### ⚡ **Sincronização em Tempo Real**
-Firebase Realtime Database mantém tudo atualizado
-
-</td>
-</tr>
-<tr>
-<td align="center" colspan="2">
-
-### 🗂️ **Publicações com Filtro por Tags**
-Organização de notícias com filtragem dinâmica por categorias editoriais
-
-</td>
-</tr>
-</table>
-
----
-
-## 🛠️ Stack Tecnológico
-
-<div align="center">
+## Tecnologias utilizadas
 
 | Camada | Tecnologia |
-|--------|-----------|
-| **Frontend** | HTML5, CSS3, JavaScript (Vanilla ES Modules) |
-| **Autenticação** | 🔐 Firebase Authentication |
-| **Backend & Dados** | 🔥 Firebase Realtime Database |
-| **Hospedagem** | ✈️ Vercel (Fast & Reliable) |
-| **Versão** | Git & GitHub |
-| **Tipografia** | Google Fonts (Montserrat, Roboto) |
-| **Ícones** | Font Awesome |
+|---|---|
+| Interface | HTML5, CSS3 e JavaScript com ES Modules |
+| Autenticação | Firebase Authentication |
+| Banco de dados | Firebase Realtime Database |
+| API | JavaScript em módulos `.mjs` |
+| Hospedagem | Vercel |
+| Conteúdo em vídeo | YouTube |
+| Tipografia | Google Fonts, Montserrat e Roboto |
+| Ícones | Font Awesome e Lucide |
+| Versionamento | Git e GitHub |
 
-</div>
+## API
 
----
+O projeto possui rotas de API utilizadas para verificar o serviço e fornecer os conteúdos exibidos na página inicial.
 
-## 📁 Arquitetura do Projeto
+| Rota | Método | Descrição |
+|---|---|---|
+| `/api/health` | `GET` | Verifica se a API está respondendo. |
+| `/api/home-feed` | `GET` | Consulta o Firebase e retorna notícias e vídeos para a página inicial. |
 
-```
+O feed da página inicial retorna até seis notícias e seis conteúdos de vídeo, quando disponíveis.
+
+## Estrutura do projeto
+
+```text
 Radio-Geracao-Ativa/
 │
-├── 📄 index.html                   ← Página inicial
-├── 📄 404.html                     ← Página de erro elegante
-├── 📄 README.md                    ← Você está aqui! 👈
+├── api/                           # Rotas da API
+│   ├── health.mjs                 # Verificação de funcionamento
+│   └── home-feed.mjs              # Feed de notícias e vídeos
 │
-├── 📁 pages/                       ← Páginas internas
-│   ├── sobre.html                  (Institucional)
-│   ├── playlist.html               (YouTube Playlists)
-│   ├── publi.html                  (Notícias)
-│   └── manutencao.html             (Tela de manutenção)
+├── admin/                         # Painel administrativo
+│   ├── admin.html                 # Estrutura do painel
+│   ├── admin.css                  # Estilos do painel
+│   └── admin.js                   # Lógica e gerenciamento
 │
-├── 📁 admin/                       ← Painel administrativo
-│   ├── admin.html                  (Dashboard)
-│   ├── admin.css                   (Estilos do painel)
-│   └── admin.js                    (Lógica do painel)
+├── assets/                        # Imagens e recursos visuais
+│   ├── RGA Claro Microfone.png
+│   ├── RGA Claro.png
+│   ├── icon.png
+│   └── logo.png
 │
-├── 📁 script/                      ← JavaScript modular
-│   ├── firebase-config.js          (Configuração centralizada do Firebase)
-│   ├── admin-auth.js               (Autenticação e controle de acesso)
-│   ├── icon-catalog.js             (Catálogo de ícones do admin)
-│   ├── maintenance.js              (Controle de manutenção)
-│   ├── menu.js                     (Menu mobile)
-│   ├── playlist.js                 (Sincroniza playlists)
-│   └── publi.js                    (Sincroniza notícias)
+├── pages/                         # Páginas internas
+│   ├── sobre.html                 # Informações institucionais
+│   ├── playlist.html              # Vídeos e playlists
+│   ├── publi.html                 # Notícias e publicações
+│   └── manutencao.html            # Página de manutenção
 │
-├── 📁 style/                       ← Estilos CSS
-│   ├── index.css                   (Global)
-│   ├── playlist.css
-│   ├── publi.css
-│   ├── maintenance.css
-│   ├── manutencao-page.css
-│   └── 404.css
+├── script/                        # Módulos JavaScript
+│   ├── admin-auth.js              # Autenticação e perfis de acesso
+│   ├── firebase-config.js         # Configuração do Firebase
+│   ├── home-feed.js               # Carregamento do feed inicial
+│   ├── icon-catalog.js            # Catálogo de ícones
+│   ├── maintenance.js             # Controle do modo de manutenção
+│   ├── menu.js                    # Menu de navegação
+│   ├── playlist.js                # Conteúdos do YouTube
+│   ├── publication-tags.js        # Categorias editoriais
+│   └── publi.js                   # Carregamento das publicações
 │
-└── 📁 assets/                      ← Imagens & ícones
-    ├── RGA Claro Microfone.png     (Logo com microfone)
-    ├── RGA Claro.png               (Logo oficial)
-    ├── icon.png
-    └── logo.png
+├── style/                         # Folhas de estilo
+│   ├── index.css                  # Estilos da página inicial
+│   ├── playlist.css               # Estilos da página de vídeos
+│   ├── publi.css                  # Estilos das publicações
+│   ├── maintenance.css            # Estilos do modo de manutenção
+│   ├── manutencao-page.css        # Estilos da página de manutenção
+│   └── 404.css                    # Estilos da página de erro
+│
+├── .github/                       # Modelos e configurações do GitHub
+├── 404.html                       # Página de erro
+├── index.html                     # Página inicial
+├── robots.txt                     # Regras para rastreadores
+├── sitemap.xml                    # Mapa do site
+├── vercel.json                    # Configurações de rotas da Vercel
+├── CONTRIBUTING.md                # Guia de contribuição
+├── SECURITY.md                    # Política de segurança
+├── LICENSE                        # Licença do projeto
+└── README.md                      # Documentação principal
 ```
 
----
+## Categorias das publicações
 
-## 🗂️ Categorias nas Publicações
+As notícias podem receber uma ou mais tags editoriais, selecionadas no painel administrativo. As tags são armazenadas no campo `tags` do Firebase Realtime Database e utilizadas para organizar e filtrar as publicações na página de notícias.
 
-As notícias podem receber uma ou mais tags editoriais no painel administrativo. Elas são salvas no campo `tags` do Firebase Realtime Database e usadas na página de Notícias para filtrar publicações sem recarregar a página. Conteúdos antigos sem tags permanecem visíveis e são tratados como sem categoria.
+O catálogo inicial inclui categorias como Semana de Oração, Eventos, UNASP, Esportes, Entrevistas, Avisos, Programação, Bastidores, Música, Cultura e Educação. Também é possível preservar e utilizar tags personalizadas.
 
----
+Publicações antigas que não possuem tags continuam disponíveis e são exibidas sem uma categoria associada.
 
-## 👥 Níveis de Acesso
+## Perfis de acesso
 
-| Nível | Permissões |
-|-------|------------|
-| **Admin** | ✅ Acesso total • Gerenciar tudo • Ativar/desativar manutenção |
-| **Publicador** | ✅ Publicar notícias • Editar conteúdo • Criar posts |
-| **Editor de Vídeos** | ✅ Gerenciar playlists • Adicionar vídeos • Organizar conteúdo do YouTube |
+O painel administrativo possui três perfis, com permissões diferentes:
 
----
+| Perfil | Permissões |
+|---|---|
+| **Administrador** | Acesso aos módulos administrativos, gerenciamento de notícias e vídeos e controle do modo de manutenção. |
+| **Publicador de Notícias** | Gerenciamento das notícias e das respectivas publicações. |
+| **Editor de Vídeos** | Gerenciamento dos vídeos e das playlists do YouTube. |
 
-## 🌍 Links Rápidos
+O acesso é autenticado pelo Firebase Authentication. O perfil e as permissões de cada conta são consultados no Firebase Realtime Database.
 
-<div align="center">
+## Executar o projeto localmente
 
-| Link | Descrição |
-|------|-----------|
-| 🌐 [**Website**](https://radio-geracao-ativa.vercel.app/) | Visite o site oficial |
-| 📂 [**GitHub Repo**](https://github.com/tiagoalmeida1605/Radio-Geracao-Ativa) | Repositório do projeto |
-| 📸 [**Instagram**](https://www.instagram.com/radiogeracaoativa/) | Nos siga @radiogeracaoativa |
-| ▶️ [**YouTube**](https://www.youtube.com/@radiogeracaoativa) | Inscreva-se no canal |
+O projeto utiliza HTML, CSS e JavaScript no navegador, além de serviços do Firebase e rotas de API hospedadas na Vercel.
 
-</div>
+1. Clone o repositório:
 
----
+   ```bash
+   git clone https://github.com/tiagoalmeida1605/Radio-Geracao-Ativa.git
+   ```
 
-## 👨‍🏫 Sobre o Projeto
+2. Entre na pasta do projeto:
 
-Este projeto foi criado pelo **Prof. Nelson JR**, responsável pela condução e desenvolvimento da **Rádio Geração Ativa** no UNASP São Paulo. Uma iniciativa que dá voz aos alunos através de uma plataforma digital moderna e acessível.
+   ```bash
+   cd Radio-Geracao-Ativa
+   ```
 
-**Desenvolvimento técnico:** [Tiago🗲dev](https://github.com/tiagoalmeida1605)
+3. Abra o projeto em um servidor local compatível com módulos JavaScript e configure os serviços necessários do Firebase para o ambiente de desenvolvimento.
 
----
+Algumas funcionalidades dependem da configuração do Firebase e do ambiente de hospedagem da API. Por isso, abrir o arquivo `index.html` diretamente pelo navegador pode não reproduzir todos os recursos do site publicado.
 
-## 📞 Redes Sociais
+## Links
 
-<div align="center">
+| Recurso | Endereço |
+|---|---|
+| Site oficial | [radio-geracao-ativa.vercel.app](https://radio-geracao-ativa.vercel.app/) |
+| Repositório | [github.com/tiagoalmeida1605/Radio-Geracao-Ativa](https://github.com/tiagoalmeida1605/Radio-Geracao-Ativa) |
+| Instagram | [@radiogeracaoativa](https://www.instagram.com/radiogeracaoativa/) |
+| YouTube | [@radiogeracaoativa](https://www.youtube.com/@radiogeracaoativa) |
 
-Acompanhe a Rádio Geração Ativa:
+## Sobre a iniciativa
 
-| Rede | Link |
-|------|------|
-| 💬 **Instagram** | [@radiogeracaoativa](https://www.instagram.com/radiogeracaoativa/) |
-| 📹 **YouTube** | [@radiogeracaoativa](https://www.youtube.com/@radiogeracaoativa) |
+A Rádio Geração Ativa é uma iniciativa do **Prof. Nelson JR**, responsável pela condução e pelo desenvolvimento da rádio escolar no UNASP São Paulo.
 
-</div>
+**Desenvolvimento técnico:** [Tiago Almeida](https://github.com/tiagoalmeida1605)
 
----
+## Licença
 
-## 📜 Licença
+O código deste projeto está disponível sob a licença **MIT**. Consulte o arquivo [LICENSE](LICENSE) para conhecer os termos de uso, cópia, modificação e distribuição.
 
-<div align="center">
-
-© **2026** Rádio Geração Ativa  
-Todos os direitos reservados.
-
-Este projeto é mantido com ❤️ pela comunidade da Rádio Geração Ativa do UNASP São Paulo.
-
-</div>
+Copyright (c) 2026 Tiago Almeida Silvestre.
 
 ---
 
 <div align="center">
 
-<img src="./assets/RGA%20Claro.png" alt="Rádio Geração Ativa" width="90"/>
+<img src="./assets/RGA%20Claro.png" alt="Rádio Geração Ativa" width="90" />
 
-<sub>Feito com ☕ café, 🎵 música e muita dedicação pela Rádio Geração Ativa</sub>
+**Rádio Geração Ativa — Comunicação, informação e comunidade.**
 
 </div>
