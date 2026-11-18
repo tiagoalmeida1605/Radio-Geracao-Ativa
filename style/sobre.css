@@ -4,6 +4,9 @@ body.pagina-sobre {
     --sobre-coral: #dc5c3e;
     --sobre-verde: #359497;
     --sobre-amarelo: #efa634;
+    --sobre-coral-texto: #b8422d;
+    --sobre-verde-texto: #226f72;
+    --sobre-verde-claro: #75c5c2;
     --sobre-texto-suave: #59636b;
     --sobre-linha: rgba(18, 34, 50, 0.16);
     background: var(--sobre-fundo);
@@ -21,6 +24,23 @@ body.pagina-sobre .sobre-container h2,
 body.pagina-sobre .sobre-container h3,
 body.pagina-sobre .sobre-container p {
     min-width: 0;
+}
+
+body.pagina-sobre #quem-somos {
+    scroll-margin-top: 6rem;
+}
+
+body.pagina-sobre .sidebar a:hover {
+    color: var(--sobre-coral-texto);
+}
+
+body.pagina-sobre .sidebar a.active {
+    background-color: var(--sobre-coral-texto);
+}
+
+body.pagina-sobre .menu-btn:focus-visible {
+    outline: 3px solid var(--sobre-coral-texto);
+    outline-offset: 3px;
 }
 
 body.pagina-sobre .sobre-hero {
@@ -65,7 +85,7 @@ body.pagina-sobre .sobre-eyebrow {
 
 body.pagina-sobre .sobre-eyebrow span {
     padding: 0 5px;
-    color: var(--sobre-verde);
+    color: var(--sobre-amarelo);
 }
 
 body.pagina-sobre .sobre-hero h1 {
@@ -190,7 +210,7 @@ body.pagina-sobre .sobre-hero-note {
     position: absolute;
     right: 28px;
     bottom: 23px;
-    color: rgba(253, 250, 244, 0.5);
+    color: rgba(253, 250, 244, 0.72);
     font-size: 0.64rem;
     font-weight: 700;
     letter-spacing: 0.16em;
@@ -211,7 +231,7 @@ body.pagina-sobre .sobre-section-index {
 }
 
 body.pagina-sobre .sobre-section-index > span:first-child {
-    color: var(--sobre-coral);
+    color: var(--sobre-coral-texto);
     font-size: 0.78rem;
 }
 
@@ -224,7 +244,7 @@ body.pagina-sobre .sobre-index-line {
 
 body.pagina-sobre .sobre-overline {
     margin-bottom: 14px;
-    color: var(--sobre-verde);
+    color: var(--sobre-verde-texto);
 }
 
 body.pagina-sobre .quem-section {
@@ -302,7 +322,7 @@ body.pagina-sobre .quem-principios > div {
 body.pagina-sobre .quem-principios > div > span {
     display: block;
     margin-bottom: 10px;
-    color: var(--sobre-coral);
+    color: var(--sobre-coral-texto);
     font-size: 0.65rem;
     font-weight: 800;
     letter-spacing: 0.14em;
@@ -320,7 +340,7 @@ body.pagina-sobre .quem-principios .quem-valores {
 
 body.pagina-sobre .quem-valores i {
     padding: 0 4px;
-    color: var(--sobre-verde);
+    color: var(--sobre-verde-texto);
     font-style: normal;
 }
 
@@ -349,7 +369,7 @@ body.pagina-sobre .atuacao-section .sobre-index-line {
 }
 
 body.pagina-sobre .atuacao-section .sobre-overline {
-    color: var(--sobre-verde);
+    color: var(--sobre-verde-claro);
 }
 
 body.pagina-sobre .atuacao-section h2 {
@@ -457,7 +477,7 @@ body.pagina-sobre .quadro-item {
 body.pagina-sobre .quadro-numero {
     flex: none;
     padding-top: 5px;
-    color: var(--sobre-coral);
+    color: var(--sobre-coral-texto);
     font-size: 0.69rem;
     font-weight: 800;
     letter-spacing: 0.1em;
@@ -499,6 +519,10 @@ body.pagina-sobre .quadro-destaque .quadro-numero {
     color: var(--sobre-amarelo);
 }
 
+body.pagina-sobre .quadro-destaque + .quadro-destaque .quadro-numero {
+    color: var(--sobre-coral-texto);
+}
+
 body.pagina-sobre .quadro-destaque h3 {
     color: inherit;
     font-size: clamp(1.35rem, 2.3vw, 2rem);
@@ -526,7 +550,7 @@ body.pagina-sobre .quadro-destaque + .quadro-destaque .quadro-marca {
 }
 
 body.pagina-sobre .quadro-item:not(.quadro-destaque):hover h3 {
-    color: var(--sobre-verde);
+    color: var(--sobre-verde-texto);
 }
 
 body.pagina-sobre .quadro-item:not(.quadro-destaque) h3 {
@@ -585,6 +609,7 @@ body.pagina-sobre .equipe-grupo li {
     color: var(--sobre-azul);
     font-size: 0.9rem;
     line-height: 1.55;
+    overflow-wrap: anywhere;
 }
 
 body.pagina-sobre .equipe-producao li strong,
@@ -655,7 +680,7 @@ body.pagina-sobre .redes-links a {
     gap: 22px;
     min-width: 145px;
     padding: 15px 16px;
-    border: 1px solid rgba(253, 250, 244, 0.3);
+    border: 1px solid rgba(253, 250, 244, 0.5);
     color: var(--sobre-fundo);
     font-size: 0.88rem;
     font-weight: 700;
@@ -669,7 +694,7 @@ body.pagina-sobre .redes-links a:hover {
 }
 
 body.pagina-sobre .rede-seta {
-    color: var(--sobre-verde);
+    color: var(--sobre-verde-claro);
     font-size: 1.15rem;
 }
 
@@ -677,7 +702,7 @@ body.pagina-sobre .redes-assinatura {
     position: absolute;
     right: 26px;
     bottom: 12px;
-    color: rgba(253, 250, 244, 0.42);
+    color: rgba(253, 250, 244, 0.72);
     font-size: 0.58rem;
     font-weight: 800;
     letter-spacing: 0.15em;
@@ -731,6 +756,31 @@ body.pagina-sobre .sobre-redes a:focus-visible {
     body.pagina-sobre .sobre-redes {
         align-items: flex-start;
         flex-direction: column;
+    }
+}
+
+@media (max-width: 780px) {
+    body.pagina-sobre .sobre-hero {
+        grid-template-columns: minmax(0, 1fr);
+        min-height: auto;
+        padding: 34px 32px 54px;
+    }
+
+    body.pagina-sobre .sobre-hero-art {
+        min-height: clamp(240px, 42vw, 320px);
+    }
+
+    body.pagina-sobre .quadros-list > .quadro-destaque {
+        grid-column: 1 / -1;
+    }
+
+    body.pagina-sobre .quem-content,
+    body.pagina-sobre .quadros-heading {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body.pagina-sobre .quadros-heading {
+        gap: 20px;
     }
 }
 
