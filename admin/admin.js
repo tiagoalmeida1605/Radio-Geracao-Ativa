@@ -73,6 +73,161 @@ const PLAYLIST_ICON_DEFAULT = ICON_DEFAULT;
 const NOTICIA_ICON_DEFAULT = "newspaper";
 const PLAYLIST_ICON_CATALOG = ICON_CATALOG;
 const PLAYLIST_ICON_MAP = ICON_MAP;
+let cacheNoticiasDashboard = [];
+
+document.body.classList.add("admin-v2");
+
+function atualizarMetricasDashboard({ noticias, playlists } = {}) {
+    const metricNoticias = document.getElementById("metricNoticias");
+    const metricVideos = document.getElementById("metricVideos");
+    const metricPlaylists = document.getElementById("metricPlaylists");
+    const metricCategorias = document.getElementById("metricCategorias");
+
+    if (metricNoticias && Array.isArray(noticias)) {
+        metricNoticias.textContent = String(noticias.length);
+    }
+    if (metricVideos && playlists) {
+        const itens = Object.values(playlists);
+        metricVideos.textContent = String(itens.filter((item) => item?.tipo === "video").length);
+    }
+    if (metricPlaylists && playlists) {
+        const itens = Object.values(playlists);
+        metricPlaylists.textContent = String(itens.filter((item) => item?.tipo !== "video").length);
+    }
+    if (metricCategorias && Array.isArray(noticias)) {
+        const categorias = new Set();
+        noticias.forEach((item) => {
+            if (Array.isArray(item.tags)) item.tags.forEach((tag) => {
+                if (String(tag || "").trim()) categorias.add(String(tag).trim());
+            });
+        });
+        metricCategorias.textContent = String(categorias.size);
+    }
+}
+
+function formatarDataDashboard(dataISO) {
+    if (!dataISO) return "Sem data";
+    const partes = String(dataISO).split("-");
+    if (partes.length !== 3) return String(dataISO);
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+function renderizarUltimasNoticias() {
+    const tbody = document.getElementById("listaUltimasNoticias");
+    const busca = document.getElementById("filtroNoticiasBusca");
+    const categoria = document.getElementById("filtroNoticiasCategoria");
+    const data = document.getElementById("filtroNoticiasData");
+    if (!tbody) return;
+
+    const termo = busca?.value.trim().toLocaleLowerCase("pt-BR") || "";
+    const categoriaSelecionada = categoria?.value || "";
+    const dataSelecionada = data?.value || "";
+    const filtradas = cacheNoticiasDashboard
+        .filter((item) => !termo || item.titulo.toLocaleLowerCase("pt-BR").includes(termo))
+        .filter((item) => !categoriaSelecionada || item.tags.includes(categoriaSelecionada))
+        .filter((item) => !dataSelecionada || item.data === dataSelecionada)
+        .sort((a, b) => String(b.data || "").localeCompare(String(a.data || "")));
+
+    if (!filtradas.length) {
+        const linha = document.createElement("tr");
+        const celula = document.createElement("td");
+        celula.colSpan = 4;
+        celula.className = "recent-empty";
+        celula.textContent = cacheNoticiasDashboard.length
+            ? "Nenhuma notícia corresponde aos filtros."
+            : "Nenhuma notícia cadastrada.";
+        linha.appendChild(celula);
+        tbody.replaceChildren(linha);
+        return;
+    }
+
+    const linhas = filtradas.slice(0, 8).map((item) => {
+        const linha = document.createElement("tr");
+
+        const titulo = document.createElement("td");
+        const tituloTexto = document.createElement("span");
+        tituloTexto.className = "recent-title";
+        tituloTexto.textContent = item.titulo || "Notícia sem título";
+        titulo.appendChild(tituloTexto);
+
+        const categoriaCelula = document.createElement("td");
+        const categoriaTexto = document.createElement("span");
+        categoriaTexto.className = "recent-category";
+        categoriaTexto.textContent = item.tags[0] || "Sem categoria";
+        categoriaCelula.appendChild(categoriaTexto);
+
+        const dataCelula = document.createElement("td");
+        dataCelula.textContent = formatarDataDashboard(item.data);
+
+        const acoes = document.createElement("td");
+        const conteinerAcoes = document.createElement("div");
+        conteinerAcoes.className = "recent-actions";
+
+        const editar = document.createElement("button");
+        editar.type = "button";
+        editar.className = "recent-action recent-action-edit";
+        editar.dataset.id = item.id;
+        editar.setAttribute("aria-label", `Editar ${item.titulo || "notícia"}`);
+        editar.innerHTML = '<i data-lucide="pencil" aria-hidden="true"></i>';
+
+        const remover = document.createElement("button");
+        remover.type = "button";
+        remover.className = "recent-action recent-action-delete";
+        remover.dataset.id = item.id;
+        remover.setAttribute("aria-label", `Remover ${item.titulo || "notícia"}`);
+        remover.innerHTML = '<i data-lucide="trash-2" aria-hidden="true"></i>';
+
+        editar.addEventListener("click", () => {
+            document.getElementById("secao-noticias")?.scrollIntoView({ behavior: "smooth" });
+            carregarNoticiaParaEdicao(item.id);
+        });
+        remover.addEventListener("click", () => apagarNoticia(item.id));
+
+        conteinerAcoes.append(editar, remover);
+        acoes.appendChild(conteinerAcoes);
+        linha.append(titulo, categoriaCelula, dataCelula, acoes);
+        return linha;
+    });
+
+    tbody.replaceChildren(...linhas);
+    if (window.lucide && typeof window.lucide.createIcons === "function") {
+        window.lucide.createIcons();
+    }
+}
+
+function inicializarFiltrosDashboard() {
+    const busca = document.getElementById("filtroNoticiasBusca");
+    const categoria = document.getElementById("filtroNoticiasCategoria");
+    const data = document.getElementById("filtroNoticiasData");
+    const limpar = document.getElementById("btnLimparFiltrosNoticias");
+
+    busca?.addEventListener("input", renderizarUltimasNoticias);
+    categoria?.addEventListener("change", renderizarUltimasNoticias);
+    data?.addEventListener("change", renderizarUltimasNoticias);
+    limpar?.addEventListener("click", () => {
+        if (busca) busca.value = "";
+        if (categoria) categoria.value = "";
+        if (data) data.value = "";
+        renderizarUltimasNoticias();
+    });
+
+    document.querySelectorAll("[data-admin-nav]").forEach((link) => {
+        link.addEventListener("click", () => {
+            const titulo = document.getElementById("adminPageTitle");
+            if (titulo) titulo.textContent = link.dataset.adminNav === "visão geral" ? "Visão geral" : link.dataset.adminNav;
+        });
+    });
+
+    document.querySelectorAll("[data-mobile-nav]").forEach((link) => {
+        link.addEventListener("click", () => {
+            document.querySelectorAll("[data-mobile-nav]").forEach((item) => item.classList.toggle("active", item === link));
+        });
+    });
+
+    document.getElementById("btnMenuMobileAdmin")?.addEventListener("click", () => {
+        document.getElementById("menuBtn")?.click();
+    });
+}
 
 function escaparHtml(valor) {
     return String(valor ?? "").replace(/[&<>'"]/g, (caractere) => ({
@@ -249,6 +404,7 @@ function liberarPainel(papel, nome = NOMES_PAPEL[papel]) {
         conteudoPainel.style.display = "block";
     }
 
+    inicializarFiltrosDashboard();
     aplicarPermissoes(papel);
     if (textoContaLogada) {
         textoContaLogada.textContent = `Olá, ${nome || NOMES_PAPEL[papel] || "usuário autorizado"}`;
@@ -628,6 +784,7 @@ function inicializarGerenciadorPlaylists() {
     onValue(playlistsRef, (snapshot) => {
         listaContainer.innerHTML = "";
         const dadosFirebase = snapshot.val();
+        atualizarMetricasDashboard({ playlists: dadosFirebase && typeof dadosFirebase === "object" ? dadosFirebase : {} });
 
         // Handle case where data is not an object (null or primitive)
         if (!dadosFirebase || typeof dadosFirebase !== 'object') {
@@ -898,6 +1055,26 @@ function inicializarGerenciadorNoticias() {
     onValue(noticiasRef, (snapshot) => {
         listaContainer.innerHTML = "";
         const dadosFirebase = snapshot.val();
+        const entradasNoticias = dadosFirebase && typeof dadosFirebase === "object"
+            ? Object.entries(dadosFirebase).map(([id, dados]) => ({
+                id,
+                titulo: String(dados?.titulo || ""),
+                data: String(dados?.data || ""),
+                tags: normalizarTagsPublicacao(dados?.tags)
+            }))
+            : [];
+        cacheNoticiasDashboard = entradasNoticias;
+        atualizarMetricasDashboard({ noticias: entradasNoticias });
+        renderizarUltimasNoticias();
+
+        const filtroCategoria = document.getElementById("filtroNoticiasCategoria");
+        if (filtroCategoria) {
+            const categorias = [...new Set(entradasNoticias.flatMap((item) => item.tags))].sort((a, b) => a.localeCompare(b));
+            const valorAtual = filtroCategoria.value;
+            filtroCategoria.replaceChildren(new Option("Todas as categorias", ""));
+            categorias.forEach((categoria) => filtroCategoria.appendChild(new Option(categoria, categoria)));
+            if (categorias.includes(valorAtual)) filtroCategoria.value = valorAtual;
+        }
 
         // Handle case where data is not an object (null or primitive)
         if (!dadosFirebase || typeof dadosFirebase !== 'object') {

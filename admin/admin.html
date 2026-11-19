@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="../assets/icon.png">
     <link rel="stylesheet" href="./admin.css">
+    <link rel="stylesheet" href="./admin-v2.css">
     <link rel="stylesheet" href="../style/rga-dialogs.css">
     <meta name="robots" content="noindex, nofollow">
     <title>Admin - Rádio Geração Ativa</title>
@@ -35,6 +36,17 @@
 </header>
 
 <main>
+    <section class="admin-page-header" id="adminPageHeader" aria-label="Cabeçalho do painel">
+        <div>
+            <span class="admin-page-eyebrow">Painel administrativo</span>
+            <h1 id="adminPageTitle">Visão geral</h1>
+        </div>
+        <div class="admin-header-status">
+            <span class="admin-live-dot" aria-hidden="true"></span>
+            <span id="adminHeaderStatus">Conteúdo sincronizado</span>
+        </div>
+    </section>
+
     <div id="bloqueio-tela">
         <div class="card-senha" id="cardSenha">
             <h2><i class="heading-icon" data-lucide="lock" aria-hidden="true"></i>Painel Restrito</h2>
@@ -61,6 +73,111 @@
             <span id="textoContaLogada">Olá, usuário autorizado</span>
             <button type="button" id="btnSair" class="btn-secondary btn-sair"><i data-lucide="log-out" aria-hidden="true"></i>Sair</button>
         </div>
+
+        <section class="admin-overview" id="secao-visao-geral" data-papel="admin,playlist,publicador">
+            <div class="overview-heading">
+                <div>
+                    <span class="overview-kicker">Central da RGA</span>
+                    <h2>Visão geral</h2>
+                    <p>Acompanhe o conteúdo cadastrado e acesse as áreas de administração.</p>
+                </div>
+            </div>
+
+            <div class="overview-metrics" aria-label="Resumo do conteúdo">
+                <article class="metric-card metric-card--news">
+                    <span class="metric-icon"><i data-lucide="newspaper" aria-hidden="true"></i></span>
+                    <div><strong id="metricNoticias">0</strong><span>Notícias</span></div>
+                </article>
+                <article class="metric-card metric-card--videos" data-papel="admin,playlist">
+                    <span class="metric-icon"><i data-lucide="video" aria-hidden="true"></i></span>
+                    <div><strong id="metricVideos">0</strong><span>Vídeos</span></div>
+                </article>
+                <article class="metric-card metric-card--playlists" data-papel="admin,playlist">
+                    <span class="metric-icon"><i data-lucide="list-video" aria-hidden="true"></i></span>
+                    <div><strong id="metricPlaylists">0</strong><span>Playlists</span></div>
+                </article>
+                <article class="metric-card metric-card--categories">
+                    <span class="metric-icon"><i data-lucide="tags" aria-hidden="true"></i></span>
+                    <div><strong id="metricCategorias">0</strong><span>Categorias em uso</span></div>
+                </article>
+            </div>
+
+            <div class="overview-layout">
+                <section class="overview-panel overview-shortcuts" aria-labelledby="atalhosTitulo">
+                    <div class="overview-panel-heading">
+                        <h3 id="atalhosTitulo">Ações rápidas</h3>
+                    </div>
+                    <div class="shortcut-grid">
+                        <a class="shortcut-item" href="#secao-noticias" data-admin-nav="notícias">
+                            <i data-lucide="square-plus" aria-hidden="true"></i>
+                            <span><strong>Nova notícia</strong><small>Publicar ou editar conteúdo</small></span>
+                        </a>
+                        <a class="shortcut-item" href="#secao-playlists" data-admin-nav="vídeos e playlists">
+                            <i data-lucide="circle-play" aria-hidden="true"></i>
+                            <span><strong>Novo vídeo</strong><small>Adicionar conteúdo do YouTube</small></span>
+                        </a>
+                        <a class="shortcut-item" href="#secao-manutencao" data-admin-nav="manutenção">
+                            <i data-lucide="wrench" aria-hidden="true"></i>
+                            <span><strong>Manutenção</strong><small>Verificar estado do site</small></span>
+                        </a>
+                    </div>
+                </section>
+
+                <section class="overview-panel overview-access" aria-labelledby="acessoTitulo">
+                    <div class="overview-panel-heading">
+                        <h3 id="acessoTitulo">Métricas de acesso</h3>
+                    </div>
+                    <div class="empty-access">
+                        <i data-lucide="chart-no-axes-column" aria-hidden="true"></i>
+                        <p>Dados de acessos ainda não disponíveis.</p>
+                        <small>Não há uma fonte confiável de analytics integrada ao projeto.</small>
+                    </div>
+                </section>
+            </div>
+
+            <section class="recent-panel" aria-labelledby="recentesTitulo">
+                <div class="recent-heading">
+                    <div>
+                        <span class="overview-kicker">Conteúdo editorial</span>
+                        <h3 id="recentesTitulo">Últimas publicações</h3>
+                    </div>
+                    <button type="button" class="recent-clear" id="btnLimparFiltrosNoticias">Limpar filtros</button>
+                </div>
+
+                <div class="recent-filters" aria-label="Filtros das notícias">
+                    <label>
+                        <span>Pesquisar</span>
+                        <input type="search" id="filtroNoticiasBusca" placeholder="Título da notícia">
+                    </label>
+                    <label>
+                        <span>Categoria</span>
+                        <select id="filtroNoticiasCategoria">
+                            <option value="">Todas as categorias</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Período</span>
+                        <input type="date" id="filtroNoticiasData">
+                    </label>
+                </div>
+
+                <div class="recent-table-wrap">
+                    <table class="recent-table">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Categoria</th>
+                                <th>Data</th>
+                                <th><span class="sr-only">Ações</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaUltimasNoticias">
+                            <tr><td colspan="4" class="recent-loading">Carregando notícias...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
 
         <div class="admin-card maintenance-admin-card" id="secao-manutencao" data-papel="admin">
             <h2><i class="heading-icon" data-lucide="wrench" aria-hidden="true"></i>Modo de manutenção</h2>
@@ -218,6 +335,21 @@
 <footer>
     <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
 </footer>
+
+<nav class="admin-mobile-nav" aria-label="Navegação principal do painel">
+    <a href="#secao-visao-geral" class="active" data-mobile-nav="visão geral">
+        <i data-lucide="layout-dashboard" aria-hidden="true"></i><span>Visão geral</span>
+    </a>
+    <a href="#secao-noticias" data-mobile-nav="notícias">
+        <i data-lucide="newspaper" aria-hidden="true"></i><span>Notícias</span>
+    </a>
+    <a href="#secao-playlists" data-mobile-nav="vídeos e playlists">
+        <i data-lucide="video" aria-hidden="true"></i><span>Vídeos</span>
+    </a>
+    <button type="button" id="btnMenuMobileAdmin" aria-label="Abrir menu completo">
+        <i data-lucide="menu" aria-hidden="true"></i><span>Menu</span>
+    </button>
+</nav>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="../script/menu.js?v=2"></script>
