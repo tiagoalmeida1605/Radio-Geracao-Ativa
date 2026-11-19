@@ -43,7 +43,7 @@
         </div>
         <div class="admin-header-status">
             <span class="admin-live-dot" aria-hidden="true"></span>
-            <span id="adminHeaderStatus">Conteúdo sincronizado</span>
+        <span id="adminHeaderStatus">Aguardando autenticação</span>
         </div>
     </section>
 
@@ -77,14 +77,12 @@
         <section class="admin-overview" id="secao-visao-geral" data-papel="admin,playlist,publicador">
             <div class="overview-heading">
                 <div>
-                    <span class="overview-kicker">Central da RGA</span>
-                    <h2>Visão geral</h2>
                     <p>Acompanhe o conteúdo cadastrado e acesse as áreas de administração.</p>
                 </div>
             </div>
 
             <div class="overview-metrics" aria-label="Resumo do conteúdo">
-                <article class="metric-card metric-card--news">
+                <article class="metric-card metric-card--news" data-papel="admin,publicador">
                     <span class="metric-icon"><i data-lucide="newspaper" aria-hidden="true"></i></span>
                     <div><strong id="metricNoticias">0</strong><span>Notícias</span></div>
                 </article>
@@ -96,7 +94,7 @@
                     <span class="metric-icon"><i data-lucide="list-video" aria-hidden="true"></i></span>
                     <div><strong id="metricPlaylists">0</strong><span>Playlists</span></div>
                 </article>
-                <article class="metric-card metric-card--categories">
+                <article class="metric-card metric-card--categories" data-papel="admin,publicador">
                     <span class="metric-icon"><i data-lucide="tags" aria-hidden="true"></i></span>
                     <div><strong id="metricCategorias">0</strong><span>Categorias em uso</span></div>
                 </article>
@@ -108,15 +106,15 @@
                         <h3 id="atalhosTitulo">Ações rápidas</h3>
                     </div>
                     <div class="shortcut-grid">
-                        <a class="shortcut-item" href="#secao-noticias" data-admin-nav="notícias">
+                        <a class="shortcut-item" href="#secao-noticias" data-admin-nav="notícias" data-papel="admin,publicador">
                             <i data-lucide="square-plus" aria-hidden="true"></i>
                             <span><strong>Nova notícia</strong><small>Publicar ou editar conteúdo</small></span>
                         </a>
-                        <a class="shortcut-item" href="#secao-playlists" data-admin-nav="vídeos e playlists">
+                        <a class="shortcut-item" href="#secao-playlists" data-admin-nav="vídeos e playlists" data-papel="admin,playlist">
                             <i data-lucide="circle-play" aria-hidden="true"></i>
                             <span><strong>Novo vídeo</strong><small>Adicionar conteúdo do YouTube</small></span>
                         </a>
-                        <a class="shortcut-item" href="#secao-manutencao" data-admin-nav="manutenção">
+                        <a class="shortcut-item" href="#secao-manutencao" data-admin-nav="manutenção" data-papel="admin">
                             <i data-lucide="wrench" aria-hidden="true"></i>
                             <span><strong>Manutenção</strong><small>Verificar estado do site</small></span>
                         </a>
@@ -135,13 +133,54 @@
                 </section>
             </div>
 
-            <section class="recent-panel" aria-labelledby="recentesTitulo">
+            <div class="analytics-grid" data-papel="admin,publicador,playlist">
+                <section class="analytics-panel" id="painelPublicacoesMes" data-papel="admin,publicador" aria-labelledby="publicacoesMesTitulo">
+                    <div class="analytics-heading">
+                        <div>
+                            <span class="overview-kicker">Produção editorial</span>
+                            <h3 id="publicacoesMesTitulo">Publicações por mês</h3>
+                        </div>
+                    </div>
+                    <div id="graficoNoticiasMes" class="monthly-chart" role="img" aria-label="Quantidade de notícias nos últimos seis meses">
+                        <p class="analytics-loading">Carregando publicação por mês...</p>
+                    </div>
+                </section>
+
+                <section class="analytics-panel" id="painelCategorias" data-papel="admin,publicador" aria-labelledby="categoriasTitulo">
+                    <div class="analytics-heading">
+                        <div>
+                            <span class="overview-kicker">Categorias reais</span>
+                            <h3 id="categoriasTitulo">Distribuição editorial</h3>
+                        </div>
+                    </div>
+                    <div id="graficoCategorias" class="category-chart" aria-label="Categorias mais utilizadas nas notícias">
+                        <p class="analytics-loading">Carregando categorias...</p>
+                    </div>
+                </section>
+
+                <section class="analytics-panel" id="painelTiposConteudo" data-papel="admin,playlist" aria-labelledby="tiposTitulo">
+                    <div class="analytics-heading">
+                        <div>
+                            <span class="overview-kicker">Biblioteca audiovisual</span>
+                            <h3 id="tiposTitulo">Tipos de conteúdo</h3>
+                        </div>
+                    </div>
+                    <div id="graficoTiposConteudo" class="content-type-chart" aria-label="Distribuição entre vídeos individuais e playlists">
+                        <p class="analytics-loading">Carregando conteúdo audiovisual...</p>
+                    </div>
+                </section>
+            </div>
+
+            <section class="recent-panel" aria-labelledby="recentesTitulo" data-papel="admin,publicador">
                 <div class="recent-heading">
                     <div>
                         <span class="overview-kicker">Conteúdo editorial</span>
                         <h3 id="recentesTitulo">Últimas publicações</h3>
                     </div>
-                    <button type="button" class="recent-clear" id="btnLimparFiltrosNoticias">Limpar filtros</button>
+                    <div class="recent-heading-actions">
+                        <span id="resumoFiltrosNoticias" class="recent-filter-summary">Exibindo resultados</span>
+                        <button type="button" class="recent-clear" id="btnLimparFiltrosNoticias">Limpar filtros</button>
+                    </div>
                 </div>
 
                 <div class="recent-filters" aria-label="Filtros das notícias">
@@ -156,8 +195,12 @@
                         </select>
                     </label>
                     <label>
-                        <span>Período</span>
-                        <input type="date" id="filtroNoticiasData">
+                        <span>Data inicial</span>
+                        <input type="date" id="filtroNoticiasDataInicial">
+                    </label>
+                    <label>
+                        <span>Data final</span>
+                        <input type="date" id="filtroNoticiasDataFinal">
                     </label>
                 </div>
 
@@ -336,14 +379,14 @@
     <p>&copy; 2026 Rádio Geração Ativa. Todos os direitos reservados.</p>
 </footer>
 
-<nav class="admin-mobile-nav" aria-label="Navegação principal do painel">
+<nav class="admin-mobile-nav" id="adminMobileNav" aria-label="Navegação principal do painel" hidden>
     <a href="#secao-visao-geral" class="active" data-mobile-nav="visão geral">
         <i data-lucide="layout-dashboard" aria-hidden="true"></i><span>Visão geral</span>
     </a>
-    <a href="#secao-noticias" data-mobile-nav="notícias">
+    <a href="#secao-noticias" data-mobile-nav="notícias" data-papel="admin,publicador">
         <i data-lucide="newspaper" aria-hidden="true"></i><span>Notícias</span>
     </a>
-    <a href="#secao-playlists" data-mobile-nav="vídeos e playlists">
+    <a href="#secao-playlists" data-mobile-nav="vídeos e playlists" data-papel="admin,playlist">
         <i data-lucide="video" aria-hidden="true"></i><span>Vídeos</span>
     </a>
     <button type="button" id="btnMenuMobileAdmin" aria-label="Abrir menu completo">

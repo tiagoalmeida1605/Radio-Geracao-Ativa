@@ -74,6 +74,9 @@ const NOTICIA_ICON_DEFAULT = "newspaper";
 const PLAYLIST_ICON_CATALOG = ICON_CATALOG;
 const PLAYLIST_ICON_MAP = ICON_MAP;
 let cacheNoticiasDashboard = [];
+let cachePlaylistsDashboard = {};
+let dashboardNewsActions = null;
+let filtrosDashboardInicializados = false;
 
 document.body.classList.add("admin-v2");
 
@@ -112,20 +115,152 @@ function formatarDataDashboard(dataISO) {
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
+function atualizarStatusDashboard(estado, mensagem) {
+    const status = document.getElementById("adminHeaderStatus");
+    const dot = document.querySelector(".admin-live-dot");
+    if (status) status.textContent = mensagem;
+    if (dot) {
+        dot.className = "admin-live-dot";
+        dot.classList.add(`admin-live-dot--${estado}`);
+    }
+}
+
+function renderizarPublicacoesPorMes() {
+    const container = document.getElementById("graficoNoticiasMes");
+    if (!container) return;
+
+    const hoje = new Date();
+    const meses = [];
+    for (let offset = 5; offset >= 0; offset -= 1) {
+        const data = new Date(hoje.getFullYear(), hoje.getMonth() - offset, 1);
+        const chave = `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, "0")}`;
+        const rotulo = data.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "");
+        meses.push({ chave, rotulo, total: 0 });
+    }
+
+    cacheNoticiasDashboard.forEach((item) => {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(item.data)) return;
+        const chave = item.data.slice(0, 7);
+        const mes = meses.find((itemMes) => itemMes.chave === chave);
+        if (mes) mes.total += 1;
+    });
+
+    const maximo = Math.max(1, ...meses.map((mes) => mes.total));
+    container.replaceChildren();
+    const escala = document.createElement("div");
+    escala.className = "monthly-chart-bars";
+    meses.forEach((mes) => {
+        const coluna = document.createElement("div");
+        coluna.className = "monthly-chart-column";
+        const valor = document.createElement("strong");
+        valor.textContent = String(mes.total);
+        const barra = document.createElement("span");
+        barra.className = "monthly-chart-bar";
+        barra.style.height = `${Math.max(8, (mes.total / maximo) * 72)}px`;
+        const legenda = document.createElement("small");
+        legenda.textContent = mes.rotulo;
+        coluna.append(valor, barra, legenda);
+        escala.appendChild(coluna);
+    });
+    container.appendChild(escala);
+}
+
+function renderizarCategorias() {
+    const container = document.getElementById("graficoCategorias");
+    if (!container) return;
+
+    const contagem = new Map();
+    cacheNoticiasDashboard.forEach((item) => {
+        item.tags.forEach((tag) => contagem.set(tag, (contagem.get(tag) || 0) + 1));
+    });
+    const categorias = [...contagem.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+    container.replaceChildren();
+
+    if (!categorias.length) {
+        const vazio = document.createElement("p");
+        vazio.className = "analytics-empty";
+        vazio.textContent = "Nenhuma categoria utilizada nas notícias.";
+        container.appendChild(vazio);
+        return;
+    }
+
+    const maximo = Math.max(1, ...categorias.map(([, total]) => total));
+    categorias.forEach(([categoria, total]) => {
+        const linha = document.createElement("div");
+        linha.className = "category-chart-row";
+        const nome = document.createElement("span");
+        nome.textContent = categoria;
+        const trilha = document.createElement("div");
+        trilha.className = "category-chart-track";
+        const barra = document.createElement("span");
+        barra.style.width = `${(total / maximo) * 100}%`;
+        const valor = document.createElement("strong");
+        valor.textContent = String(total);
+        trilha.appendChild(barra);
+        linha.append(nome, trilha, valor);
+        container.appendChild(linha);
+    });
+}
+
+function renderizarTiposConteudo() {
+    const container = document.getElementById("graficoTiposConteudo");
+    if (!container) return;
+
+    const itens = Object.values(cachePlaylistsDashboard);
+    const videos = itens.filter((item) => item?.tipo === "video").length;
+    const playlists = itens.filter((item) => item?.tipo === "playlist").length;
+    container.replaceChildren();
+
+    if (!videos && !playlists) {
+        const vazio = document.createElement("p");
+        vazio.className = "analytics-empty";
+        vazio.textContent = "Nenhum conteúdo audiovisual válido cadastrado.";
+        container.appendChild(vazio);
+        return;
+    }
+
+    const total = videos + playlists;
+    [
+        ["Vídeos", videos, "video"],
+        ["Playlists", playlists, "playlist"]
+    ].forEach(([nome, quantidade, tipo]) => {
+        const linha = document.createElement("div");
+        linha.className = "content-type-row";
+        const rotulo = document.createElement("span");
+        rotulo.textContent = nome;
+        const valor = document.createElement("strong");
+        valor.textContent = `${quantidade} · ${Math.round((quantidade / total) * 100)}%`;
+        linha.dataset.tipo = tipo;
+        linha.append(rotulo, valor);
+        container.appendChild(linha);
+    });
+}
+
+function atualizarResumoFiltros(totalFiltrado) {
+    const resumo = document.getElementById("resumoFiltrosNoticias");
+    if (!resumo) return;
+    const total = cacheNoticiasDashboard.length;
+    const exibidos = Math.min(totalFiltrado, 8);
+    resumo.textContent = `Exibindo ${exibidos} de ${total} resultados`;
+}
+
 function renderizarUltimasNoticias() {
     const tbody = document.getElementById("listaUltimasNoticias");
     const busca = document.getElementById("filtroNoticiasBusca");
     const categoria = document.getElementById("filtroNoticiasCategoria");
-    const data = document.getElementById("filtroNoticiasData");
+    const dataInicial = document.getElementById("filtroNoticiasDataInicial");
+    const dataFinal = document.getElementById("filtroNoticiasDataFinal");
     if (!tbody) return;
 
     const termo = busca?.value.trim().toLocaleLowerCase("pt-BR") || "";
     const categoriaSelecionada = categoria?.value || "";
-    const dataSelecionada = data?.value || "";
+    const dataInicialSelecionada = dataInicial?.value || "";
+    const dataFinalSelecionada = dataFinal?.value || "";
     const filtradas = cacheNoticiasDashboard
         .filter((item) => !termo || item.titulo.toLocaleLowerCase("pt-BR").includes(termo))
         .filter((item) => !categoriaSelecionada || item.tags.includes(categoriaSelecionada))
-        .filter((item) => !dataSelecionada || item.data === dataSelecionada)
+        .filter((item) => !dataInicialSelecionada || !item.data || item.data >= dataInicialSelecionada)
+        .filter((item) => !dataFinalSelecionada || !item.data || item.data <= dataFinalSelecionada)
         .sort((a, b) => String(b.data || "").localeCompare(String(a.data || "")));
 
     if (!filtradas.length) {
@@ -138,6 +273,7 @@ function renderizarUltimasNoticias() {
             : "Nenhuma notícia cadastrada.";
         linha.appendChild(celula);
         tbody.replaceChildren(linha);
+        atualizarResumoFiltros(filtradas.length);
         return;
     }
 
@@ -179,9 +315,11 @@ function renderizarUltimasNoticias() {
 
         editar.addEventListener("click", () => {
             document.getElementById("secao-noticias")?.scrollIntoView({ behavior: "smooth" });
-            carregarNoticiaParaEdicao(item.id);
+            if (dashboardNewsActions?.editar) dashboardNewsActions.editar(item.id);
         });
-        remover.addEventListener("click", () => apagarNoticia(item.id));
+        remover.addEventListener("click", () => {
+            if (dashboardNewsActions?.remover) dashboardNewsActions.remover(item.id);
+        });
 
         conteinerAcoes.append(editar, remover);
         acoes.appendChild(conteinerAcoes);
@@ -190,24 +328,30 @@ function renderizarUltimasNoticias() {
     });
 
     tbody.replaceChildren(...linhas);
+    atualizarResumoFiltros(filtradas.length);
     if (window.lucide && typeof window.lucide.createIcons === "function") {
         window.lucide.createIcons();
     }
 }
 
 function inicializarFiltrosDashboard() {
+    if (filtrosDashboardInicializados) return;
+    filtrosDashboardInicializados = true;
     const busca = document.getElementById("filtroNoticiasBusca");
     const categoria = document.getElementById("filtroNoticiasCategoria");
-    const data = document.getElementById("filtroNoticiasData");
+    const dataInicial = document.getElementById("filtroNoticiasDataInicial");
+    const dataFinal = document.getElementById("filtroNoticiasDataFinal");
     const limpar = document.getElementById("btnLimparFiltrosNoticias");
 
     busca?.addEventListener("input", renderizarUltimasNoticias);
     categoria?.addEventListener("change", renderizarUltimasNoticias);
-    data?.addEventListener("change", renderizarUltimasNoticias);
+    dataInicial?.addEventListener("change", renderizarUltimasNoticias);
+    dataFinal?.addEventListener("change", renderizarUltimasNoticias);
     limpar?.addEventListener("click", () => {
         if (busca) busca.value = "";
         if (categoria) categoria.value = "";
-        if (data) data.value = "";
+        if (dataInicial) dataInicial.value = "";
+        if (dataFinal) dataFinal.value = "";
         renderizarUltimasNoticias();
     });
 
@@ -362,6 +506,9 @@ function mostrarTelaLogin() {
     if (conteudoPainel) {
         conteudoPainel.style.display = "none";
     }
+    const mobileNav = document.getElementById("adminMobileNav");
+    if (mobileNav) mobileNav.hidden = true;
+    atualizarStatusDashboard("idle", "Aguardando autenticação");
 }
 
 function mostrarErroLogin(mensagem = "E-mail ou senha incorretos.") {
@@ -389,6 +536,22 @@ function aplicarPermissoes(papel) {
             .map((valor) => valor.trim());
         secao.style.display = papeisPermitidos.includes(papel) ? "" : "none";
     });
+
+    document.querySelectorAll("[data-mobile-nav]").forEach((link) => {
+        if (link.dataset.mobileNav === "vídeos e playlists" && !(papel === "admin" || papel === "playlist")) {
+            link.hidden = true;
+        } else if (link.dataset.mobileNav === "notícias" && !(papel === "admin" || papel === "publicador")) {
+            link.hidden = true;
+        } else {
+            link.hidden = false;
+        }
+    });
+
+    const mobileNav = document.getElementById("adminMobileNav");
+    if (mobileNav) {
+        const linksVisiveis = Array.from(mobileNav.querySelectorAll("[data-mobile-nav], button")).filter((elemento) => !elemento.hidden).length;
+        mobileNav.style.gridTemplateColumns = `repeat(${linksVisiveis}, 1fr)`;
+    }
 }
 
 function liberarPainel(papel, nome = NOMES_PAPEL[papel]) {
@@ -406,6 +569,9 @@ function liberarPainel(papel, nome = NOMES_PAPEL[papel]) {
 
     inicializarFiltrosDashboard();
     aplicarPermissoes(papel);
+    const mobileNav = document.getElementById("adminMobileNav");
+    if (mobileNav) mobileNav.hidden = false;
+    atualizarStatusDashboard("loading", "Carregando dados");
     if (textoContaLogada) {
         textoContaLogada.textContent = `Olá, ${nome || NOMES_PAPEL[papel] || "usuário autorizado"}`;
     }
@@ -685,9 +851,14 @@ function inicializarGerenciadorManutencao() {
         toggleManutencao.checked = manutencaoAtiva;
         statusManutencao.textContent = manutencaoAtiva ? "ATIVADO" : "DESATIVADO";
         statusManutencao.classList.toggle("ativo", manutencaoAtiva);
+        atualizarStatusDashboard("synced", "Sincronizado");
     }, (error) => {
         statusManutencao.textContent = "INDISPONÍVEL";
         feedbackManutencao.textContent = mensagemFirebase(error, "carregar o status da manutenção");
+        atualizarStatusDashboard(
+            error?.code === "PERMISSION_DENIED" ? "denied" : "error",
+            error?.code === "PERMISSION_DENIED" ? "Acesso negado" : "Problema de conexão"
+        );
     });
 
     formManutencao.addEventListener("submit", (e) => {
@@ -784,7 +955,10 @@ function inicializarGerenciadorPlaylists() {
     onValue(playlistsRef, (snapshot) => {
         listaContainer.innerHTML = "";
         const dadosFirebase = snapshot.val();
+        cachePlaylistsDashboard = dadosFirebase && typeof dadosFirebase === "object" ? dadosFirebase : {};
         atualizarMetricasDashboard({ playlists: dadosFirebase && typeof dadosFirebase === "object" ? dadosFirebase : {} });
+        renderizarTiposConteudo();
+        atualizarStatusDashboard("synced", "Sincronizado");
 
         // Handle case where data is not an object (null or primitive)
         if (!dadosFirebase || typeof dadosFirebase !== 'object') {
@@ -828,6 +1002,10 @@ function inicializarGerenciadorPlaylists() {
         }
     }, (error) => {
         listaContainer.innerHTML = `<p class="txt-ajuda">${mensagemFirebase(error, "carregar os vídeos e playlists")}</p>`;
+        atualizarStatusDashboard(
+            error?.code === "PERMISSION_DENIED" ? "denied" : "error",
+            error?.code === "PERMISSION_DENIED" ? "Acesso negado" : "Problema de conexão"
+        );
     });
 
     formPlaylist.addEventListener("submit", async (e) => {
@@ -954,6 +1132,10 @@ function inicializarGerenciadorNoticias() {
     }
 
     gerenciadoresInicializados.add("noticias");
+    dashboardNewsActions = {
+        editar: carregarNoticiaParaEdicao,
+        remover: apagarNoticia
+    };
 
     inicializarSeletorIconesNoticias();
 
@@ -1064,8 +1246,6 @@ function inicializarGerenciadorNoticias() {
             }))
             : [];
         cacheNoticiasDashboard = entradasNoticias;
-        atualizarMetricasDashboard({ noticias: entradasNoticias });
-        renderizarUltimasNoticias();
 
         const filtroCategoria = document.getElementById("filtroNoticiasCategoria");
         if (filtroCategoria) {
@@ -1075,6 +1255,11 @@ function inicializarGerenciadorNoticias() {
             categorias.forEach((categoria) => filtroCategoria.appendChild(new Option(categoria, categoria)));
             if (categorias.includes(valorAtual)) filtroCategoria.value = valorAtual;
         }
+        atualizarMetricasDashboard({ noticias: entradasNoticias });
+        renderizarPublicacoesPorMes();
+        renderizarCategorias();
+        renderizarUltimasNoticias();
+        atualizarStatusDashboard("synced", "Sincronizado");
 
         // Handle case where data is not an object (null or primitive)
         if (!dadosFirebase || typeof dadosFirebase !== 'object') {
@@ -1120,6 +1305,10 @@ function inicializarGerenciadorNoticias() {
         }
     }, (error) => {
         listaContainer.innerHTML = `<p class="txt-ajuda">${mensagemFirebase(error, "carregar as notícias")}</p>`;
+        atualizarStatusDashboard(
+            error?.code === "PERMISSION_DENIED" ? "denied" : "error",
+            error?.code === "PERMISSION_DENIED" ? "Acesso negado" : "Problema de conexão"
+        );
     });
 
     // Evento transformado em ASYNC para poder esperar o carregamento do arquivo
