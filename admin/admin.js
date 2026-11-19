@@ -681,7 +681,7 @@ function inicializarGerenciadorPlaylists() {
         try {
             midia = extrairMidiaYouTube(inputUrl.value);
         } catch (error) {
-            alert(error.message);
+            RGA.toast({ title: "Link inválido", message: error.message, type: "error" });
             inputUrl.focus();
             return;
         }
@@ -697,16 +697,16 @@ function inicializarGerenciadorPlaylists() {
             if (idAtual) {
                 diagnosticarOperacao(`playlists/${idAtual}`);
                 await set(ref(database, "playlists/" + idAtual), itemPlaylist);
-                alert("Alterações guardadas na nuvem!");
+                RGA.toast({ title: "Conteúdo atualizado", message: "Alterações guardadas na nuvem.", type: "success" });
             } else {
                 diagnosticarOperacao("playlists");
                 await push(ref(database, "playlists"), itemPlaylist);
-                alert("Novo conteúdo inserido na nuvem!");
+                RGA.toast({ title: "Conteúdo publicado", message: "Novo conteúdo inserido na nuvem.", type: "success" });
             }
 
             limparFormulario();
         } catch (error) {
-            alert(mensagemFirebase(error, "salvar o vídeo"));
+            RGA.toast({ title: "Não foi possível salvar", message: mensagemFirebase(error, "salvar o vídeo"), type: "error" });
         }
     });
 
@@ -729,15 +729,25 @@ function inicializarGerenciadorPlaylists() {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             })
-            .catch((error) => alert(mensagemFirebase(error, "carregar o vídeo ou playlist")));
+            .catch((error) => RGA.toast({ title: "Erro ao carregar", message: mensagemFirebase(error, "carregar o vídeo ou playlist"), type: "error" }));
     }
 
-    function apagarPlaylist(id) {
-        if (confirm("Tens a certeza que desejas remover esta playlist permanentemente da nuvem?")) {
+    async function apagarPlaylist(id) {
+        const confirmado = await RGA.confirm({
+            title: "Remover playlist?",
+            message: "Esta playlist será removida permanentemente da nuvem.",
+            confirmText: "Remover",
+            cancelText: "Cancelar",
+            type: "danger"
+        });
+        if (!confirmado) return;
+
+        try {
             diagnosticarOperacao(`playlists/${id}`);
-            remove(ref(database, "playlists/" + id))
-                .then(() => alert("Playlist removida com sucesso!"))
-                .catch(err => alert(mensagemFirebase(err, "remover o vídeo")));
+            await remove(ref(database, "playlists/" + id));
+            RGA.toast({ title: "Playlist removida", message: "O conteúdo foi removido com sucesso.", type: "success" });
+        } catch (error) {
+            RGA.toast({ title: "Não foi possível remover", message: mensagemFirebase(error, "remover o vídeo"), type: "error" });
         }
     }
 
@@ -969,16 +979,16 @@ function inicializarGerenciadorNoticias() {
             if (idAtual) {
                 diagnosticarOperacao(`noticias/${idAtual}`);
                 await set(ref(database, "noticias/" + idAtual), itemNoticia);
-                alert("Notícia atualizada na nuvem!");
+                RGA.toast({ title: "Notícia atualizada", message: "As alterações foram guardadas na nuvem.", type: "success" });
             } else {
                 diagnosticarOperacao("noticias");
                 await push(ref(database, "noticias"), itemNoticia);
-                alert("Notícia publicada na nuvem!");
+                RGA.toast({ title: "Notícia publicada", message: "A notícia foi publicada na nuvem.", type: "success" });
             }
 
             limparFormularioNoticia();
         } catch (error) {
-            alert(mensagemFirebase(error, "salvar a notícia"));
+            RGA.toast({ title: "Não foi possível salvar", message: mensagemFirebase(error, "salvar a notícia"), type: "error" });
         }
     });
 
@@ -1013,15 +1023,25 @@ function inicializarGerenciadorNoticias() {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             })
-            .catch((error) => alert(mensagemFirebase(error, "carregar a notícia")));
+            .catch((error) => RGA.toast({ title: "Erro ao carregar", message: mensagemFirebase(error, "carregar a notícia"), type: "error" }));
     }
 
-    function apagarNoticia(id) {
-        if (confirm("Tens a certeza que desejas remover esta notícia permanentemente da nuvem?")) {
+    async function apagarNoticia(id) {
+        const confirmado = await RGA.confirm({
+            title: "Remover notícia?",
+            message: "Esta notícia será removida permanentemente da nuvem.",
+            confirmText: "Remover",
+            cancelText: "Cancelar",
+            type: "danger"
+        });
+        if (!confirmado) return;
+
+        try {
             diagnosticarOperacao(`noticias/${id}`);
-            remove(ref(database, "noticias/" + id))
-                .then(() => alert("Notícia removida com sucesso!"))
-                .catch(err => alert(mensagemFirebase(err, "remover a notícia")));
+            await remove(ref(database, "noticias/" + id));
+            RGA.toast({ title: "Notícia removida", message: "A notícia foi removida com sucesso.", type: "success" });
+        } catch (error) {
+            RGA.toast({ title: "Não foi possível remover", message: mensagemFirebase(error, "remover a notícia"), type: "error" });
         }
     }
 
